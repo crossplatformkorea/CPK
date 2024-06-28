@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install modules
+        run: bun install --immutable
+
+      - name: Check linting
+        run: bun lint:all
+
+      - name: Build typescript
+        run: bun tsc
+
+      - name: Remove dist
+        run: rm -rf ./dist
+
+      - name: Test
+        run: bun run test --coverage --silent
+
+      # - name: Upload coverage to Codecov
+      #   uses: codecov/codecov-action@v1
+      #   with:
+      #     token: ${{ secrets.CODECOV_TOKEN }}
+      #     directory: ./coverage/
+      #     flags: unittests
+      #     name: codecov-umbrella
+      #     fail_ci_if_error: false
+      #     path_to_write_report: ./coverage/codecov_report.gz

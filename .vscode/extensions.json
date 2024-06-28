@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "formulahendry.auto-rename-tag",
+    "aaron-bond.better-comments",
+    "vscode-icons-team.vscode-icons",
+    "streetsidesoftware.code-spell-checker",
+    "wix.vscode-import-cost",
+    "styled-components.vscode-styled-components",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+  ]
+}

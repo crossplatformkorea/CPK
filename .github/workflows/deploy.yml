@@ -1,0 +1,28 @@
+name: Deploy Web on Release
+on:
+  workflow_dispatch:
+  release:
+    types: [created]
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+      - uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install modules
+        run: bun install --immutable
+
+      - name: Build web
+        run: bun build:web
+        env:
+          ROOT_URL: ${{ secrets.ROOT_URL }}
+          expoProjectId: ${{ secrets.expoProjectId }}

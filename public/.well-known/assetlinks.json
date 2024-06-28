@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/handle_all_urls"],
+    "target": {
+      "namespace": "dooboo",
+      "package_name": "com.dooboolab",
+      "sha256_cert_fingerprints": [
+        ""
+      ]
+    }
+  }
+]
