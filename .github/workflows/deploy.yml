@@ -24,5 +24,4 @@ jobs:
       - name: Build web
         run: bun build:web
         env:
-          ROOT_URL: ${{ secrets.ROOT_URL }}
           expoProjectId: ${{ secrets.expoProjectId }}

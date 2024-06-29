@@ -27,7 +27,7 @@
     "eas:prod:android:local": "dotenv -e .env.production -- eas build --profile production --platform android --local",
     "eas:submit:ios": "dotenv -e .env.production -- eas submit --profile production --platform ios",
     "eas:submit:android": "dotenv -e .env.production -- eas submit --profile production --platform android",
-    "generate:supabase": "bunx supabase gen types typescript --project-id \"nrywcykpuqhlyaavosms\" --schema public > src/types/supabase.ts",
+    "generate:supabase": "bunx supabase gen types typescript --project-id \"dnwizkmicoxcnzlfeali\" --schema public > src/types/supabase.ts",
     "migrate:dev": "dotenv -e .env -- prisma migrate dev",
     "migrate:local": "dotenv -e .env -- prisma migrate deploy",
     "migrate:deploy": "dotenv -e .env.production -- prisma migrate deploy"
