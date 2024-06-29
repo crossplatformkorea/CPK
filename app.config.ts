@@ -27,7 +27,7 @@ const buildNumber = 1;
 
 export default ({config}: ConfigContext): ExpoConfig => ({
   ...config,
-  name: 'Cross-Platform Korea',
+  name: 'CPK',
   scheme: 'CPK',
   slug: 'CPK-Slug',
   privacy: 'public',
