@@ -29,13 +29,20 @@ export default ({config}: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'CPK',
   scheme: 'CPK',
-  slug: 'CPK-Slug',
+  slug: 'cpk',
   privacy: 'public',
   platforms: ['ios', 'android', 'web'],
   version,
   orientation: 'default',
   icon: './assets/icon.png',
   plugins: [
+    [
+      'expo-build-properties',
+      {
+        ios: {newArchEnabled: true},
+        android: {newArchEnabled: true},
+      },
+    ],
     // @ts-ignore
     withAndroidLocalizedName,
     'expo-router',
@@ -62,14 +69,12 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     backgroundColor: '#1B1B1B',
   },
   extra: {
-    ROOT_URL: process.env.ROOT_URL,
-    googleClientIdIOS: process.env.googleClientIdIOS,
+    supabaseUrl: process.env.supabaseUrl,
+    supabaseAnonKey: process.env.supabaseAnonKey,
     googleClientIdAndroid: process.env.googleClientIdAndroid,
+    googleClientIdIOS: process.env.googleClientIdIOS,
     googleClientIdWeb: process.env.googleClientIdWeb,
-    facebookAppId: process.env.facebookAppId,
-    expoProjectId: process.env.expoProjectId,
-    firebaseWebApiKey: process.env.firebaseWebApiKey,
-    // eas: {projectId: ''},
+    eas: {projectId: 'bc7483f7-8ec6-409e-91a9-62a0f872c28b'},
   },
   updates: {
     fallbackToCacheTimeout: 0,

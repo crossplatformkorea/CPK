@@ -68,6 +68,7 @@ web-build/
 !.yarn/releases
 
 .env*
+!.env.sample
 .jest
 
 # Android
@@ -81,3 +82,6 @@ web-build/
 
 expo-env.d.ts
 # @end expo-cli
+
+google-services.json
+GoogleService-Info.plist
