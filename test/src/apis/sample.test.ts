@@ -1,6 +1,5 @@
 import type {FetchMock} from 'jest-fetch-mock';
 
-import {ROOT_URL} from '../../../config';
 import {sample} from '../../../src/apis/sample';
 
 const fetchMock = fetch as FetchMock;
@@ -19,7 +18,7 @@ describe('testing sample api', () => {
 
       expect(result).toEqual(mockedResult);
       expect(fetchMock.mock.calls.length).toEqual(1);
-      expect(fetchMock.mock.calls[0][0]).toEqual(`${ROOT_URL}/sample`);
+      expect(fetchMock.mock.calls[0][0]).toEqual(`/sample`);
     });
   });
 
