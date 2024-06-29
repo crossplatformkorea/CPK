@@ -1,0 +1,94 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Gender {
+  male
+  female
+  intersex
+}
+
+enum AuthType {
+  email
+  google
+  apple
+}
+
+model User {
+  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email            String?
+  fullName         String?   @map("full_name")
+  name             String?
+  avatarUrl        String?   @map("avatar_url")
+  phoneVerified    Boolean?  @default(false) @map("phone_verified")
+  providerId       String?   @map("provider_id")
+  sub              String?
+  provider         AuthType  @default(email)
+  description      String?
+  birthday         DateTime?
+  gender           Gender?
+  phone            String?
+  locale           String?
+  confirmedAt      DateTime? @map("confirmed_at")
+  emailConfirmedAt DateTime? @map("email_confirmed_at")
+  lastSignInAt     DateTime? @map("last_sign_in_at")
+
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  developers Developer[]
+
+  @@map("users")
+}
+
+enum Nationality {
+  SouthKorea
+  UnitedStates
+  Unknown
+}
+
+model Developer {
+  id                              String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                           String? @unique
+  bio                             String?
+  nationality                     String? @default("Unknown")
+  organization                    String?
+  meetupId                        String? @map("meetup_id")
+  githubId                        String? @map("github_id")
+  twitterId                       String? @map("twitter_id")
+  threadsId                       String? @map("threads_id")
+  /// 연결되고 싶은 분
+  desiredConnection               String? @map("desired_connection")
+  /// 행사 참여중일 때 동기 입력
+  motivationForEventParticipation String? @map("motivation_for_event_participation")
+  /// 앞으로 기대하는 것
+  futureExpectations              String? @map("future_expectations")
+
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  tags Tag[]
+
+  userId String? @map("user_id") @db.Uuid
+  user   User?   @relation(fields: [userId], references: [id])
+
+  @@map("developers")
+}
+
+model Tag {
+  id  String @id @default(cuid()) @db.VarChar(50)
+  tag String @unique @db.VarChar(50)
+
+  developers Developer[]
+
+  @@index(tag)
+  @@map("tags")
+}
