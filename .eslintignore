@@ -5,3 +5,4 @@ assets/langs/ios/
 
 # types
 *.d.ts
+src/types/supabase.ts
