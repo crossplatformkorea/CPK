@@ -8,7 +8,7 @@ import {
 import {Icon, Typography, useDooboo} from 'dooboo-ui';
 import StatusBarBrightness from 'dooboo-ui/uis/StatusbarBrightness';
 import * as AppleAuthentication from 'expo-apple-authentication';
-import {Redirect, Stack} from 'expo-router';
+import {Redirect, Stack, useRouter} from 'expo-router';
 import {useRecoilValue} from 'recoil';
 
 import {googleClientIdIOS, googleClientIdWeb} from '../../config';
@@ -17,8 +17,6 @@ import {authRecoilState} from '../../src/recoil/atoms';
 import {supabase} from '../../src/supabase';
 import SocialSignInButton from '../../src/uis/SocialSignInButton';
 import {showAlert} from '../../src/utils/alert';
-import {openURL} from '../../src/utils/common';
-import {DOOBOO_PRIVACY_URL, DOOBOO_TERM_URL} from '../../src/utils/constants';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -44,6 +42,7 @@ export default function SignIn(): JSX.Element {
   const {theme} = useDooboo();
   const authId = useRecoilValue(authRecoilState);
   const [isHorizontal, setIsHorizontal] = useState(false);
+  const {push} = useRouter();
 
   GoogleSignin.configure({
     scopes: ['https://www.googleapis.com/auth/drive.readonly'],
@@ -126,7 +125,7 @@ export default function SignIn(): JSX.Element {
         );
       }}
     >
-      <StatusBarBrightness type="dark-content" />
+      <StatusBarBrightness type="light-content" />
       <Stack.Screen options={{headerShown: false}} />
       <ScrollView>
         <Content
@@ -210,7 +209,7 @@ export default function SignIn(): JSX.Element {
               다음 단계로 진행함과 동시에{' '}
               <Typography.Body3
                 onPress={() => {
-                  openURL(DOOBOO_PRIVACY_URL);
+                  push('/privacyandpolicy');
                 }}
                 style={css`
                   color: white;
@@ -222,7 +221,7 @@ export default function SignIn(): JSX.Element {
               및{' '}
               <Typography.Body3
                 onPress={() => {
-                  openURL(DOOBOO_TERM_URL);
+                  push('/termsofservice');
                 }}
                 style={css`
                   text-decoration-line: underline;
