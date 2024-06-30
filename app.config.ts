@@ -97,9 +97,17 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     },
     infoPlist: {
       CFBundleAllowMixedLocalizations: true,
+      CFBundleURLTypes: [
+        {
+          CFBundleURLSchemes: [
+            'com.googleusercontent.apps.407149235586-hnmknj6bpio4asa4ou56tkvtrrtl2d8e',
+          ],
+        },
+      ],
     },
   },
   android: {
+    googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
     userInterfaceStyle: 'automatic',
     permissions: [
       'RECEIVE_BOOT_COMPLETED',
@@ -128,6 +136,6 @@ export default ({config}: ConfigContext): ExpoConfig => ({
       },
     ],
   },
-  description: 'Starter project from dooboo-cli.',
+  description: 'Official Cross-Platform Korea community app',
   web: {bundler: 'metro', favicon: './assets/favicon.png'},
 });

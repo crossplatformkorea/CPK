@@ -11,8 +11,11 @@ import StatusBarBrightness from 'dooboo-ui/uis/StatusbarBrightness';
 import {Stack, useRouter} from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as SystemUI from 'expo-system-ui';
+import {useSetRecoilState} from 'recoil';
 
 import RootProvider from '../src/providers';
+import {authRecoilState} from '../src/recoil/atoms';
+import {supabase} from '../src/supabase';
 import {
   AsyncStorageKey,
   COMPONENT_WIDTH,
@@ -39,16 +42,53 @@ const Content = styled.View`
 function Layout(): JSX.Element | null {
   const {assetLoaded, theme} = useDooboo();
   const {back, replace} = useRouter();
+  const setAuthId = useSetRecoilState(authRecoilState);
+
+  useEffect(() => {
+    supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        const {status} = await supabase
+          .from('users')
+          .upsert({
+            id: session?.user.id,
+            // AuthType
+            provider: session?.user.app_metadata.provider as any,
+            provider_id: session?.user.app_metadata.provider_id,
+            last_sign_in_at: session?.user.app_metadata.last_sign_in_at,
+            full_name: session?.user.user_metadata.full_name,
+            name: session?.user.user_metadata.name,
+            sub: session?.user.user_metadata.sub,
+            email: session?.user.email,
+            email_confirmed_at: session?.user.email_confirmed_at,
+          })
+          .single();
+
+        if (status !== 201 && status !== 200) {
+          await supabase.auth.signOut();
+
+          return;
+        }
+
+        setAuthId(session?.user.id);
+
+        return;
+      }
+
+      setAuthId(null);
+    });
+  }, [setAuthId]);
 
   useEffect(() => {
     if (assetLoaded) {
-      SplashScreen.hideAsync();
+      // 초반에 자연스럽게 전환되기 위해 좀 더 대기
+      const timeout = setTimeout(() => {
+        SplashScreen.hideAsync();
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+      }, 1000);
     }
   }, [assetLoaded]);
-
-  if (!assetLoaded) {
-    return null;
-  }
 
   return (
     <Container>
