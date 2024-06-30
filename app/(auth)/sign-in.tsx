@@ -62,6 +62,8 @@ export default function SignIn(): JSX.Element {
           token: userInfo.idToken,
         });
 
+        supabase.auth.updateUser({data: {avatar_url: userInfo.user.photo}});
+
         if (error && __DEV__) {
           // eslint-disable-next-line no-console
           console.error(error);

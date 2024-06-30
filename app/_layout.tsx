@@ -45,7 +45,7 @@ function Layout(): JSX.Element | null {
   const setAuthId = useSetRecoilState(authRecoilState);
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange(async (event, session) => {
+    supabase.auth.onAuthStateChange(async (_, session) => {
       if (session?.user) {
         const {status} = await supabase
           .from('users')
@@ -60,6 +60,13 @@ function Layout(): JSX.Element | null {
             sub: session?.user.user_metadata.sub,
             email: session?.user.email,
             email_confirmed_at: session?.user.email_confirmed_at,
+            birthday: session?.user.user_metadata.birthday,
+            confirmed_at: session?.user.user_metadata.confirmed_at,
+            avatar_url: session?.user.user_metadata.avatar_url,
+            description: session?.user.user_metadata.description,
+            phone_number: session?.user.user_metadata.phone_number,
+            phone: session?.user.user_metadata.phone,
+            phone_verified: session?.user.user_metadata.phone_verified,
           })
           .single();
 
@@ -131,6 +138,7 @@ function Layout(): JSX.Element | null {
               ),
           }}
         >
+          <Stack.Screen name="(app)/(tabs)" options={{headerShown: false}} />
           {/* Note: Only modals are written here.  */}
         </Stack>
       </Content>

@@ -43,7 +43,7 @@
     "@supabase/supabase-js": "^2.44.2",
     "base64-arraybuffer": "^1.0.2",
     "date-fns": "^3.6.0",
-    "dooboo-ui": "^0.2.33",
+    "dooboo-ui": "^0.2.34",
     "expo": "~51.0.17",
     "expo-apple-authentication": "^6.4.1",
     "expo-constants": "~16.0.2",
