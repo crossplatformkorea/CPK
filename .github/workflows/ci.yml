@@ -24,7 +24,7 @@ jobs:
         run: bun install --immutable
 
       - name: Check linting
-        run: bun lint:all
+        run: bun lint
 
       - name: Build typescript
         run: bun tsc

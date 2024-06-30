@@ -25,7 +25,7 @@ SplashScreen.preventAutoHideAsync();
 const Container = styled.View`
   flex: 1;
   align-self: stretch;
-  background-color: ${({theme}) => theme.bg.paper};
+  background-color: ${({theme}) => theme.brand};
 `;
 
 const Content = styled.View`
@@ -33,7 +33,7 @@ const Content = styled.View`
   width: 100%;
   flex: 1;
   max-width: ${COMPONENT_WIDTH + 'px'};
-  background-color: ${({theme}) => theme.bg.basic};
+  background-color: ${({theme}) => theme.brand};
 `;
 
 function Layout(): JSX.Element | null {

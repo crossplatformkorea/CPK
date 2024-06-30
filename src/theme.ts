@@ -6,11 +6,21 @@ export const colors = {
   facebook: '#345997',
 };
 
-export const light = {};
+export const light = {
+  brand: '#343434',
+  text: {
+    placeholderContrast: '#909090',
+  },
+};
 
 export type CustomAppTheme = typeof light & DoobooThemeParams;
 
-export const dark: typeof light = {};
+export const dark: typeof light = {
+  brand: '#171717',
+  text: {
+    placeholderContrast: '#787878',
+  },
+};
 
 export const theme = {
   light,

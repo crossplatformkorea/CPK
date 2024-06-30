@@ -1,10 +1,12 @@
 import styled, {css} from '@emotion/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Button, SwitchToggle, useDooboo} from 'dooboo-ui';
-import {Stack, useRouter} from 'expo-router';
+import {Redirect, Stack, useRouter} from 'expo-router';
+import {useRecoilValue} from 'recoil';
 
-import {t} from '../src/STRINGS';
-import {AsyncStorageKey} from '../src/utils/constants';
+import {authRecoilState} from '../../src/recoil/atoms';
+import {t} from '../../src/STRINGS';
+import {AsyncStorageKey} from '../../src/utils/constants';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -25,6 +27,15 @@ const Content = styled.View`
 export default function Index(): JSX.Element {
   const {themeType, changeThemeType} = useDooboo();
   const {push} = useRouter();
+  const authId = useRecoilValue(authRecoilState);
+
+  if (!authId) {
+    return <Redirect href="/sign-in" />;
+  }
+
+  // if (loading) {
+  //   return <LottieView />;
+  // }
 
   return (
     <Container>

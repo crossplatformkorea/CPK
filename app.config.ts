@@ -35,6 +35,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
   version,
   orientation: 'default',
   icon: './assets/icon.png',
+  backgroundColor: '#343434',
   plugins: [
     [
       'expo-build-properties',
@@ -66,7 +67,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
   splash: {
     image: './assets/splash.png',
     resizeMode: 'cover',
-    backgroundColor: '#1B1B1B',
+    backgroundColor: '#343434',
   },
   extra: {
     supabaseUrl: process.env.supabaseUrl,
@@ -111,7 +112,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     ],
     adaptiveIcon: {
       foregroundImage: './assets/adaptive_icon.png',
-      backgroundColor: '#2F2F2F',
+      backgroundColor: '#343434',
     },
     package: 'com.crossplatformkorea',
     intentFilters: [
