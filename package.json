@@ -64,6 +64,7 @@
     "expo-tracking-transparency": "~4.0.2",
     "expo-updates": "~0.25.18",
     "expo-web-browser": "~13.0.3",
+    "i18n-js": "^4.4.3",
     "lottie-react": "^2.4.0",
     "lottie-react-native": "6.7.0",
     "react": "18.2.0",
