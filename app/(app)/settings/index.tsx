@@ -11,12 +11,12 @@ import {Stack, useRouter} from 'expo-router';
 import * as SystemUI from 'expo-system-ui';
 import {useRecoilValue} from 'recoil';
 
-import useAppState from '../../src/hooks/useAppState';
-import {authRecoilState} from '../../src/recoil/atoms';
-import {t} from '../../src/STRINGS';
-import CustomLoadingIndicator from '../../src/uis/CustomLoadingIndicator';
-import {openURL} from '../../src/utils/common';
-import {AsyncStorageKey} from '../../src/utils/constants';
+import useAppState from '../../../src/hooks/useAppState';
+import {authRecoilState} from '../../../src/recoil/atoms';
+import {t} from '../../../src/STRINGS';
+import CustomLoadingIndicator from '../../../src/uis/CustomLoadingIndicator';
+import {openURL} from '../../../src/utils/common';
+import {AsyncStorageKey} from '../../../src/utils/constants';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};

@@ -320,3 +320,7 @@ export type Enums<
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
     : never
+
+
+export type User = Tables<"users">;
+export type Developer = Tables<"developers">;

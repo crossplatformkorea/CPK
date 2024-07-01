@@ -40,7 +40,7 @@ const Buttons = styled.View`
 
 export default function SignIn(): JSX.Element {
   const {theme} = useDooboo();
-  const authId = useRecoilValue(authRecoilState);
+  const {authId} = useRecoilValue(authRecoilState);
   const [isHorizontal, setIsHorizontal] = useState(false);
   const {push} = useRouter();
 

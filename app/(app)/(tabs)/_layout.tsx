@@ -1,11 +1,9 @@
-import {useCallback, useEffect} from 'react';
 import {Pressable, View} from 'react-native';
 import {Icon, useDooboo} from 'dooboo-ui';
-import {Link, Tabs, useRouter} from 'expo-router';
+import {Link, Redirect, Tabs, useRouter} from 'expo-router';
 import {useRecoilValue} from 'recoil';
 
 import {authRecoilState} from '../../../src/recoil/atoms';
-import {supabase} from '../../../src/supabase';
 
 function SettingsMenu(): JSX.Element {
   const {theme} = useDooboo();
@@ -29,36 +27,15 @@ function SettingsMenu(): JSX.Element {
 
 export default function TabLayout(): JSX.Element {
   const {theme} = useDooboo();
-  const authId = useRecoilValue(authRecoilState);
+  const {authId} = useRecoilValue(authRecoilState);
 
-  const fetchUser = useCallback(async () => {
-    if (!authId) {
-      return;
-    }
+  if (!authId) {
+    return <Redirect href="sign-in" />;
+  }
 
-    try {
-      const {data, error} = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', authId)
-        .filter('deleted_at', 'is', null)
-        .single();
-
-      console.log('data', data);
-
-      if (error) {
-        throw error;
-      }
-    } catch (error) {
-      if (__DEV__) {
-        console.error(error);
-      }
-    }
-  }, [authId]);
-
-  useEffect(() => {
-    fetchUser();
-  }, [fetchUser]);
+  if (!authId) {
+    return <Redirect href="/sign-in" />;
+  }
 
   return (
     <Tabs
