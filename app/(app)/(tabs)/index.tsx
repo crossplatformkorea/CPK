@@ -8,7 +8,7 @@ import {Post, User} from '../../../src/types';
 import PostListItem from '../../../src/components/uis/PostListItem';
 import {useEffect, useState} from 'react';
 import {supabase} from '../../../src/supabase';
-import { PAGE_SIZE } from '../../../src/utils/constants';
+import {PAGE_SIZE} from '../../../src/utils/constants';
 
 const Container = styled.View`
   flex: 1;
@@ -18,19 +18,24 @@ const Container = styled.View`
 
 type PostWithUser = Post & {user: User};
 
-const fetchPosts = async (page: number, pageSize: number): Promise<PostWithUser[]> => {
+const fetchPosts = async (
+  page: number,
+  pageSize: number,
+): Promise<PostWithUser[]> => {
   const from = (page - 1) * pageSize;
   const to = from + pageSize - 1;
 
   const {data, error} = await supabase
     .from('posts')
-    .select(`
+    .select(
+      `
       *,
       user:user_id (
         *
       )
-    `)
-    .order('created_at', { ascending: false })
+    `,
+    )
+    .order('created_at', {ascending: false})
     .range(from, to);
 
   if (error) {
@@ -43,12 +48,14 @@ const fetchPosts = async (page: number, pageSize: number): Promise<PostWithUser[
 const fetchPostById = async (id: string): Promise<PostWithUser | null> => {
   const {data, error} = await supabase
     .from('posts')
-    .select(`
+    .select(
+      `
       *,
       user:user_id (
         *
       )
-    `)
+    `,
+    )
     .eq('id', id)
     .single();
 
@@ -98,7 +105,25 @@ export default function Posts(): JSX.Element {
           if (newPost) {
             setPosts((currentPosts) => [newPost, ...currentPosts]);
           }
-        }
+        },
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'posts',
+        },
+        async (payload) => {
+          const updatedPost = await fetchPostById(payload.new.id);
+          if (updatedPost) {
+            setPosts((currentPosts) =>
+              currentPosts.map((post) =>
+                post.id === updatedPost.id ? updatedPost : post,
+              ),
+            );
+          }
+        },
       )
       .subscribe();
 
