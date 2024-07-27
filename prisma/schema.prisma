@@ -43,7 +43,14 @@ model User {
   updatedAt DateTime? @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
-  developers Developer[]
+  developers          Developer[]
+  notifications       Notification[]
+  notificationsTarget Notification[] @relation("NotificationTargetUser")
+  replies             Reply[]
+  reports             Report[]
+  reportsTarget       Report[]       @relation("ReportTargetUser")
+  likes               Like[]
+  Post                Post[]
 
   @@map("users")
 }
@@ -83,11 +90,167 @@ model Developer {
   @@map("developers")
 }
 
+model Post {
+  id      String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title   String
+  content String
+  url     String?
+
+  createdAt DateTime?  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id") @db.Uuid
+
+  tags          Tag[]
+  notifications Notification[]
+  images        Image[]
+  replies       Reply[]
+  reports       Report[]
+  likes         Like[]
+
+  @@map("posts")
+}
+
+enum NotificationType {
+  Like
+  UserFollowYou
+  FollowingFollowUser
+  FollowingCreatePost
+  NewReplyInComment
+  NewCommentInPost
+
+  @@map("activity_type")
+}
+
+model Notification {
+  id        String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type      NotificationType
+  createdAt DateTime?        @default(now()) @map("created_at")
+
+  /// The sender of the activity
+  srcUser   User   @relation(fields: [srcUserId], references: [id])
+  srcUserId String @map("src_user_id") @db.Uuid
+
+  /// The receiver of the activity
+  user    User?   @relation(fields: [userId], references: [id], "NotificationTargetUser")
+  userId  String? @map("user_id") @db.Uuid
+  reply   Reply?  @relation(fields: [replyId], references: [id])
+  replyId String? @map("replyId") @db.Uuid
+  post    Post?   @relation(fields: [postId], references: [id])
+  postId  String? @map("post_id") @db.Uuid
+  link    String?
+
+  @@unique([srcUserId, userId, replyId, type])
+  @@unique([srcUserId, userId, postId, type])
+  @@index([srcUserId, userId, type])
+  @@map("notifications")
+}
+
+enum FileType {
+  Audio
+  Video
+  Document
+  Image
+}
+
+model Image {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  thumbUrl  String?   @map("thumb_url")
+  imageUrl  String?   @map("image_url")
+  url       String?   @map("url")
+  name      String?   @map("name")
+  size      BigInt?   @default(0)
+  duration  Int?      @default(0)
+  exif      String?
+  height    Int?      @default(0)
+  width     Int?      @default(0)
+  mimeType  String?   @map("mime_type")
+  encoding  String?   @map("encoding")
+  type      FileType? @default(Image) @map("type")
+  createdAt DateTime? @default(now()) @map("created_at")
+
+  post    Post?   @relation(fields: [postId], references: [id])
+  postId  String? @map("post_id") @db.Uuid
+  reply   Reply?  @relation(fields: [replyId], references: [id])
+  replyId String? @map("reply_id") @db.Uuid
+
+  @@index(postId)
+  @@index(replyId)
+  @@map("images")
+}
+
+model Reply {
+  id      String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  message String
+
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id") @db.Uuid
+
+  post   Post?   @relation(fields: [postId], references: [id])
+  postId String? @map("post_id") @db.Uuid
+
+  reply   Reply?  @relation(fields: [replyId], references: [id], name: "ReplyToReply")
+  replyId String? @map("reply_id") @db.Uuid
+
+  likes         Like[]
+  reports       Report[]
+  replies       Reply[]        @relation("ReplyToReply")
+  notifications Notification[]
+  images        Image[]
+
+  @@map("replies")
+}
+
+model Report {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title     String
+  content   String
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz()
+
+  srcUser   User   @relation(fields: [srcUserId], references: [id])
+  srcUserId String @map("src_user_id") @db.Uuid
+
+  user   User?   @relation(fields: [userId], references: [id], name: "ReportTargetUser")
+  userId String? @map("user_id") @db.Uuid
+
+  reply   Reply?  @relation(fields: [replyId], references: [id])
+  replyId String? @map("reply_id") @db.Uuid
+
+  post   Post?   @relation(fields: [postId], references: [id])
+  postId String? @map("post_id") @db.Uuid
+
+  @@map("reports")
+}
+
+model Like {
+  id    String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  liked Boolean
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id") @db.Uuid
+
+  reply   Reply?  @relation(fields: [replyId], references: [id])
+  replyId String? @map("reply_id") @db.Uuid
+
+  post   Post?   @relation(fields: [postId], references: [id])
+  postId String? @map("post_id") @db.Uuid
+
+  @@unique([userId, postId])
+  @@map("likes")
+}
+
 model Tag {
-  id  String @id @default(cuid()) @db.VarChar(50)
-  tag String @unique @db.VarChar(50)
+  id  String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tag String @unique @db.Uuid
 
   developers Developer[]
+  posts      Post[]
 
   @@index(tag)
   @@map("tags")

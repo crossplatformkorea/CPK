@@ -15,6 +15,7 @@ import {useSetRecoilState} from 'recoil';
 
 import RootProvider from '../src/providers';
 import {authRecoilState} from '../src/recoil/atoms';
+import {t} from '../src/STRINGS';
 import {supabase} from '../src/supabase';
 import {
   AsyncStorageKey,
@@ -40,26 +41,33 @@ const Content = styled.View`
 `;
 
 function Layout(): JSX.Element | null {
-  const {assetLoaded, theme} = useDooboo();
+  const {assetLoaded, snackbar, theme} = useDooboo();
   const {back, replace} = useRouter();
-  const setAuthId = useSetRecoilState(authRecoilState);
+  const setAuth = useSetRecoilState(authRecoilState);
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange(async (event, session) => {
+    supabase.auth.onAuthStateChange(async (_, session) => {
       if (session?.user) {
         const {status} = await supabase
           .from('users')
           .upsert({
-            id: session?.user.id,
+            id: session.user.id,
             // AuthType
-            provider: session?.user.app_metadata.provider as any,
-            provider_id: session?.user.app_metadata.provider_id,
-            last_sign_in_at: session?.user.app_metadata.last_sign_in_at,
-            full_name: session?.user.user_metadata.full_name,
-            name: session?.user.user_metadata.name,
-            sub: session?.user.user_metadata.sub,
-            email: session?.user.email,
-            email_confirmed_at: session?.user.email_confirmed_at,
+            provider: session.user.app_metadata.provider as any,
+            provider_id: session.user.app_metadata.provider_id,
+            last_sign_in_at: session.user.app_metadata.last_sign_in_at,
+            full_name: session.user.user_metadata.full_name,
+            name: session.user.user_metadata.name,
+            sub: session.user.user_metadata.sub,
+            email: session.user.email,
+            email_confirmed_at: session.user.email_confirmed_at,
+            birthday: session.user.user_metadata.birthday,
+            confirmed_at: session.user.user_metadata.confirmed_at,
+            avatar_url: session.user.user_metadata.avatar_url,
+            description: session.user.user_metadata.description,
+            phone_number: session.user.user_metadata.phone_number,
+            phone: session.user.user_metadata.phone,
+            phone_verified: session.user.user_metadata.phone_verified,
           })
           .single();
 
@@ -69,24 +77,48 @@ function Layout(): JSX.Element | null {
           return;
         }
 
-        setAuthId(session?.user.id);
+        const {data} = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', session.user.id)
+          .single();
+
+        if (data) {
+          if (data?.deleted_at) {
+            await supabase.auth.signOut();
+            snackbar.open({
+              text: t('common.deletedAccount'),
+              color: 'danger',
+            });
+
+            return;
+          }
+
+          setAuth({
+            authId: session.user.id,
+            user: data,
+          });
+        }
 
         return;
       }
 
-      setAuthId(null);
+      setAuth({
+        authId: null,
+        user: null,
+      });
     });
-  }, [setAuthId]);
+  }, []);
 
   useEffect(() => {
     if (assetLoaded) {
-      // 초반에 자연스럽게 전환되기 위해 좀 더 대기
+      // Adhoc: Set a timeout to hide the splash screen
       const timeout = setTimeout(() => {
         SplashScreen.hideAsync();
         if (timeout) {
           clearTimeout(timeout);
         }
-      }, 1000);
+      }, 1200);
     }
   }, [assetLoaded]);
 
@@ -131,6 +163,7 @@ function Layout(): JSX.Element | null {
               ),
           }}
         >
+          <Stack.Screen name="(app)/(tabs)" options={{headerShown: false}} />
           {/* Note: Only modals are written here.  */}
         </Stack>
       </Content>

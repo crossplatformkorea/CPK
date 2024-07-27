@@ -2,7 +2,7 @@ import {css} from '@emotion/native';
 import type {LottieViewProps} from 'lottie-react-native';
 import LottieReactNative from 'lottie-react-native';
 
-import CpkLoading from '../../assets/lotties/cpk_loading.json';
+import CpkLoading from '../../../assets/lotties/cpk_loading.json';
 
 export type LottieSourceType = 'cpk-loading';
 

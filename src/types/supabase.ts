@@ -39,6 +39,36 @@ export type Database = {
           },
         ]
       }
+      _PostToTag: {
+        Row: {
+          A: string
+          B: string
+        }
+        Insert: {
+          A: string
+          B: string
+        }
+        Update: {
+          A?: string
+          B?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "_PostToTag_A_fkey"
+            columns: ["A"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "_PostToTag_B_fkey"
+            columns: ["B"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       _prisma_migrations: {
         Row: {
           applied_steps_count: number
@@ -137,13 +167,351 @@ export type Database = {
           },
         ]
       }
+      images: {
+        Row: {
+          created_at: string | null
+          duration: number | null
+          encoding: string | null
+          exif: string | null
+          height: number | null
+          id: string
+          image_url: string | null
+          mime_type: string | null
+          name: string | null
+          post_id: string | null
+          reply_id: string | null
+          size: number | null
+          thumb_url: string | null
+          type: Database["public"]["Enums"]["FileType"] | null
+          url: string | null
+          width: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          duration?: number | null
+          encoding?: string | null
+          exif?: string | null
+          height?: number | null
+          id?: string
+          image_url?: string | null
+          mime_type?: string | null
+          name?: string | null
+          post_id?: string | null
+          reply_id?: string | null
+          size?: number | null
+          thumb_url?: string | null
+          type?: Database["public"]["Enums"]["FileType"] | null
+          url?: string | null
+          width?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          duration?: number | null
+          encoding?: string | null
+          exif?: string | null
+          height?: number | null
+          id?: string
+          image_url?: string | null
+          mime_type?: string | null
+          name?: string | null
+          post_id?: string | null
+          reply_id?: string | null
+          size?: number | null
+          thumb_url?: string | null
+          type?: Database["public"]["Enums"]["FileType"] | null
+          url?: string | null
+          width?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "images_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "images_reply_id_fkey"
+            columns: ["reply_id"]
+            isOneToOne: false
+            referencedRelation: "replies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      likes: {
+        Row: {
+          id: string
+          liked: boolean
+          post_id: string | null
+          reply_id: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          liked: boolean
+          post_id?: string | null
+          reply_id?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          liked?: boolean
+          post_id?: string | null
+          reply_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "likes_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "likes_reply_id_fkey"
+            columns: ["reply_id"]
+            isOneToOne: false
+            referencedRelation: "replies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          created_at: string | null
+          id: string
+          link: string | null
+          post_id: string | null
+          replyId: string | null
+          src_user_id: string
+          type: Database["public"]["Enums"]["activity_type"]
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          link?: string | null
+          post_id?: string | null
+          replyId?: string | null
+          src_user_id: string
+          type: Database["public"]["Enums"]["activity_type"]
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          link?: string | null
+          post_id?: string | null
+          replyId?: string | null
+          src_user_id?: string
+          type?: Database["public"]["Enums"]["activity_type"]
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_replyId_fkey"
+            columns: ["replyId"]
+            isOneToOne: false
+            referencedRelation: "replies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_src_user_id_fkey"
+            columns: ["src_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      posts: {
+        Row: {
+          content: string
+          created_at: string | null
+          deleted_at: string | null
+          id: string
+          title: string
+          updated_at: string | null
+          url: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          deleted_at?: string | null
+          id?: string
+          title: string
+          updated_at?: string | null
+          url?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          deleted_at?: string | null
+          id?: string
+          title?: string
+          updated_at?: string | null
+          url?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      replies: {
+        Row: {
+          created_at: string | null
+          deleted_at: string | null
+          id: string
+          message: string
+          post_id: string | null
+          reply_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          deleted_at?: string | null
+          id?: string
+          message: string
+          post_id?: string | null
+          reply_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          deleted_at?: string | null
+          id?: string
+          message?: string
+          post_id?: string | null
+          reply_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "replies_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "replies_reply_id_fkey"
+            columns: ["reply_id"]
+            isOneToOne: false
+            referencedRelation: "replies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "replies_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reports: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          post_id: string | null
+          reply_id: string | null
+          src_user_id: string
+          title: string
+          user_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          post_id?: string | null
+          reply_id?: string | null
+          src_user_id: string
+          title: string
+          user_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          post_id?: string | null
+          reply_id?: string | null
+          src_user_id?: string
+          title?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reports_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_reply_id_fkey"
+            columns: ["reply_id"]
+            isOneToOne: false
+            referencedRelation: "replies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_src_user_id_fkey"
+            columns: ["src_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reports_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tags: {
         Row: {
           id: string
           tag: string
         }
         Insert: {
-          id: string
+          id?: string
           tag: string
         }
         Update: {
@@ -229,7 +597,15 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
+      activity_type:
+        | "Like"
+        | "UserFollowYou"
+        | "FollowingFollowUser"
+        | "FollowingCreatePost"
+        | "NewReplyInComment"
+        | "NewCommentInPost"
       AuthType: "email" | "google" | "apple"
+      FileType: "Audio" | "Video" | "Document" | "Image"
       Gender: "male" | "female" | "intersex"
       Nationality: "SouthKorea" | "UnitedStates" | "Unknown"
     }

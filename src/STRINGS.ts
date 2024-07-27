@@ -24,7 +24,15 @@ export const capitalize = (
   >['name'];
 };
 
-export const t = (param: keyof typeof en, mapObj?: object): string => {
+type NestedKeys<T> = T extends object
+  ? {
+      [K in keyof T]: K extends string | number
+        ? `${K}` | (T[K] extends object ? `${K}.${NestedKeys<T[K]>}` : never)
+        : never;
+    }[keyof T]
+  : '';
+
+export const t = (param: NestedKeys<typeof en>, mapObj?: object): string => {
   if (mapObj) {
     return i18n.t(param, mapObj);
   }

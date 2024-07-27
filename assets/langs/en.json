@@ -1,5 +1,55 @@
 {
-  "DETAILS": "Details",
-  "HOME": "Home",
-  "SEE_DETAILS": "See Details"
+  "common": {
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "deletedAccount": "Retired account.",
+    "latest": "Latest",
+    "post": "Post",
+    "profile": "Profile"
+  },
+  "error": {
+    "default": "Error occurred!"
+  },
+  "loginInfo": {
+    "cancel": "Cancel",
+    "cancelAccount": "Cancel Account",
+    "cancelAccountDescription": "Are you sure you want to cancel your account? This action cannot be undone.",
+    "loggedInWith": "Logged in with {{provider}}",
+    "loginMethod": "Login Method",
+    "logout": "Logout",
+    "title": "Login Information"
+  },
+  "post": {
+    "write": {
+      "content": "Content",
+      "contentPlaceholder": "Enter the content",
+      "register": "Register",
+      "title": "Title",
+      "titlePlaceholder": "Enter the title",
+      "urlPlaceholder": "Enter the reference URL",
+      "urlTitle": "Reference URL(Optional)",
+      "write": "Write",
+      "writeSuccess": "Successfully written!",
+      "writeFailed": "Write failed!"
+    }
+  },
+  "settings": {
+    "bannedUsers": "Banned Users",
+    "darkMode": "Dark Mode",
+    "loginInfo": "Login Information",
+    "notificationSettings": "Notification Settings",
+    "termsOfService": "Terms of Service",
+    "title": "Settings",
+    "updateProfile": "Update Profile"
+  },
+  "signIn": {
+    "continueWithProvider": "Continue with {{provider}}",
+    "description": "A place where Korean developers and developers around the world communicate!",
+    "googleIdNotAvailable": "Google ID is not available",
+    "playServiceNotAvailable": "Google Play Service is not available",
+    "policyAgreement": "By signing in, you agree to our {{termsOfService}} and {{privacyPolicy}}.",
+    "privacyPolicy": "Privacy Policy",
+    "termsOfService": "Terms of Service",
+    "title": "Sign In"
+  }
 }

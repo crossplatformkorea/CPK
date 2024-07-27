@@ -1,6 +1,16 @@
 import {atom} from 'recoil';
 
-export const authRecoilState = atom<string | null>({
+import type {User} from '../types';
+
+export type UserInfo = {
+  authId: string | null;
+  user: User | null;
+};
+
+export const authRecoilState = atom<UserInfo>({
   key: 'authIdState',
-  default: null,
+  default: {
+    authId: null,
+    user: null,
+  },
 });
