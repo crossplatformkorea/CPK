@@ -16,7 +16,7 @@ import {IC_CROSSPLATFORMS, IC_GOOGLE, IC_ICON} from '../../src/icons';
 import {authRecoilState} from '../../src/recoil/atoms';
 import {t} from '../../src/STRINGS';
 import {supabase} from '../../src/supabase';
-import SocialSignInButton from '../../src/uis/SocialSignInButton';
+import SocialSignInButton from '../../src/components/uis/SocialSignInButton';
 import {showAlert} from '../../src/utils/alert';
 
 const Container = styled.SafeAreaView`

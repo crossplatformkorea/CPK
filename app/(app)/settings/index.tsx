@@ -13,8 +13,8 @@ import {useRecoilValue} from 'recoil';
 
 import {authRecoilState} from '../../../src/recoil/atoms';
 import {t} from '../../../src/STRINGS';
-import CustomLoadingIndicator from '../../../src/uis/CustomLoadingIndicator';
 import {AsyncStorageKey} from '../../../src/utils/constants';
+import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};

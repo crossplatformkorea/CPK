@@ -1,6 +1,6 @@
 import {atom} from 'recoil';
 
-import type {User} from '../types/supabase';
+import type {User} from '../types';
 
 export type UserInfo = {
   authId: string | null;

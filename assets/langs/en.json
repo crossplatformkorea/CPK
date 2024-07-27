@@ -1,9 +1,10 @@
 {
   "common": {
     "cancel": "Cancel",
-    "community": "Community",
     "confirm": "Confirm",
     "deletedAccount": "Retired account.",
+    "latest": "Latest",
+    "post": "Post",
     "profile": "Profile"
   },
   "error": {
@@ -17,6 +18,18 @@
     "loginMethod": "Login Method",
     "logout": "Logout",
     "title": "Login Information"
+  },
+  "post": {
+    "write": {
+      "content": "Content",
+      "contentPlaceholder": "Enter the content",
+      "register": "Register",
+      "title": "Title",
+      "titlePlaceholder": "Enter the title",
+      "urlPlaceholder": "Enter the reference URL",
+      "urlTitle": "Reference URL(Optional)",
+      "write": "Write"
+    }
   },
   "settings": {
     "bannedUsers": "Banned Users",

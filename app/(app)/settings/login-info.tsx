@@ -10,10 +10,10 @@ import {useRecoilValue} from 'recoil';
 import {authRecoilState} from '../../../src/recoil/atoms';
 import {t} from '../../../src/STRINGS';
 import {supabase} from '../../../src/supabase';
-import type {User} from '../../../src/types/supabase';
-import CustomLoadingIndicator from '../../../src/uis/CustomLoadingIndicator';
+import type {User} from '../../../src/types';
 import {showConfirm} from '../../../src/utils/alert';
 import {AsyncStorageKey} from '../../../src/utils/constants';
+import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
 
 const Content = styled.View`
   flex: 1;

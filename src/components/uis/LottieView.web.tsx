@@ -1,7 +1,7 @@
 import type {LottieComponentProps, LottieOptions} from 'lottie-react';
 import {useLottie} from 'lottie-react';
 
-import CpkLoading from '../../assets/lotties/cpk_loading.json';
+import CpkLoading from '../../../assets/lotties/cpk_loading.json';
 
 import type {LottieSourceType} from './LottieView';
 

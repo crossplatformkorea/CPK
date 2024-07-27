@@ -108,7 +108,7 @@ function Layout(): JSX.Element | null {
         user: null,
       });
     });
-  }, [setAuth, snackbar]);
+  }, []);
 
   useEffect(() => {
     if (assetLoaded) {
@@ -118,7 +118,7 @@ function Layout(): JSX.Element | null {
         if (timeout) {
           clearTimeout(timeout);
         }
-      }, 1000);
+      }, 1200);
     }
   }, [assetLoaded]);
 

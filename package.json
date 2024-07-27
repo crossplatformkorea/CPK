@@ -37,11 +37,12 @@
     "@emotion/react": "^11.11.4",
     "@expo/match-media": "^0.4.0",
     "@expo/react-native-action-sheet": "^4.1.0",
+    "@hookform/resolvers": "^3.9.0",
     "@prisma/client": "5.16.1",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/datetimepicker": "8.0.1",
     "@react-native-google-signin/google-signin": "^12.2.1",
-    "@shopify/flash-list": "1.6.4",
+    "@shopify/flash-list": "^1.7.0",
     "@supabase/supabase-js": "^2.44.2",
     "base64-arraybuffer": "^1.0.2",
     "date-fns": "^3.6.0",
@@ -71,6 +72,7 @@
     "lottie-react-native": "6.7.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.52.1",
     "react-native": "0.74.2",
     "react-native-error-boundary": "^1.2.4",
     "react-native-gesture-handler": "~2.16.2",
@@ -86,7 +88,8 @@
     "react-native-web": "~0.19.12",
     "react-native-web-lottie": "^1.4.4",
     "react-native-webview": "13.8.6",
-    "recoil": "^0.7.7"
+    "recoil": "^0.7.7",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.7",

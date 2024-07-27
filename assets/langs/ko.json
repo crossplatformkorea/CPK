@@ -1,9 +1,10 @@
 {
   "common": {
     "cancel": "취소",
-    "community": "커뮤니티",
     "confirm": "확인",
     "deletedAccount": "탈퇴한 계정입니다.",
+    "latest": "최신순",
+    "post": "게시판",
     "profile": "프로필"
   },
   "error": {
@@ -17,6 +18,18 @@
     "loginMethod": "로그인 수단",
     "logout": "로그아웃",
     "title": "로그인 정보"
+  },
+  "post": {
+    "write": {
+      "content": "내용",
+      "contentPlaceholder": "내용을 입력하세요",
+      "register": "등록",
+      "title": "제목",
+      "titlePlaceholder": "제목을 입력하세요",
+      "urlPlaceholder": "참고 URL을 입력하세요",
+      "urlTitle": "참고 URL(선택사항)",
+      "write": "글쓰기"
+    }
   },
   "settings": {
     "bannedUsers": "차단한 사용자",

@@ -50,7 +50,7 @@ export default function TabLayout(): JSX.Element {
       <Tabs.Screen
         name="index"
         options={{
-          title: t('common.community'),
+          title: t('common.post'),
           tabBarIcon: ({color}) => (
             <Icon color={color} name="Article" size={24} />
           ),
