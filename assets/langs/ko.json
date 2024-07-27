@@ -28,7 +28,9 @@
       "titlePlaceholder": "제목을 입력하세요",
       "urlPlaceholder": "참고 URL을 입력하세요",
       "urlTitle": "참고 URL(선택사항)",
-      "write": "글쓰기"
+      "write": "글쓰기",
+      "writeSuccess": "성공적으로 작성되었습니다!",
+      "writeFailed": "작성에 실패했습니다!"
     }
   },
   "settings": {

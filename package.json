@@ -89,6 +89,7 @@
     "react-native-web-lottie": "^1.4.4",
     "react-native-webview": "13.8.6",
     "recoil": "^0.7.7",
+    "swr": "^2.2.5",
     "yup": "^1.4.0"
   },
   "devDependencies": {

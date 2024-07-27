@@ -350,31 +350,31 @@ export type Database = {
       posts: {
         Row: {
           content: string
-          created_at: string
+          created_at: string | null
           deleted_at: string | null
           id: string
           title: string
-          updated_at: string
+          updated_at: string | null
           url: string | null
           user_id: string
         }
         Insert: {
           content: string
-          created_at?: string
+          created_at?: string | null
           deleted_at?: string | null
           id?: string
           title: string
-          updated_at: string
+          updated_at?: string | null
           url?: string | null
           user_id: string
         }
         Update: {
           content?: string
-          created_at?: string
+          created_at?: string | null
           deleted_at?: string | null
           id?: string
           title?: string
-          updated_at?: string
+          updated_at?: string | null
           url?: string | null
           user_id?: string
         }

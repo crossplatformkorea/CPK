@@ -1,12 +1,16 @@
 import styled, {css} from '@emotion/native';
-import {Stack} from 'expo-router';
+import {Stack, useRouter} from 'expo-router';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {t} from '../../../src/STRINGS';
 import {EditText, Typography, useDooboo} from 'dooboo-ui';
 import * as yup from 'yup';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import CustomPressable from 'dooboo-ui/uis/CustomPressable';
-import { ActivityIndicator, Pressable } from 'react-native';
+import {ActivityIndicator, Pressable} from 'react-native';
+import {Post, PostInsertArgs} from '../../../src/types';
+import {supabase} from '../../../src/supabase';
+import {useRecoilValue} from 'recoil';
+import {authRecoilState} from '../../../src/recoil/atoms';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -28,8 +32,25 @@ const schema = yup.object().shape({
 
 type FormData = yup.InferType<typeof schema>;
 
-export default function CommunityWrite(): JSX.Element {
-  const {theme} = useDooboo();
+const addPost = async (post: PostInsertArgs) => {
+  const {data, error} = await supabase.from('posts').insert({
+    title: post.title,
+    content: post.content,
+    url: post.url,
+    user_id: post.user_id,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
+export default function PostWrite(): JSX.Element {
+  const {back} = useRouter();
+  const {theme, snackbar} = useDooboo();
+  const {authId} = useRecoilValue(authRecoilState);
 
   const {
     control,
@@ -39,8 +60,31 @@ export default function CommunityWrite(): JSX.Element {
     resolver: yupResolver(schema),
   });
 
-  const writeContent: SubmitHandler<FormData> = async (data) => {
-    console.log('data: ', data);
+  const handleWritePost: SubmitHandler<FormData> = async (data) => {
+    if (!authId) return;
+
+    try {
+      await addPost({
+        title: data.title,
+        content: data.content,
+        url: data.url || null,
+        user_id: authId,
+      });
+
+      snackbar.open({
+        text: t('post.write.writeSuccess'),
+        color: 'success',
+      });
+
+      back();
+    } catch (e) {
+      snackbar.open({
+        text: t('post.write.writeFailed'),
+        color: 'danger',
+      });
+
+      if (__DEV__) console.error('Error adding post:', e);
+    }
   };
 
   return (
@@ -50,7 +94,7 @@ export default function CommunityWrite(): JSX.Element {
           title: t('post.write.write'),
           headerRight: () => (
             <Pressable
-              onPress={handleSubmit(writeContent)}
+              onPress={handleSubmit(handleWritePost)}
               hitSlop={{
                 bottom: 8,
                 left: 8,
@@ -61,9 +105,7 @@ export default function CommunityWrite(): JSX.Element {
               {isSubmitting ? (
                 <ActivityIndicator size="small" color={theme.text.label} />
               ) : (
-                <Typography.Body3>
-                  {t('post.write.register')}
-                </Typography.Body3>
+                <Typography.Body3>{t('post.write.register')}</Typography.Body3>
               )}
             </Pressable>
           ),

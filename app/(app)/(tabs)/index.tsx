@@ -4,42 +4,78 @@ import StatusBarBrightness from 'dooboo-ui/uis/StatusbarBrightness';
 
 import {t} from '../../../src/STRINGS';
 import {FlashList} from '@shopify/flash-list';
+import useSWR, {mutate} from 'swr';
+
 import {useRouter} from 'expo-router';
-import {Post} from '../../../src/types';
+import {Post, User} from '../../../src/types';
 import PostListItem from '../../../src/components/uis/PostListItem';
+import {useEffect, useState} from 'react';
+import {supabase} from '../../../src/supabase';
 
 const Container = styled.View`
   flex: 1;
   align-self: stretch;
-  padding: 12px 24px;
   background-color: ${({theme}) => theme.bg.basic};
 `;
 
+type PostWithUser = Post & {user: User};
+
+const fetcher = async (): Promise<PostWithUser[]> => {
+  const {data, error} = await supabase
+    .from('posts')
+    .select(
+      `
+      *,
+      user:user_id (
+        *
+      )
+    `,
+    )
+    .order('created_at', {ascending: false});
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data as unknown as PostWithUser[];
+};
+
 export default function Posts(): JSX.Element {
   const {push} = useRouter();
+  const {data: posts} = useSWR<PostWithUser[]>('posts', fetcher);
 
-  const posts: Post[] = [
-    {
-      id: '1',
-      user_id: '1',
-      content: 'content',
-      created_at: '2021-09-01T00:00:00Z',
-      title: 'title',
-      deleted_at: null,
-      updated_at: '2021-09-01T00:00:00Z',
-      url: 'url',
-    },
-  ];
+  useEffect(() => {
+    const channel = supabase
+      .channel('schema-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'posts',
+        },
+        (payload) => {
+          mutate((currentPosts) => {
+            if (Array.isArray(currentPosts)) {
+              return [...currentPosts, payload.new as PostWithUser];
+            }
+            return [payload.new as PostWithUser];
+          });
+        },
+      )
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [mutate]);
 
   return (
     <Container>
       <StatusBarBrightness />
       <FlashList
-        ListHeaderComponent={
-          <Typography.Heading4>{t('common.latest')}</Typography.Heading4>
-        }
-        data={[]}
-        renderItem={({item}) => <PostListItem post={item} />}
+        data={posts}
+        renderItem={({item}) => <PostListItem post={item} onPress={() => {}} />}
         estimatedItemSize={208}
       />
       <Fab

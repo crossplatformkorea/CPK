@@ -28,7 +28,9 @@
       "titlePlaceholder": "Enter the title",
       "urlPlaceholder": "Enter the reference URL",
       "urlTitle": "Reference URL(Optional)",
-      "write": "Write"
+      "write": "Write",
+      "writeSuccess": "Successfully written!",
+      "writeFailed": "Write failed!"
     }
   },
   "settings": {

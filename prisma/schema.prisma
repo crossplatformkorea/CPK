@@ -96,8 +96,8 @@ model Post {
   content String
   url     String?
 
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
+  createdAt DateTime?  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
   user   User   @relation(fields: [userId], references: [id])
