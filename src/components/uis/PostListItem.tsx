@@ -49,7 +49,7 @@ export default function PostListItem({post, onPress}: Props): JSX.Element {
             `}
           >
             <Image
-              source={{uri: post.user.avatar_url || undefined}}
+              source={{uri: post.user?.avatar_url || undefined}}
               style={css`
                 width: 16px;
                 height: 16px;
@@ -57,7 +57,7 @@ export default function PostListItem({post, onPress}: Props): JSX.Element {
                 background-color: ${theme.bg.paper};
               `}
             />
-            <Typography.Body4>{post.user.name}</Typography.Body4>
+            <Typography.Body4>{post.user?.name}</Typography.Body4>
           </View>
           <Hr />
           <Typography.Body4

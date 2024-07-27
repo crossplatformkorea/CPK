@@ -8,3 +8,4 @@ export const AsyncStorageKey = {
 export const delayPressIn = 200;
 export const WEB_URL = 'https://hyochan.dev';
 export const COMPONENT_WIDTH = 500;
+export const PAGE_SIZE = 10;

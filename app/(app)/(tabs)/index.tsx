@@ -1,16 +1,14 @@
 import styled, {css} from '@emotion/native';
-import {Fab, Typography} from 'dooboo-ui';
+import {Fab, LoadingIndicator, Typography} from 'dooboo-ui';
 import StatusBarBrightness from 'dooboo-ui/uis/StatusbarBrightness';
-
 import {t} from '../../../src/STRINGS';
 import {FlashList} from '@shopify/flash-list';
-import useSWR, {mutate} from 'swr';
-
 import {useRouter} from 'expo-router';
 import {Post, User} from '../../../src/types';
 import PostListItem from '../../../src/components/uis/PostListItem';
 import {useEffect, useState} from 'react';
 import {supabase} from '../../../src/supabase';
+import { PAGE_SIZE } from '../../../src/utils/constants';
 
 const Container = styled.View`
   flex: 1;
@@ -20,18 +18,20 @@ const Container = styled.View`
 
 type PostWithUser = Post & {user: User};
 
-const fetcher = async (): Promise<PostWithUser[]> => {
+const fetchPosts = async (page: number, pageSize: number): Promise<PostWithUser[]> => {
+  const from = (page - 1) * pageSize;
+  const to = from + pageSize - 1;
+
   const {data, error} = await supabase
     .from('posts')
-    .select(
-      `
+    .select(`
       *,
       user:user_id (
         *
       )
-    `,
-    )
-    .order('created_at', {ascending: false});
+    `)
+    .order('created_at', { ascending: false })
+    .range(from, to);
 
   if (error) {
     throw new Error(error.message);
@@ -40,9 +40,48 @@ const fetcher = async (): Promise<PostWithUser[]> => {
   return data as unknown as PostWithUser[];
 };
 
+const fetchPostById = async (id: string): Promise<PostWithUser | null> => {
+  const {data, error} = await supabase
+    .from('posts')
+    .select(`
+      *,
+      user:user_id (
+        *
+      )
+    `)
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    if (__DEV__) console.error('Error fetching post by ID:', error);
+    return null;
+  }
+
+  return data as unknown as PostWithUser;
+};
+
 export default function Posts(): JSX.Element {
   const {push} = useRouter();
-  const {data: posts} = useSWR<PostWithUser[]>('posts', fetcher);
+  const [posts, setPosts] = useState<PostWithUser[]>([]);
+  const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(false);
+
+  const loadPosts = async (page: number) => {
+    setLoading(true);
+    try {
+      const newPosts = await fetchPosts(page, PAGE_SIZE);
+      setPosts((prevPosts) => [...prevPosts, ...newPosts]);
+      setPage(page);
+    } catch (error) {
+      if (__DEV__) console.error('Failed to load posts:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadPosts(page);
+  }, []);
 
   useEffect(() => {
     const channel = supabase
@@ -54,21 +93,25 @@ export default function Posts(): JSX.Element {
           schema: 'public',
           table: 'posts',
         },
-        (payload) => {
-          mutate((currentPosts) => {
-            if (Array.isArray(currentPosts)) {
-              return [...currentPosts, payload.new as PostWithUser];
-            }
-            return [payload.new as PostWithUser];
-          });
-        },
+        async (payload) => {
+          const newPost = await fetchPostById(payload.new.id);
+          if (newPost) {
+            setPosts((currentPosts) => [newPost, ...currentPosts]);
+          }
+        }
       )
       .subscribe();
 
     return () => {
       channel.unsubscribe();
     };
-  }, [mutate]);
+  }, []);
+
+  const loadMore = () => {
+    if (!loading) {
+      loadPosts(page + 1);
+    }
+  };
 
   return (
     <Container>
@@ -77,6 +120,9 @@ export default function Posts(): JSX.Element {
         data={posts}
         renderItem={({item}) => <PostListItem post={item} onPress={() => {}} />}
         estimatedItemSize={208}
+        onEndReached={loadMore}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={loading ? <LoadingIndicator /> : null}
       />
       <Fab
         animationDuration={300}
