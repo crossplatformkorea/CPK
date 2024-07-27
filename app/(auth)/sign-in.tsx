@@ -14,6 +14,7 @@ import {useRecoilValue} from 'recoil';
 import {googleClientIdIOS, googleClientIdWeb} from '../../config';
 import {IC_CROSSPLATFORMS, IC_GOOGLE, IC_ICON} from '../../src/icons';
 import {authRecoilState} from '../../src/recoil/atoms';
+import {t} from '../../src/STRINGS';
 import {supabase} from '../../src/supabase';
 import SocialSignInButton from '../../src/uis/SocialSignInButton';
 import {showAlert} from '../../src/utils/alert';
@@ -34,7 +35,9 @@ const Content = styled.View`
 `;
 
 const Buttons = styled.View`
-  padding: 40px;
+  align-self: stretch;
+  margin-top: 8px;
+  padding: 20px;
   gap: 12px;
 `;
 
@@ -74,15 +77,15 @@ export default function SignIn(): JSX.Element {
         return;
       }
 
-      showAlert('구글 ID가 존재하지 않습니다.');
+      showAlert(t('signIn.googleIdNotAvailable'));
     } catch (error: any) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
       } else if (error.code === statusCodes.IN_PROGRESS) {
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
         // play services not available or outdated
-        showAlert('플레이 서비스가 사용 불가능합니다.');
+        showAlert(t('signIn.playServiceNotAvailable'));
       } else {
-        showAlert('오류가 발생했습니다.');
+        showAlert(t('error.default'));
       }
     }
   }, []);
@@ -111,7 +114,7 @@ export default function SignIn(): JSX.Element {
         return;
       }
 
-      showAlert('오류 발생');
+      showAlert(t('error.default'));
     }
   }, []);
 
@@ -132,7 +135,7 @@ export default function SignIn(): JSX.Element {
       <ScrollView>
         <Content
           style={css`
-            padding-top: ${!isHorizontal ? '20%' : '5%'};
+            padding-top: ${!isHorizontal ? '16%' : '5%'};
           `}
         >
           <Image
@@ -148,9 +151,11 @@ export default function SignIn(): JSX.Element {
             style={css`
               color: white;
               font-size: 16px;
+              padding: 2px 20px 12px;
+              text-align: center;
             `}
           >
-            한국의 크로스플랫폼 개발자들이 소통하는 곳!
+            {t('signIn.description')}
           </Typography.Heading5>
           <Image
             source={IC_CROSSPLATFORMS}
@@ -177,7 +182,7 @@ export default function SignIn(): JSX.Element {
                   height: 16px;
                 `,
               }}
-              text="구글 계정으로 시작하기"
+              text={t('signIn.continueWithProvider', {provider: 'Google'})}
             />
 
             {Platform.OS === 'ios' ? (
@@ -197,7 +202,7 @@ export default function SignIn(): JSX.Element {
                     font-size: 14px;
                   `,
                 }}
-                text="Apple 계정으로 시작하기"
+                text={t('signIn.continueWithProvider', {provider: 'Apple'})}
               />
             ) : null}
             <Typography.Body4
@@ -208,32 +213,34 @@ export default function SignIn(): JSX.Element {
                 color: ${theme.text.placeholderContrast};
               `}
             >
-              다음 단계로 진행함과 동시에{' '}
-              <Typography.Body3
-                onPress={() => {
-                  push('/privacyandpolicy');
-                }}
-                style={css`
-                  color: white;
-                  text-decoration-line: underline;
-                `}
-              >
-                개인정보 보호정책
-              </Typography.Body3>{' '}
-              및{' '}
-              <Typography.Body3
-                onPress={() => {
-                  push('/termsofservice');
-                }}
-                style={css`
-                  text-decoration-line: underline;
-                  color: white;
-                  text-decoration-line: underline;
-                `}
-              >
-                서비스 약관
-              </Typography.Body3>
-              에 동의하는 것으로 간주합니다.
+              {t('signIn.policyAgreement', {
+                termsOfService: `**${t('signIn.termsOfService')}**`,
+                privacyPolicy: `**${t('signIn.privacyPolicy')}**`,
+              })
+                .split('**')
+                .map((str, i) =>
+                  i % 2 === 0 ? (
+                    str
+                  ) : (
+                    <Typography.Body4
+                      key={str}
+                      onPress={() => {
+                        if (str === t('signIn.privacyPolicy')) {
+                          return push('/privacyandpolicy');
+                        }
+
+                        push('/termsofservice');
+                      }}
+                      style={css`
+                        text-decoration-line: underline;
+                        color: white;
+                        text-decoration-line: underline;
+                      `}
+                    >
+                      {str}
+                    </Typography.Body4>
+                  ),
+                )}
             </Typography.Body4>
           </Buttons>
         </Content>

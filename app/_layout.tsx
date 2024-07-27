@@ -15,6 +15,7 @@ import {useSetRecoilState} from 'recoil';
 
 import RootProvider from '../src/providers';
 import {authRecoilState} from '../src/recoil/atoms';
+import {t} from '../src/STRINGS';
 import {supabase} from '../src/supabase';
 import {
   AsyncStorageKey,
@@ -86,7 +87,7 @@ function Layout(): JSX.Element | null {
           if (data?.deleted_at) {
             await supabase.auth.signOut();
             snackbar.open({
-              text: '탈퇴한 계정입니다.',
+              text: t('common.deletedAccount'),
               color: 'danger',
             });
 
@@ -111,7 +112,7 @@ function Layout(): JSX.Element | null {
 
   useEffect(() => {
     if (assetLoaded) {
-      // 초반에 자연스럽게 전환되기 위해 좀 더 대기
+      // Adhoc: Set a timeout to hide the splash screen
       const timeout = setTimeout(() => {
         SplashScreen.hideAsync();
         if (timeout) {

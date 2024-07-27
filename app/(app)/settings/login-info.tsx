@@ -8,6 +8,7 @@ import {Stack, useRouter} from 'expo-router';
 import {useRecoilValue} from 'recoil';
 
 import {authRecoilState} from '../../../src/recoil/atoms';
+import {t} from '../../../src/STRINGS';
 import {supabase} from '../../../src/supabase';
 import type {User} from '../../../src/types/supabase';
 import CustomLoadingIndicator from '../../../src/uis/CustomLoadingIndicator';
@@ -65,14 +66,16 @@ function SocialProvider({provider, email}: ProviderType): JSX.Element {
             margin-bottom: 6px;
           `}
         >
-          {iconName === 'Envelope'
-            ? '이메일'
-            : iconName === 'AppleLogo'
-              ? '애플'
-              : iconName === 'GoogleLogo'
-                ? '구글'
-                : '깃허브'}
-          로 로그인됨
+          {t('loginInfo.loggedInWith', {
+            provider:
+              iconName === 'Envelope'
+                ? 'Email'
+                : iconName === 'AppleLogo'
+                  ? 'Apple'
+                  : iconName === 'GoogleLogo'
+                    ? 'Google'
+                    : 'Github',
+          })}
         </Typography.Body3>
         <Typography.Body3
           style={css`
@@ -108,8 +111,8 @@ export default function LoginInfo({}: Props): JSX.Element {
     }
 
     const confirmed = await showConfirm({
-      title: '탈퇴하기',
-      description: '정말 탈퇴하시겠습니까? 탈퇴하면 다시 로그인할 수 없습니다.',
+      title: t('loginInfo.cancelAccount'),
+      description: t('loginInfo.cancelAccountDescription'),
     });
 
     if (!confirmed) {
@@ -128,7 +131,7 @@ export default function LoginInfo({}: Props): JSX.Element {
   if (!auth.user) {
     return (
       <>
-        <Stack.Screen options={{title: '로그인 정보'}} />
+        <Stack.Screen options={{title: t('loginInfo.title')}} />
         <CustomLoadingIndicator />
       </>
     );
@@ -136,15 +139,16 @@ export default function LoginInfo({}: Props): JSX.Element {
 
   return (
     <Content>
-      <Stack.Screen options={{title: '로그인 정보'}} />
+      <Stack.Screen options={{title: t('loginInfo.title')}} />
       <ScrollView bounces={false}>
         <View
           style={css`
             gap: 12px;
           `}
         >
-          <Typography.Heading5>로그인 수단</Typography.Heading5>
-
+          <Typography.Heading5>
+            {t('loginInfo.loginMethod')}
+          </Typography.Heading5>
           <SocialProvider
             email={auth.user?.email ?? ''}
             provider={auth.user?.provider ?? 'email'}
@@ -161,7 +165,7 @@ export default function LoginInfo({}: Props): JSX.Element {
                 font-family: Pretendard-Bold;
               `,
             }}
-            text="로그아웃"
+            text={t('loginInfo.logout')}
             touchableHighlightProps={{
               underlayColor: theme.text.contrast,
             }}
@@ -173,8 +177,8 @@ export default function LoginInfo({}: Props): JSX.Element {
         color="danger"
         onPress={() => {
           alertDialog.open({
-            title: '회원 탈퇴',
-            body: '탈퇴 시 앱 내 모든 데이터가 삭제됩니다. 정말 탈퇴 하시겠습니까?',
+            title: t('loginInfo.cancelAccount'),
+            body: t('loginInfo.cancelAccountDescription'),
             closeOnTouchOutside: false,
             actions: [
               <Button
@@ -186,7 +190,7 @@ export default function LoginInfo({}: Props): JSX.Element {
                     height: 48px;
                   `,
                 }}
-                text="취소"
+                text={t('common.cancel')}
               />,
               <Button
                 color="danger"
@@ -198,7 +202,7 @@ export default function LoginInfo({}: Props): JSX.Element {
                     height: 48px;
                   `,
                 }}
-                text="탈퇴하기"
+                text={t('common.confirm')}
               />,
             ],
           });

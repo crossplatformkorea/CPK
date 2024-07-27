@@ -5,6 +5,7 @@ import {Stack} from 'expo-router';
 import {useRecoilValue} from 'recoil';
 
 import {authRecoilState} from '../../../src/recoil/atoms';
+import {t} from '../../../src/STRINGS';
 import {supabase} from '../../../src/supabase';
 
 export default function Profile(): JSX.Element {
@@ -12,8 +13,8 @@ export default function Profile(): JSX.Element {
 
   return (
     <View>
-      <Stack.Screen options={{title: '프로필'}} />
-      <Typography.Heading3>프로필</Typography.Heading3>
+      <Stack.Screen options={{title: t('common.profile')}} />
+      <Typography.Heading3>{t('common.profile')}</Typography.Heading3>
     </View>
   );
 }

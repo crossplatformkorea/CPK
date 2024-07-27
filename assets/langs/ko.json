@@ -1,5 +1,40 @@
 {
-  "DETAILS": "상세",
-  "HOME": "홈",
-  "SEE_DETAILS": "상세 보기"
+  "common": {
+    "cancel": "취소",
+    "community": "커뮤니티",
+    "confirm": "확인",
+    "deletedAccount": "탈퇴한 계정입니다.",
+    "profile": "프로필"
+  },
+  "error": {
+    "default": "오류가 발생했습니다!"
+  },
+  "loginInfo": {
+    "cancel": "취소",
+    "cancelAccount": "계정 탈퇴",
+    "cancelAccountDescription": "계정을 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+    "loggedInWith": "{{provider}} 계정으로 로그인했습니다",
+    "loginMethod": "로그인 수단",
+    "logout": "로그아웃",
+    "title": "로그인 정보"
+  },
+  "settings": {
+    "bannedUsers": "차단한 사용자",
+    "darkMode": "다크 모드",
+    "loginInfo": "로그인 정보",
+    "notificationSettings": "알림 설정",
+    "termsOfService": "서비스 약관",
+    "title": "설정",
+    "updateProfile": "프로필 수정"
+  },
+  "signIn": {
+    "continueWithProvider": "{{provider}} 계정으로 시작하기",
+    "description": "한국의 개발자들과 전세계 개발자들이 소통하는 곳!",
+    "googleIdNotAvailable": "존재하지 않는 Google ID입니다",
+    "playServiceNotAvailable": "Google Play 서비스를 사용할 수 없습니다",
+    "policyAgreement": "{{termsOfService}} 및 {{privacyPolicy}}에 동의하면 로그인합니다.",
+    "privacyPolicy": "개인정보 처리방침",
+    "termsOfService": "서비스 약관",
+    "title": "로그인"
+  }
 }

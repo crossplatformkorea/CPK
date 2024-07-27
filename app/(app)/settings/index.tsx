@@ -11,11 +11,9 @@ import {Stack, useRouter} from 'expo-router';
 import * as SystemUI from 'expo-system-ui';
 import {useRecoilValue} from 'recoil';
 
-import useAppState from '../../../src/hooks/useAppState';
 import {authRecoilState} from '../../../src/recoil/atoms';
 import {t} from '../../../src/STRINGS';
 import CustomLoadingIndicator from '../../../src/uis/CustomLoadingIndicator';
-import {openURL} from '../../../src/utils/common';
 import {AsyncStorageKey} from '../../../src/utils/constants';
 
 const Container = styled.View`
@@ -80,7 +78,6 @@ export default function Settings(): JSX.Element {
   const menus = useMemo<Menu[]>(
     () => [
       {
-        // 로그인 정보
         onPress: () => push('/settings/login-info'),
         startElement: (
           <Icon
@@ -100,10 +97,9 @@ export default function Settings(): JSX.Element {
             `}
           />
         ),
-        title: '로그인 정보',
+        title: t('settings.loginInfo'),
       },
       {
-        // 프로필 수정
         onPress: () => push('/settings/profile-update'),
         startElement: (
           <Icon
@@ -123,10 +119,9 @@ export default function Settings(): JSX.Element {
             `}
           />
         ),
-        title: '프로필 수정',
+        title: t('settings.updateProfile'),
       },
       {
-        // 차단한 사용자
         onPress: () => push('/settings/block-users'),
         startElement: (
           <Icon
@@ -146,10 +141,9 @@ export default function Settings(): JSX.Element {
             `}
           />
         ),
-        title: '차단한 사용자',
+        title: t('settings.bannedUsers'),
       },
       {
-        // 다크 모드
         startElement: (
           <Icon
             name="StarAndCrescent"
@@ -184,11 +178,10 @@ export default function Settings(): JSX.Element {
             ]}
           />
         ),
-        title: '다크 모드',
+        title: t('settings.darkMode'),
         onPress: undefined,
       },
       {
-        // 노티피케이션
         startElement: (
           <Icon
             name="BellRinging"
@@ -210,11 +203,10 @@ export default function Settings(): JSX.Element {
             }}
           />
         ),
-        title: '알림 설정',
+        title: t('settings.notificationSettings'),
         onPress: undefined,
       },
       {
-        // 약관
         onPress: () => push('/termsofservice'),
         startElement: (
           <Icon
@@ -234,7 +226,7 @@ export default function Settings(): JSX.Element {
             `}
           />
         ),
-        title: '서비스 이용약관',
+        title: t('settings.termsOfService'),
       },
     ],
     [hasNotificationPermission, themeType, changeThemeType, push],
@@ -243,7 +235,7 @@ export default function Settings(): JSX.Element {
   if (!authId) {
     return (
       <>
-        <Stack.Screen options={{title: '설정'}} />
+        <Stack.Screen options={{title: t('settings.title')}} />
         <CustomLoadingIndicator />
       </>
     );
@@ -251,7 +243,7 @@ export default function Settings(): JSX.Element {
 
   return (
     <Container>
-      <Stack.Screen options={{title: '설정', headerShown: true}} />
+      <Stack.Screen options={{title: t('settings.title'), headerShown: true}} />
       <ScrollView
         bounces={false}
         showsVerticalScrollIndicator={Platform.OS === 'web'}

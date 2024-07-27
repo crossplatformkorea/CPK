@@ -4,6 +4,7 @@ import {Link, Redirect, Tabs, useRouter} from 'expo-router';
 import {useRecoilValue} from 'recoil';
 
 import {authRecoilState} from '../../../src/recoil/atoms';
+import {t} from '../../../src/STRINGS';
 
 function SettingsMenu(): JSX.Element {
   const {theme} = useDooboo();
@@ -49,7 +50,7 @@ export default function TabLayout(): JSX.Element {
       <Tabs.Screen
         name="index"
         options={{
-          title: '커뮤니티',
+          title: t('common.community'),
           tabBarIcon: ({color}) => (
             <Icon color={color} name="Article" size={24} />
           ),
@@ -59,7 +60,7 @@ export default function TabLayout(): JSX.Element {
       <Tabs.Screen
         name="profile"
         options={{
-          title: '프로필',
+          title: t('common.profile'),
           tabBarIcon: ({color}) => <Icon color={color} name="User" size={24} />,
           headerRight: () => <View>{SettingsMenu()}</View>,
         }}
