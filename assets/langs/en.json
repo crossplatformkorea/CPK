@@ -1,11 +1,38 @@
 {
   "common": {
+    "appErrorMessage": "Communication is not smooth.\nPlease check your network status.",
+    "ok": "OK",
     "cancel": "Cancel",
     "confirm": "Confirm",
     "deletedAccount": "Retired account.",
+    "image": "Image",
     "latest": "Latest",
+    "leaveComment": "Leave a comment",
+    "noComment": "No comments",
+    "notFound": "Not found",
+    "or": "or",
+    "permissionGrantCamera": "Please grant camera permission to take pictures.",
     "post": "Post",
-    "profile": "Profile"
+    "profile": "Profile",
+    "retry": "Retry",
+    "selectFromGallery": "Select from gallery",
+    "takeAPhoto": "Take a photo",
+    "updateApp": "Update App",
+    "viewsWithCount": {
+      "one": "Views %{count}",
+      "other": "Views %{count}"
+    },
+    "reportSubject": "Report {{subject}}",
+    "report": "Report",
+    "block": "Block",
+    "blockUser": "Block {{user}}",
+    "blockUserDesc": "If you block a user, you will not be able to access the user's content. Do you want to block this user?",
+    "blockUserSuccess": "User has been blocked",
+    "delete": "Delete",
+    "user": "User",
+    "deleteSuccess": "Successfully deleted",
+    "unhandledError": "An unhandled error occurred.",
+    "update": "Update"
   },
   "error": {
     "default": "Error occurred!"
@@ -29,8 +56,12 @@
       "urlPlaceholder": "Enter the reference URL",
       "urlTitle": "Reference URL(Optional)",
       "write": "Write",
-      "writeSuccess": "Successfully written!",
-      "writeFailed": "Write failed!"
+      "writeFailed": "Write failed!",
+      "writeSuccess": "Successfully written!"
+    },
+    "update": {
+      "updateFailed": "Update failed!",
+      "updateSuccess": "Successfully updated!"
     }
   },
   "settings": {

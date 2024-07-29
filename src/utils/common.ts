@@ -18,3 +18,14 @@ export const validateEmail = (email: string): boolean => {
 
   return re.test(email);
 };
+
+
+export const goToAppStore = (): void => {
+  if (Platform.OS === 'ios') {
+    Linking.openURL(
+      'itms-apps://itunes.apple.com/us/app/apple-store/<cpk-id>',
+    );
+  } else {
+    Linking.openURL('market://details?id=com.dooboolab.cpk');
+  }
+};

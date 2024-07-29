@@ -1,11 +1,38 @@
 {
   "common": {
+    "appErrorMessage": "통신이 원활하지 않습니다.\n네트워크 상태를 확인해주세요.",
     "cancel": "취소",
+    "ok": "확인",
     "confirm": "확인",
     "deletedAccount": "탈퇴한 계정입니다.",
+    "image": "이미지",
     "latest": "최신순",
+    "leaveComment": "댓글 남기기",
+    "noComment": "댓글이 없습니다",
+    "notFound": "찾을 수 없습니다",
+    "or": "또는",
+    "permissionGrantCamera": "촬영을 위해 카메라 권한을 부여해주세요.",
     "post": "게시판",
-    "profile": "프로필"
+    "profile": "프로필",
+    "retry": "재시도",
+    "selectFromGallery": "갤러리에서 선택",
+    "takeAPhoto": "사진 찍기",
+    "updateApp": "앱 업데이트",
+    "viewsWithCount": {
+      "one": "조회수 %{count}",
+      "other": "조회수 %{count}"
+    },
+    "reportSubject": "Report {{subject}}",
+    "report": "신고",
+    "block": "차단",
+    "blockUser": "{{user}} 차단",
+    "blockUserDesc": "사용자를 차단하면 해당 사용자의 콘텐츠에 접근할 수 없습니다. 이 사용자를 차단하시겠습니까?",
+    "blockUserSuccess": "사용자가 차단되었습니다",
+    "delete": "삭제",
+    "user": "사용자",
+    "deleteSuccess": "성공적으로 삭제되었습니다",
+    "unhandledError": "처리되지 않은 오류가 발생했습니다.",
+    "update": "업데이트"
   },
   "error": {
     "default": "오류가 발생했습니다!"
@@ -29,8 +56,12 @@
       "urlPlaceholder": "참고 URL을 입력하세요",
       "urlTitle": "참고 URL(선택사항)",
       "write": "글쓰기",
-      "writeSuccess": "성공적으로 작성되었습니다!",
-      "writeFailed": "작성에 실패했습니다!"
+      "writeFailed": "작성에 실패했습니다!",
+      "writeSuccess": "성공적으로 작성되었습니다!"
+    },
+    "update": {
+      "updateFailed": "업데이트에 실패했습니다!",
+      "updateSuccess": "성공적으로 업데이트되었습니다!"
     }
   },
   "settings": {

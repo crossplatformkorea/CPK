@@ -88,7 +88,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
   },
   ios: {
     buildNumber: buildNumber.toString(),
-    bundleIdentifier: 'com.crossplatformkorea',
+    bundleIdentifier: 'com.dooboolab.cpk',
     associatedDomains: [`applinks:${DEEP_LINK_URL}`],
     supportsTablet: true,
     entitlements: {
@@ -121,7 +121,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
       foregroundImage: './assets/adaptive_icon.png',
       backgroundColor: '#343434',
     },
-    package: 'com.crossplatformkorea',
+    package: 'com.dooboolab.cpk',
     intentFilters: [
       {
         action: 'VIEW',

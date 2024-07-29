@@ -6,6 +6,8 @@ export type Post = Database['public']['Tables']['posts']['Row'];
 export type Reply = Database['public']['Tables']['replies']['Row'];
 export type Image = Database['public']['Tables']['images']['Row'];
 
+export type PostWithUser = Post & {user: User};
+
 // Args
 export type UserInsertArgs = Database['public']['Tables']['users']['Insert'];
 export type UserUpdateArgs = Database['public']['Tables']['users']['Update'];

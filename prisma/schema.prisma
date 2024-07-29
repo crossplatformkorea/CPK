@@ -91,12 +91,13 @@ model Developer {
 }
 
 model Post {
-  id      String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title   String
-  content String
-  url     String?
+  id        String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title     String
+  content   String
+  url       String?
+  viewCount Int?    @default(0) @map("view_count")
 
-  createdAt DateTime?  @default(now()) @map("created_at")
+  createdAt DateTime? @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 

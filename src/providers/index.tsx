@@ -7,6 +7,7 @@ import {RecoilRoot} from 'recoil';
 
 import {theme} from '../theme';
 import {handleErrorConsole} from '../utils/error';
+import {AppLogicProvider} from './AppLogicProvider';
 
 interface Props {
   initialThemeType?: ThemeType;
@@ -26,7 +27,9 @@ function RootProvider({initialThemeType, children}: Props): JSX.Element {
           FallbackComponent={FallbackComponent}
           onError={handleErrorConsole}
         >
-          <ActionSheetProvider>{children}</ActionSheetProvider>
+          <ActionSheetProvider>
+            <AppLogicProvider>{children}</AppLogicProvider>
+          </ActionSheetProvider>
         </ErrorBoundary>
       </DoobooProvider>
     </RecoilRoot>
