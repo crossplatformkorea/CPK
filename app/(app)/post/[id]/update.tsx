@@ -31,7 +31,7 @@ const Content = styled.View`
 const schema = yup.object().shape({
   title: yup.string().required(t('post.write.titlePlaceholder')),
   content: yup.string().required(t('post.write.contentPlaceholder')),
-  url: yup.string(),
+  url: yup.string().url(t('common.invalidUrl')),
 });
 
 type FormData = yup.InferType<typeof schema>;
@@ -189,6 +189,7 @@ export default function PostUpdate(): JSX.Element {
                   placeholder={t('post.write.urlPlaceholder')}
                   value={value}
                   decoration="boxed"
+                  error={errors.url ? errors.url.message : ''}
                 />
               )}
               rules={{required: true, validate: (value) => !!value}}

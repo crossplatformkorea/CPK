@@ -14,7 +14,7 @@ import UserListItem from '../../../../src/components/uis/UserListItem';
 import ControlItem from '../../../../src/components/uis/ControlItem';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Replies from '../../replies';
-import {useCallback, useRef} from 'react';
+import {useCallback, useRef, useEffect} from 'react';
 import {FlashList} from '@shopify/flash-list';
 import CustomPressable from 'dooboo-ui/uis/CustomPressable';
 import {delayPressIn} from '../../../../src/utils/constants';
@@ -22,17 +22,16 @@ import {useRecoilState} from 'recoil';
 import {authRecoilState} from '../../../../src/recoil/atoms';
 import {useAppLogic} from '../../../../src/providers/AppLogicProvider';
 import {fetchDeletePost, fetchPostById} from '../../../../src/apis/postQueries';
+import {supabase} from '../../../../src/supabase';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
-
   flex: 1;
   align-self: stretch;
 `;
 
 const Content = styled.View`
   padding: 24px;
-
   gap: 24px;
 `;
 
@@ -49,9 +48,8 @@ export default function PostDetails(): JSX.Element {
     data: post,
     error,
     isValidating,
+    mutate,
   } = useSWR(id ? `post-${id}` : null, () => fetchPostById(id || ''));
-
-  console.log('post', id)
 
   const handleDeletePost = useCallback(async () => {
     if (!post) return;
@@ -92,6 +90,34 @@ export default function PostDetails(): JSX.Element {
       });
     }
   }, [post]);
+
+  useEffect(() => {
+    if (!id) return;
+
+    const channel = supabase
+      .channel('schema-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'posts',
+          filter: `id=eq.${id}`,
+        },
+        async (payload) => {
+          const updatedPost = await fetchPostById(id);
+
+          if (updatedPost) {
+            mutate(updatedPost, false);
+          }
+        },
+      )
+      .subscribe();
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [id, mutate]);
 
   const content = (() => {
     switch (true) {

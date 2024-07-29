@@ -1,38 +1,39 @@
 {
   "common": {
     "appErrorMessage": "Communication is not smooth.\nPlease check your network status.",
-    "ok": "OK",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "deletedAccount": "Retired account.",
-    "image": "Image",
-    "latest": "Latest",
-    "leaveComment": "Leave a comment",
-    "noComment": "No comments",
-    "notFound": "Not found",
-    "or": "or",
-    "permissionGrantCamera": "Please grant camera permission to take pictures.",
-    "post": "Post",
-    "profile": "Profile",
-    "retry": "Retry",
-    "selectFromGallery": "Select from gallery",
-    "takeAPhoto": "Take a photo",
-    "updateApp": "Update App",
-    "viewsWithCount": {
-      "one": "Views %{count}",
-      "other": "Views %{count}"
-    },
-    "reportSubject": "Report {{subject}}",
-    "report": "Report",
     "block": "Block",
     "blockUser": "Block {{user}}",
     "blockUserDesc": "If you block a user, you will not be able to access the user's content. Do you want to block this user?",
     "blockUserSuccess": "User has been blocked",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
     "delete": "Delete",
-    "user": "User",
     "deleteSuccess": "Successfully deleted",
+    "deletedAccount": "Retired account.",
+    "image": "Image",
+    "invalidUrl": "Invalid URL",
+    "latest": "Latest",
+    "leaveComment": "Leave a comment",
+    "noComment": "No comments",
+    "notFound": "Not found",
+    "ok": "OK",
+    "or": "or",
+    "permissionGrantCamera": "Please grant camera permission to take pictures.",
+    "post": "Post",
+    "profile": "Profile",
+    "report": "Report",
+    "reportSubject": "Report {{subject}}",
+    "retry": "Retry",
+    "selectFromGallery": "Select from gallery",
+    "takeAPhoto": "Take a photo",
     "unhandledError": "An unhandled error occurred.",
-    "update": "Update"
+    "update": "Update",
+    "updateApp": "Update App",
+    "user": "User",
+    "viewsWithCount": {
+      "one": "Views %{count}",
+      "other": "Views %{count}"
+    }
   },
   "error": {
     "default": "Error occurred!"
@@ -47,6 +48,10 @@
     "title": "Login Information"
   },
   "post": {
+    "update": {
+      "updateFailed": "Update failed!",
+      "updateSuccess": "Successfully updated!"
+    },
     "write": {
       "content": "Content",
       "contentPlaceholder": "Enter the content",
@@ -58,10 +63,6 @@
       "write": "Write",
       "writeFailed": "Write failed!",
       "writeSuccess": "Successfully written!"
-    },
-    "update": {
-      "updateFailed": "Update failed!",
-      "updateSuccess": "Successfully updated!"
     }
   },
   "settings": {
