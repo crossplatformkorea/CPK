@@ -6,12 +6,12 @@ import CustomPressable from 'dooboo-ui/uis/CustomPressable';
 import {Image as ExpoImage} from 'expo-image';
 import {useRouter} from 'expo-router';
 import {useRecoilValue} from 'recoil';
-import { Image, Reply, User } from '../../types';
-import { openURL } from '../../utils/common';
-import { formatDateTime } from '../../utils/date';
-import { authRecoilState } from '../../recoil/atoms';
+import {ReplyWithJoins} from '../../types';
+import {openURL} from '../../utils/common';
+import {formatDateTime} from '../../utils/date';
+import {authRecoilState} from '../../recoil/atoms';
 import UserImage from './UserImage';
-
+import {useAppLogic} from '../../providers/AppLogicProvider';
 
 const Container = styled.View`
   padding: 14px 24px;
@@ -43,37 +43,44 @@ const MessageContent = styled.View`
   gap: 8px;
 `;
 
-export type ReplyWithJoins = Reply & {user: User, images: Image[]};
-
 type Props = {
   item: ReplyWithJoins;
   onPressLike: (item: ReplyWithJoins) => void;
   onPressDelete: (item: ReplyWithJoins) => void;
 };
 
-export default function ReplyItem({item, onPressDelete, onPressLike}: Props): JSX.Element {
+export default function ReplyItem({
+  item,
+  onPressDelete,
+  onPressLike,
+}: Props): JSX.Element {
   const {push, replace} = useRouter();
   const {theme} = useDooboo();
   const userId = item?.user.id;
   const {authId} = useRecoilValue(authRecoilState);
-  // const {handlePeerContentAction, handleUserContentAction} = useAppLogic();
+  const {handlePeerContentAction, handleUserContentAction} = useAppLogic();
 
   const handlePressMore = async (): Promise<void> => {
-    // if (authId === userId) {
-    //   handleUserContentAction({
-    //     onDelete: () => onPressDelete(item),
-    //   });
-
-    //   return;
-    // } else if (userId) {
-    //   handlePeerContentAction({
-    //     userId,
-    //     onCompleted: async () => {
-    //       replace('/');
-    //     },
-    //   });
-    // }
+    if (authId === userId) {
+      handleUserContentAction({
+        onDelete: () => onPressDelete(item),
+      });
+      return;
+    } else if (userId) {
+      handlePeerContentAction({
+        userId,
+        onCompleted: async () => {
+          replace('/');
+        },
+      });
+    }
   };
+
+  const hasLiked = !!item.likes?.some(
+    (like) => like.user_id === userId && like.liked,
+  );
+
+  const likeCnt = item.likes?.length || 0;
 
   return (
     <Container>
@@ -188,7 +195,7 @@ export default function ReplyItem({item, onPressDelete, onPressLike}: Props): JS
             justify-content: space-between;
           `}
         >
-          {/* <Pressable
+          <Pressable
             hitSlop={{top: 5, left: 5, right: 10, bottom: 10}}
             onPress={() => onPressLike(item)}
           >
@@ -200,8 +207,8 @@ export default function ReplyItem({item, onPressDelete, onPressLike}: Props): JS
               `}
             >
               <Icon
-                color={item.hasLiked ? 'red' : theme.text.basic}
-                name={item.hasLiked ? 'HeartFill' : 'Heart'}
+                color={hasLiked ? 'red' : theme.text.basic}
+                name={hasLiked ? 'HeartFill' : 'Heart'}
                 size={17}
               />
               <Typography.Body3
@@ -209,10 +216,10 @@ export default function ReplyItem({item, onPressDelete, onPressLike}: Props): JS
                   margin-bottom: 1px;
                 `}
               >
-                {item.likeCnt ?? 0}
+                {likeCnt}
               </Typography.Body3>
             </View>
-          </Pressable> */}
+          </Pressable>
           <Typography.Body4
             style={css`
               margin-right: 2px;

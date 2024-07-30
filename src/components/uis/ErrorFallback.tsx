@@ -3,10 +3,10 @@ import styled, {css} from '@emotion/native';
 import {Button, Typography, useDooboo} from 'dooboo-ui';
 import StatusBarBrightness from 'dooboo-ui/uis/StatusbarBrightness';
 import * as Updates from 'expo-updates';
-import {Image} from 'expo-image'
-import { IC_CROSSPLATFORMS, IC_ICON } from '../../icons';
-import { goToAppStore } from '../../utils/common';
-import { t } from '../../STRINGS';
+import {Image} from 'expo-image';
+import {IC_ICON} from '../../icons';
+import {goToAppStore} from '../../utils/common';
+import {t} from '../../STRINGS';
 
 const Container = styled.SafeAreaView`
   flex: 1;

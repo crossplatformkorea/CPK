@@ -1,7 +1,7 @@
 import styled, {css} from '@emotion/native';
 import {Hr, Icon, Typography, useDooboo} from 'dooboo-ui';
 import {Stack, useLocalSearchParams, useRouter} from 'expo-router';
-import {Reply} from '../../../../src/types';
+import {ReplyWithJoins} from '../../../../src/types';
 import useSWR from 'swr';
 import CustomLoadingIndicator from '../../../../src/components/uis/CustomLoadingIndicator';
 import {t} from '../../../../src/STRINGS';
@@ -13,8 +13,8 @@ import {formatDateTime} from '../../../../src/utils/date';
 import UserListItem from '../../../../src/components/uis/UserListItem';
 import ControlItem from '../../../../src/components/uis/ControlItem';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import Replies from '../../replies';
-import {useCallback, useRef, useEffect} from 'react';
+import Replies from './replies';
+import {useCallback, useRef, useEffect, useState} from 'react';
 import {FlashList} from '@shopify/flash-list';
 import CustomPressable from 'dooboo-ui/uis/CustomPressable';
 import {delayPressIn} from '../../../../src/utils/constants';
@@ -23,6 +23,7 @@ import {authRecoilState} from '../../../../src/recoil/atoms';
 import {useAppLogic} from '../../../../src/providers/AppLogicProvider';
 import {fetchDeletePost, fetchPostById} from '../../../../src/apis/postQueries';
 import {supabase} from '../../../../src/supabase';
+import {toggleLike} from '../../../../src/apis/likeQueries';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -40,16 +41,26 @@ export default function PostDetails(): JSX.Element {
   const {theme, snackbar} = useDooboo();
   const {bottom} = useSafeAreaInsets();
   const [{authId}] = useRecoilState(authRecoilState);
-  const repliesRef = useRef<FlashList<Reply> | null>(null);
+  const repliesRef = useRef<FlashList<ReplyWithJoins> | null>(null);
   const {handlePeerContentAction, handleUserContentAction} = useAppLogic();
   const {back, push} = useRouter();
+  const [postLikes, setPostLikes] = useState<number>(0);
+  const [hasLiked, setHasLiked] = useState<boolean>(false ?? false);
 
   const {
     data: post,
     error,
     isValidating,
     mutate,
-  } = useSWR(id ? `post-${id}` : null, () => fetchPostById(id || ''));
+  } = useSWR(id ? `post-${id}` : null, () => fetchPostById(id || ''), {
+    onSuccess: (data) => {
+      setPostLikes(data?.likes?.length || 0);
+      setHasLiked(
+        data?.likes?.some((like) => like.user_id === authId && like.liked) ||
+          false,
+      );
+    },
+  });
 
   const handleDeletePost = useCallback(async () => {
     if (!post) return;
@@ -67,7 +78,7 @@ export default function PostDetails(): JSX.Element {
       color: 'danger',
       text: t('common.unhandledError'),
     });
-  }, [post]);
+  }, [back, post, snackbar]);
 
   const handlePressMore = useCallback(() => {
     if (authId === post?.user_id) {
@@ -89,7 +100,16 @@ export default function PostDetails(): JSX.Element {
         },
       });
     }
-  }, [post]);
+  }, [
+    authId,
+    back,
+    handleDeletePost,
+    handlePeerContentAction,
+    handleUserContentAction,
+    post?.id,
+    post?.user_id,
+    push,
+  ]);
 
   useEffect(() => {
     if (!id) return;
@@ -119,6 +139,27 @@ export default function PostDetails(): JSX.Element {
     };
   }, [id, mutate]);
 
+  const handleToggleLike = async () => {
+    if (!authId || !post) return;
+
+    const userLike = post.likes?.find((like) => like.user_id === authId);
+
+    if (userLike) {
+      setPostLikes((prevLikes) => prevLikes - 1);
+      setHasLiked(false);
+    } else {
+      setPostLikes((prevLikes) => prevLikes + 1);
+      setHasLiked(true);
+    }
+
+    await toggleLike({
+      userId: authId,
+      postId: post.id,
+    });
+
+    mutate();
+  };
+
   const content = (() => {
     switch (true) {
       case isValidating && !authId:
@@ -142,7 +183,12 @@ export default function PostDetails(): JSX.Element {
                     color: ${theme.text.label};
                   `}
                 >
-                  {`${formatDateTime(post.created_at!)} | ${t('common.viewsWithCount', {count: post.view_count || 0})}`}
+                  {`${formatDateTime(post.created_at!)} | ${t(
+                    'common.viewsWithCount',
+                    {
+                      count: post.view_count || 0,
+                    },
+                  )}`}
                 </Typography.Body4>
               </View>
               <UserListItem user={post.user} />
@@ -175,7 +221,13 @@ export default function PostDetails(): JSX.Element {
                 </Pressable>
               ) : null}
               <Typography.Body1>{post.content}</Typography.Body1>
-              <ControlItem />
+              <ControlItem
+                hasLiked={hasLiked}
+                likeCnt={postLikes}
+                onPressLike={handleToggleLike}
+                onPressShare={() => {}}
+                replyCnt={post.replies.length || 0}
+              />
             </Content>
             <Hr
               style={css`
@@ -195,7 +247,11 @@ export default function PostDetails(): JSX.Element {
                 padding-bottom: ${bottom + 'px'};
               `}
             >
-              <Replies flashListRef={repliesRef} header={header} />
+              <Replies
+                flashListRef={repliesRef}
+                header={header}
+                postId={post.id}
+              />
             </View>
           </>
         );

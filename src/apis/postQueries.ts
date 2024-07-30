@@ -1,9 +1,9 @@
 import {supabase} from '../supabase';
-import {PostWithUser} from '../types';
+import {PostInsertArgs, PostWithJoins} from '../types';
 
 export const fetchPostById = async (
   id: string,
-): Promise<PostWithUser | null> => {
+): Promise<PostWithJoins | null> => {
   const {data, error} = await supabase
     .from('posts')
     .select(
@@ -11,7 +11,12 @@ export const fetchPostById = async (
       *,
       user:user_id (
         *
-      )
+      ),
+      images (*),
+      replies (
+        id
+      ),
+      likes (*)
     `,
     )
     .eq('id', id)
@@ -22,13 +27,13 @@ export const fetchPostById = async (
     return null;
   }
 
-  return data as unknown as PostWithUser;
+  return data as unknown as PostWithJoins;
 };
 
 export const fetchPostPagination = async (
   page: number,
   pageSize: number,
-): Promise<PostWithUser[]> => {
+): Promise<PostWithJoins[]> => {
   const from = (page - 1) * pageSize;
   const to = from + pageSize - 1;
 
@@ -37,9 +42,12 @@ export const fetchPostPagination = async (
     .select(
       `
       *,
-      user:user_id (
-        *
-      )
+      user:user_id (*),
+      images (*),
+      replies (
+        id
+      ),
+      likes (*)
     `,
     )
     .order('created_at', {ascending: false})
@@ -50,7 +58,7 @@ export const fetchPostPagination = async (
     throw new Error(error.message);
   }
 
-  return data as unknown as PostWithUser[];
+  return data as unknown as PostWithJoins[];
 };
 
 export const fetchUpdatePost = async (
@@ -100,4 +108,19 @@ export const fetchDeletePost = async ({
   }
 
   return true;
+};
+
+export const fetchCreatePost = async (post: PostInsertArgs) => {
+  const {data, error} = await supabase.from('posts').insert({
+    title: post.title,
+    content: post.content,
+    url: post.url,
+    user_id: post.user_id,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
 };

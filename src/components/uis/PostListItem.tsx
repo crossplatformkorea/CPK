@@ -2,11 +2,10 @@ import styled, {css} from '@emotion/native';
 import {Hr, Typography, useDooboo} from 'dooboo-ui';
 import type {Post, User} from '../../types';
 import {formatDateTime} from '../../utils/date';
-import {Pressable, View} from 'react-native';
-import {Image} from 'expo-image';
-import CustomPressable from 'dooboo-ui/uis/CustomPressable';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import UserListItem from './UserListItem';
+import {View} from 'react-native';
+import ControlItem, {ControlItemProps} from './ControlItem';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -22,9 +21,14 @@ const Content = styled.View`
 type Props = {
   post: Post & {user: User};
   onPress?: () => void;
+  controlItemProps?: ControlItemProps;
 };
 
-export default function PostListItem({post, onPress}: Props): JSX.Element {
+export default function PostListItem({
+  post,
+  onPress,
+  controlItemProps,
+}: Props): JSX.Element {
   const {theme} = useDooboo();
 
   return (
@@ -39,15 +43,24 @@ export default function PostListItem({post, onPress}: Props): JSX.Element {
             {post.title}
           </Typography.Body2>
           <Typography.Body3 numberOfLines={4}>{post.content}</Typography.Body3>
-          <UserListItem user={post.user}/>
+          <UserListItem user={post.user} />
           <Hr />
-          <Typography.Body4
+          <View
             style={css`
-              color: ${theme.text.placeholder};
+              flex-direction: row;
+              align-items: center;
+              justify-content: space-between;
             `}
           >
-            {formatDateTime(post.created_at!)}
-          </Typography.Body4>
+            <ControlItem {...controlItemProps} />
+            <Typography.Body4
+              style={css`
+                color: ${theme.text.placeholder};
+              `}
+            >
+              {formatDateTime(post.created_at!)}
+            </Typography.Body4>
+          </View>
         </Content>
         <Hr />
       </Container>

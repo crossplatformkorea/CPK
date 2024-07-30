@@ -7,13 +7,12 @@ const Container = styled.View`
   align-items: center;
 `;
 
-type Props = {
+export type ControlItemProps = {
   style?: ViewStyle;
   hasLiked?: boolean;
   likeCnt?: number;
   replyCnt?: number;
   onPressLike?: () => void;
-  onPressReply?: () => void;
   onPressShare?: () => void;
 };
 
@@ -23,9 +22,8 @@ function ControlItem({
   replyCnt = 0,
   likeCnt = 0,
   onPressLike,
-  onPressReply,
   onPressShare,
-}: Props): JSX.Element {
+}: ControlItemProps): JSX.Element {
   const {theme} = useDooboo();
 
   return (
@@ -45,8 +43,6 @@ function ControlItem({
       >
         <View
           style={css`
-            padding: 16px 0 4px 0;
-
             flex-direction: row;
             align-items: center;
             gap: 6px;
@@ -61,14 +57,9 @@ function ControlItem({
         </View>
       </Pressable>
 
-      <Pressable
-        hitSlop={{top: 5, left: 5, right: 10, bottom: 10}}
-        onPress={onPressReply}
-      >
+      <Pressable hitSlop={{top: 5, left: 5, right: 10, bottom: 10}}>
         <View
           style={css`
-            padding: 16px 0 4px 0;
-
             flex-direction: row;
             align-items: center;
             gap: 6px;
@@ -85,8 +76,6 @@ function ControlItem({
       >
         <View
           style={css`
-            padding: 16px 0 4px 0;
-
             flex-direction: row;
             align-items: center;
             gap: 6px;

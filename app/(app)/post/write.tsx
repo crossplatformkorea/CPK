@@ -5,12 +5,10 @@ import {t} from '../../../src/STRINGS';
 import {EditText, Typography, useDooboo} from 'dooboo-ui';
 import * as yup from 'yup';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
-import CustomPressable from 'dooboo-ui/uis/CustomPressable';
 import {ActivityIndicator, Pressable} from 'react-native';
-import {Post, PostInsertArgs} from '../../../src/types';
-import {supabase} from '../../../src/supabase';
 import {useRecoilValue} from 'recoil';
 import {authRecoilState} from '../../../src/recoil/atoms';
+import {fetchCreatePost} from '../../../src/apis/postQueries';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -32,21 +30,6 @@ const schema = yup.object().shape({
 
 type FormData = yup.InferType<typeof schema>;
 
-const addPost = async (post: PostInsertArgs) => {
-  const {data, error} = await supabase.from('posts').insert({
-    title: post.title,
-    content: post.content,
-    url: post.url,
-    user_id: post.user_id,
-  });
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  return data;
-};
-
 export default function PostWrite(): JSX.Element {
   const {back} = useRouter();
   const {theme, snackbar} = useDooboo();
@@ -64,7 +47,7 @@ export default function PostWrite(): JSX.Element {
     if (!authId) return;
 
     try {
-      await addPost({
+      await fetchCreatePost({
         title: data.title,
         content: data.content,
         url: data.url || null,

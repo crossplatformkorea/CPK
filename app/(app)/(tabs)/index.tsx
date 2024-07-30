@@ -1,10 +1,9 @@
 import styled, {css} from '@emotion/native';
-import {Fab, LoadingIndicator, Typography} from 'dooboo-ui';
+import {Fab, LoadingIndicator} from 'dooboo-ui';
 import StatusBarBrightness from 'dooboo-ui/uis/StatusbarBrightness';
-import {t} from '../../../src/STRINGS';
 import {FlashList} from '@shopify/flash-list';
 import {useRouter} from 'expo-router';
-import {Post, PostWithUser, User} from '../../../src/types';
+import {PostWithJoins} from '../../../src/types';
 import PostListItem from '../../../src/components/uis/PostListItem';
 import {useEffect, useState} from 'react';
 import {supabase} from '../../../src/supabase';
@@ -13,6 +12,9 @@ import {
   fetchPostById,
   fetchPostPagination,
 } from '../../../src/apis/postQueries';
+import useSWR from 'swr';
+import FallbackComponent from '../../../src/components/uis/ErrorFallback';
+import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
 
 const Container = styled.View`
   flex: 1;
@@ -22,26 +24,29 @@ const Container = styled.View`
 
 export default function Posts(): JSX.Element {
   const {push} = useRouter();
-  const [posts, setPosts] = useState<PostWithUser[]>([]);
   const [page, setPage] = useState(0);
-  const [loading, setLoading] = useState(false);
+  const [allPosts, setAllPosts] = useState<PostWithJoins[]>([]);
+  const [loadingMore, setLoadingMore] = useState(false);
 
-  const loadPosts = async (page: number) => {
-    setLoading(true);
-    try {
-      const newPosts = await fetchPostPagination(page, PAGE_SIZE);
-      setPosts((prevPosts) => [...prevPosts, ...newPosts]);
-      setPage(page);
-    } catch (error) {
-      if (__DEV__) console.error('Failed to load posts:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const fetcher = (page: number) => fetchPostPagination(page, PAGE_SIZE);
 
-  useEffect(() => {
-    loadPosts(page);
-  }, []);
+  const {error, isValidating, mutate} = useSWR(
+    ['posts', page],
+    () => fetcher(page),
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+      revalidateOnReconnect: false,
+      onSuccess: (data) => {
+        if (page === 0) {
+          setAllPosts(data);
+        } else {
+          setAllPosts((prevPosts) => [...prevPosts, ...data]);
+        }
+        setLoadingMore(false);
+      },
+    },
+  );
 
   useEffect(() => {
     const channel = supabase
@@ -54,11 +59,9 @@ export default function Posts(): JSX.Element {
           table: 'posts',
         },
         async (payload) => {
-          console.log('update', payload);
           const newPost = await fetchPostById(payload.new.id);
-
           if (newPost) {
-            setPosts((currentPosts) => [newPost, ...currentPosts]);
+            setAllPosts((prevPosts) => [newPost, ...prevPosts]);
           }
         },
       )
@@ -70,22 +73,19 @@ export default function Posts(): JSX.Element {
           table: 'posts',
         },
         async (payload) => {
-          console.log('update', payload);
           const updatedPost = await fetchPostById(payload.new.id);
-
           if (updatedPost) {
             if (updatedPost.deleted_at) {
-              setPosts((currentPosts) =>
+              setAllPosts((currentPosts) =>
                 currentPosts.filter((post) => post.id !== updatedPost.id),
               );
-              return;
+            } else {
+              setAllPosts((currentPosts) =>
+                currentPosts.map((post) =>
+                  post.id === updatedPost.id ? updatedPost : post,
+                ),
+              );
             }
-
-            setPosts((currentPosts) =>
-              currentPosts.map((post) =>
-                post.id === updatedPost.id ? updatedPost : post,
-              ),
-            );
           }
         },
       )
@@ -96,33 +96,80 @@ export default function Posts(): JSX.Element {
     };
   }, []);
 
+  useEffect(() => {
+    if (page !== 0) {
+      setLoadingMore(true);
+      fetcher(page).then((newPosts) => {
+        setAllPosts((prevPosts) => [...prevPosts, ...newPosts]);
+        setLoadingMore(false);
+      });
+    }
+  }, [page]);
+
   const loadMore = () => {
-    if (!loading) {
-      loadPosts(page + 1);
+    if (!loadingMore) {
+      setLoadingMore(true);
+      setPage((prevPage) => prevPage + 1);
     }
   };
+
+  const handleRefresh = () => {
+    setPage(0);
+    setAllPosts([]);
+    mutate();
+  };
+
+  const content = (() => {
+    switch (true) {
+      case !!error:
+        return <FallbackComponent />;
+      case isValidating:
+        return <CustomLoadingIndicator />;
+      default:
+        return (
+          <FlashList
+            data={allPosts}
+            onRefresh={handleRefresh}
+            refreshing={isValidating && page === 0}
+            renderItem={({item}) => (
+              <PostListItem
+                post={item}
+                controlItemProps={{
+                  hasLiked: item.likes?.some(
+                    (like) => like.user_id === item.user_id && like.liked,
+                  ),
+                  likeCnt: item.likes?.length || 0,
+                  replyCnt: item.replies?.length || 0,
+                }}
+                onPress={() => {
+                  push({
+                    pathname: '/post/[id]',
+                    params: {id: item.id},
+                  });
+                }}
+              />
+            )}
+            estimatedItemSize={208}
+            onEndReached={loadMore}
+            onEndReachedThreshold={0.5}
+            ListFooterComponent={
+              loadingMore ? (
+                <LoadingIndicator
+                  style={css`
+                    padding: 24px;
+                  `}
+                />
+              ) : null
+            }
+          />
+        );
+    }
+  })();
 
   return (
     <Container>
       <StatusBarBrightness />
-      <FlashList
-        data={posts}
-        renderItem={({item}) => (
-          <PostListItem
-            post={item}
-            onPress={() => {
-              push({
-                pathname: '/post/[id]',
-                params: {id: item.id},
-              });
-            }}
-          />
-        )}
-        estimatedItemSize={208}
-        onEndReached={loadMore}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={loading ? <LoadingIndicator /> : null}
-      />
+      {content}
       <Fab
         animationDuration={300}
         fabIcon="Plus"
