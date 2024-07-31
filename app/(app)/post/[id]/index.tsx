@@ -1,7 +1,7 @@
 import styled, {css} from '@emotion/native';
 import {Hr, Icon, Typography, useDooboo} from 'dooboo-ui';
 import {Stack, useLocalSearchParams, useRouter} from 'expo-router';
-import {Image, ReplyWithJoins} from '../../../../src/types';
+import {ReplyWithJoins} from '../../../../src/types';
 import useSWR from 'swr';
 import CustomLoadingIndicator from '../../../../src/components/uis/CustomLoadingIndicator';
 import {t} from '../../../../src/STRINGS';
@@ -22,7 +22,7 @@ import {useRecoilState} from 'recoil';
 import {authRecoilState} from '../../../../src/recoil/atoms';
 import {useAppLogic} from '../../../../src/providers/AppLogicProvider';
 import {fetchDeletePost, fetchPostById} from '../../../../src/apis/postQueries';
-import {getPublicUrlFromPath, supabase} from '../../../../src/supabase';
+import {supabase} from '../../../../src/supabase';
 import {toggleLike} from '../../../../src/apis/likeQueries';
 import ParsedText from 'react-native-parsed-text';
 import ImageCarousel from '../../../../src/components/uis/ImageCarousel';
@@ -243,14 +243,7 @@ export default function PostDetails(): JSX.Element {
               </ParsedText>
 
               {post.images && post.images.length > 0 ? (
-                <ImageCarousel
-                  borderRadius={8}
-                  images={post.images
-                    .map((el) => ({
-                      ...el,
-                      image_url: getPublicUrlFromPath(el.image_url!),
-                    })) as unknown as Image[]}
-                />
+                <ImageCarousel borderRadius={8} images={post.images} />
               ) : null}
 
               <ControlItem

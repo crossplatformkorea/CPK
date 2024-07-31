@@ -79,7 +79,6 @@ model Developer {
   futureExpectations              String? @map("future_expectations")
 
   createdAt DateTime? @default(now()) @map("created_at")
-  updatedAt DateTime? @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
   tags Tag[]
@@ -171,6 +170,8 @@ model Image {
   encoding  String?   @map("encoding")
   type      FileType? @default(Image) @map("type")
   createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
 
   post    Post?   @relation(fields: [postId], references: [id])
   postId  String? @map("post_id") @db.Uuid

@@ -186,8 +186,6 @@ export default function ImageCarousel(
   const [layoutWidth, setLayoutWidth] = useState(1);
   const height = layoutWidth === 1 ? 330 : layoutWidth;
 
-  console.log('images', props.images);
-
   return (
     <Animated.View
       entering={FadeIn}

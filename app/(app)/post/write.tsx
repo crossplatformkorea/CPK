@@ -19,7 +19,10 @@ import {useState} from 'react';
 import {ImagePickerAsset} from 'expo-image-picker';
 import {MAX_IMAGES_UPLOAD_LENGTH} from '../../../src/utils/constants';
 import CustomScrollView from '../../../src/components/uis/CustomScrollView';
-import {uploadFileToSupabase} from '../../../src/supabase';
+import {
+  getPublicUrlFromPath,
+  uploadFileToSupabase,
+} from '../../../src/supabase';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -78,9 +81,15 @@ export default function PostWrite(): JSX.Element {
       await fetchCreatePost({
         title: data.title,
         content: data.content,
-        url: data.url || null,
         user_id: authId,
-        images: images.filter((el) => !!el),
+        images: images
+          .filter((el) => !!el)
+          .map((el) => ({
+            ...el,
+            image_url: el.image_url
+              ? getPublicUrlFromPath(el.image_url)
+              : undefined,
+          })),
       });
 
       snackbar.open({

@@ -12,12 +12,14 @@ import {
 } from 'react-native';
 import ErrorFallback from '../../../../src/components/uis/ErrorFallback';
 import {useRecoilValue} from 'recoil';
-import {PostInsertArgs} from '../../../../src/types';
-import {supabase, uploadFileToSupabase} from '../../../../src/supabase';
+import {
+  getPublicUrlFromPath,
+  uploadFileToSupabase,
+} from '../../../../src/supabase';
 import {authRecoilState} from '../../../../src/recoil/atoms';
 import {t} from '../../../../src/STRINGS';
 import useSWR from 'swr';
-import {fetchPostById} from '../../../../src/apis/postQueries';
+import {fetchPostById, fetchUpdatePost} from '../../../../src/apis/postQueries';
 import CustomLoadingIndicator from '../../../../src/components/uis/CustomLoadingIndicator';
 import NotFound from '../../../../src/components/uis/NotFound';
 import {useState} from 'react';
@@ -25,6 +27,7 @@ import {ImagePickerAsset} from 'expo-image-picker';
 import MultiUploadImageInput from '../../../../src/components/uis/MultiUploadImageInput';
 import {MAX_IMAGES_UPLOAD_LENGTH} from '../../../../src/utils/constants';
 import CustomScrollView from '../../../../src/components/uis/CustomScrollView';
+import {filterUploadableAssets} from '../../../../src/utils/common';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -44,23 +47,6 @@ const schema = yup.object().shape({
 });
 
 type FormData = yup.InferType<typeof schema>;
-
-const updatePost = async (id: string, post: PostInsertArgs) => {
-  const {data, error} = await supabase
-    .from('posts')
-    .update({
-      title: post.title,
-      content: post.content,
-      url: post.url,
-    })
-    .eq('id', id);
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  return data;
-};
 
 export default function PostUpdate(): JSX.Element {
   const {id} = useLocalSearchParams<{id: string}>();
@@ -90,6 +76,14 @@ export default function PostUpdate(): JSX.Element {
           content: data.content,
           url: data?.url || undefined,
         });
+        setAssets(
+          (data.images || []).map((el) => ({
+            uri: el.image_url as string,
+            type: 'image',
+            height: el.height || 0,
+            width: el.width || 0,
+          })),
+        );
       }
     },
   });
@@ -98,25 +92,45 @@ export default function PostUpdate(): JSX.Element {
     if (!authId || !id) return;
 
     try {
-      const imageUploadPromises = assets.map(async (asset) => {
-        const destPath = `${asset.type === 'video' ? 'videos' : 'images'}/${Date.now()}_${asset.fileName}`;
-        const file = asset.uri;
+      const imageUploadPromises = filterUploadableAssets(assets).map(
+        async (asset) => {
+          const destPath = `${asset.type === 'video' ? 'videos' : 'images'}/${Date.now()}_${asset.fileName}`;
+          const file = asset.uri;
 
-        return await uploadFileToSupabase({
-          uri: file,
-          fileType: asset.type === 'video' ? 'Video' : 'Image',
-          bucket: 'images',
-          destPath,
-        });
-      });
+          return await uploadFileToSupabase({
+            uri: file,
+            fileType: asset.type === 'video' ? 'Video' : 'Image',
+            bucket: 'images',
+            destPath,
+          });
+        },
+      );
 
       const images = await Promise.all(imageUploadPromises);
 
-      await updatePost(id, {
+      const initialImageUrls =
+        post?.images?.map((el) => el?.image_url as string) || [];
+
+      const imageUris = assets.map((el) => el.uri);
+
+      const deleteImageUrls = initialImageUrls.filter(
+        (element) => !imageUris.includes(element) && element.startsWith('http'),
+      );
+
+      await fetchUpdatePost({
+        postId: id,
         title: data.title,
         content: data.content,
         url: data.url || null,
-        user_id: authId,
+        images: images
+          .filter((el) => !!el)
+          .map((el) => ({
+            ...el,
+            image_url: el.image_url
+              ? getPublicUrlFromPath(el.image_url)
+              : undefined,
+          })),
+        imageUrlsToDelete: deleteImageUrls,
       });
 
       snackbar.open({
@@ -243,7 +257,8 @@ export default function PostUpdate(): JSX.Element {
                     );
                   }}
                   onDelete={(index) => {
-                    setAssets(assets.filter((_, i) => i !== index));
+                    const newAssets = assets.filter((_, i) => i !== index);
+                    setAssets(newAssets);
                   }}
                   styles={{
                     container: css`

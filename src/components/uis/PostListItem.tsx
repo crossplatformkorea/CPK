@@ -7,7 +7,6 @@ import UserListItem from './UserListItem';
 import {View} from 'react-native';
 import ControlItem, {ControlItemProps} from './ControlItem';
 import {Image as ExpoImage} from 'expo-image';
-import {getPublicUrlFromPath} from '../../supabase';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -32,8 +31,6 @@ export default function PostListItem({
   controlItemProps,
 }: Props): JSX.Element {
   const {theme} = useDooboo();
-
-  console.log('image_url', post.images?.[0]?.image_url);
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.85}>
@@ -65,9 +62,7 @@ export default function PostListItem({
             {post.images?.[0]?.image_url ? (
               <ExpoImage
                 source={{
-                  uri: getPublicUrlFromPath(
-                    post.images?.[0]?.image_url as string,
-                  ),
+                  uri: post.images?.[0]?.image_url as string,
                 }}
                 style={css`
                   width: 80px;
