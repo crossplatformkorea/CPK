@@ -5,10 +5,21 @@ import {t} from '../../../src/STRINGS';
 import {EditText, Typography, useDooboo} from 'dooboo-ui';
 import * as yup from 'yup';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
-import {ActivityIndicator, Pressable} from 'react-native';
+import {
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+} from 'react-native';
 import {useRecoilValue} from 'recoil';
 import {authRecoilState} from '../../../src/recoil/atoms';
 import {fetchCreatePost} from '../../../src/apis/postQueries';
+import MultiUploadImageInput from '../../../src/components/uis/MultiUploadImageInput';
+import {useState} from 'react';
+import {ImagePickerAsset} from 'expo-image-picker';
+import {MAX_IMAGES_UPLOAD_LENGTH} from '../../../src/utils/constants';
+import CustomScrollView from '../../../src/components/uis/CustomScrollView';
+import {uploadFileToSupabase} from '../../../src/supabase';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -17,7 +28,6 @@ const Container = styled.SafeAreaView`
 
 const Content = styled.View`
   flex: 1;
-  padding: 24px;
 
   gap: 16px;
 `;
@@ -34,6 +44,8 @@ export default function PostWrite(): JSX.Element {
   const {back} = useRouter();
   const {theme, snackbar} = useDooboo();
   const {authId} = useRecoilValue(authRecoilState);
+  const [assets, setAssets] = useState<ImagePickerAsset[]>([]);
+  const [isCreatePostInFlight, setIsCreatePostInFlight] = useState(false);
 
   const {
     control,
@@ -46,12 +58,29 @@ export default function PostWrite(): JSX.Element {
   const handleWritePost: SubmitHandler<FormData> = async (data) => {
     if (!authId) return;
 
+    setIsCreatePostInFlight(true);
+
     try {
+      const imageUploadPromises = assets.map(async (asset) => {
+        const destPath = `${asset.type === 'video' ? 'videos' : 'images'}/${Date.now()}_${asset.fileName}`;
+        const file = asset.uri;
+
+        return await uploadFileToSupabase({
+          uri: file,
+          fileType: asset.type === 'video' ? 'Video' : 'Image',
+          bucket: 'images',
+          destPath,
+        });
+      });
+
+      const images = await Promise.all(imageUploadPromises);
+
       await fetchCreatePost({
         title: data.title,
         content: data.content,
         url: data.url || null,
         user_id: authId,
+        images: images.filter((el) => !!el),
       });
 
       snackbar.open({
@@ -67,6 +96,8 @@ export default function PostWrite(): JSX.Element {
       });
 
       if (__DEV__) console.error('Error adding post:', e);
+    } finally {
+      setIsCreatePostInFlight(false);
     }
   };
 
@@ -94,80 +125,123 @@ export default function PostWrite(): JSX.Element {
           ),
         }}
       />
-      <Content>
-        <Controller
-          control={control}
-          name="title"
-          render={({field: {onChange, value}}) => (
-            <EditText
+      <KeyboardAvoidingView
+        behavior={Platform.select({ios: 'padding', default: undefined})}
+        keyboardVerticalOffset={Platform.select({ios: 116, default: 88})}
+        style={css`
+          background-color: ${theme.bg.basic};
+        `}
+      >
+        <CustomScrollView
+          bounces={false}
+          style={css`
+            padding: 24px;
+          `}
+        >
+          <Content>
+            <Controller
+              control={control}
+              name="title"
+              render={({field: {onChange, value}}) => (
+                <EditText
+                  required
+                  styles={{
+                    label: css`
+                      font-size: 14px;
+                    `,
+                    labelContainer: css`
+                      margin-bottom: 8px;
+                    `,
+                  }}
+                  colors={{focused: theme.role.primary}}
+                  label={t('post.write.title')}
+                  onChangeText={onChange}
+                  placeholder={t('post.write.titlePlaceholder')}
+                  value={value}
+                  decoration="boxed"
+                  error={errors.title ? errors.title.message : ''}
+                />
+              )}
+              rules={{required: true, validate: (value) => !!value}}
+            />
+            <Controller
+              control={control}
+              name="content"
+              render={({field: {onChange, value}}) => (
+                <EditText
+                  required
+                  styles={{
+                    label: css`
+                      font-size: 14px;
+                    `,
+                    labelContainer: css`
+                      margin-bottom: 8px;
+                    `,
+                    input: css`
+                      min-height: 320px;
+                      max-height: 440px;
+                    `,
+                  }}
+                  multiline
+                  numberOfLines={10}
+                  colors={{focused: theme.role.primary}}
+                  label={t('post.write.content')}
+                  onChangeText={onChange}
+                  placeholder={t('post.write.contentPlaceholder')}
+                  value={value}
+                  decoration="boxed"
+                  error={errors.content ? errors.content.message : ''}
+                />
+              )}
+              rules={{required: true, validate: (value) => !!value}}
+            />
+            <Controller
+              control={control}
+              name="url"
+              render={({field: {onChange, value}}) => (
+                <EditText
+                  styles={{
+                    label: css`
+                      font-size: 14px;
+                    `,
+                    labelContainer: css`
+                      margin-bottom: 8px;
+                    `,
+                  }}
+                  colors={{focused: theme.role.primary}}
+                  label={t('post.write.urlTitle')}
+                  onChangeText={onChange}
+                  placeholder={t('post.write.urlPlaceholder')}
+                  value={value}
+                  decoration="boxed"
+                  error={errors.url ? errors.url.message : ''}
+                />
+              )}
+              rules={{required: true, validate: (value) => !!value}}
+            />
+            <MultiUploadImageInput
+              imageUris={assets.map((el) => el.uri)}
+              loading={isCreatePostInFlight}
+              onAdd={(assetsAdded) => {
+                setAssets(
+                  [...assets, ...assetsAdded].splice(
+                    0,
+                    MAX_IMAGES_UPLOAD_LENGTH,
+                  ),
+                );
+              }}
+              onDelete={(index) => {
+                setAssets(assets.filter((_, i) => i !== index));
+              }}
               styles={{
-                label: css`
-                  font-size: 14px;
-                  margin-bottom: -4px;
+                container: css`
+                  opacity: ${isCreatePostInFlight ? '0.5' : '1'};
                 `,
               }}
-              colors={{focused: theme.role.primary}}
-              label={t('post.write.title')}
-              onChangeText={onChange}
-              placeholder={t('post.write.titlePlaceholder')}
-              value={value}
-              decoration="boxed"
-              error={errors.title ? errors.title.message : ''}
             />
-          )}
-          rules={{required: true, validate: (value) => !!value}}
-        />
-        <Controller
-          control={control}
-          name="content"
-          render={({field: {onChange, value}}) => (
-            <EditText
-              styles={{
-                label: css`
-                  font-size: 14px;
-                  margin-bottom: -4px;
-                `,
-                input: css`
-                  min-height: 320px;
-                  max-height: 440px;
-                `,
-              }}
-              multiline
-              numberOfLines={10}
-              colors={{focused: theme.role.primary}}
-              label={t('post.write.content')}
-              onChangeText={onChange}
-              placeholder={t('post.write.contentPlaceholder')}
-              value={value}
-              decoration="boxed"
-              error={errors.content ? errors.content.message : ''}
-            />
-          )}
-          rules={{required: true, validate: (value) => !!value}}
-        />
-        <Controller
-          control={control}
-          name="url"
-          render={({field: {onChange, value}}) => (
-            <EditText
-              styles={{
-                label: css`
-                  font-size: 14px;
-                  margin-bottom: -4px;
-                `,
-              }}
-              colors={{focused: theme.role.primary}}
-              label={t('post.write.urlTitle')}
-              onChangeText={onChange}
-              placeholder={t('post.write.urlPlaceholder')}
-              value={value}
-              decoration="boxed"
-              error={errors.url ? errors.url.message : ''}
-            />
-          )}
-          rules={{required: true, validate: (value) => !!value}}
-        />
-      </Content>
+          </Content>
+        </CustomScrollView>
+      </KeyboardAvoidingView>
     </Container>
   );
 }

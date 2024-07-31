@@ -1,5 +1,5 @@
 import {supabase} from '../supabase';
-import {PostInsertArgs, PostWithJoins} from '../types';
+import {ImageInsertArgs, PostInsertArgs, PostWithJoins} from '../types';
 
 export const fetchPostById = async (
   id: string,
@@ -110,16 +110,33 @@ export const fetchDeletePost = async ({
   return true;
 };
 
-export const fetchCreatePost = async (post: PostInsertArgs) => {
-  const {data, error} = await supabase.from('posts').insert({
-    title: post.title,
-    content: post.content,
-    url: post.url,
-    user_id: post.user_id,
-  });
+export const fetchCreatePost = async (
+  post: PostInsertArgs & {images?: ImageInsertArgs[]},
+) => {
+  const {data, error} = await supabase
+    .from('posts')
+    .insert({
+      title: post.title,
+      content: post.content,
+      url: post.url,
+      user_id: post.user_id,
+    })
+    .select()
+    .single();
 
   if (error) {
     throw new Error(error.message);
+  }
+
+  if (post.images && post.images.length > 0) {
+    const imageInsertPromises = post.images.map((image) =>
+      supabase.from('images').insert({
+        ...image,
+        post_id: data.id,
+      }),
+    );
+
+    await Promise.all(imageInsertPromises);
   }
 
   return data;

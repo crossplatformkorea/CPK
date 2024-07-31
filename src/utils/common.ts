@@ -1,4 +1,5 @@
 import {Linking, Platform} from 'react-native';
+import * as VideoThumbnails from 'expo-video-thumbnails';
 
 export const openURL = async (url: string): Promise<void> => {
   const supported = await Linking.canOpenURL(url);
@@ -27,5 +28,25 @@ export const goToAppStore = (): void => {
     );
   } else {
     Linking.openURL('market://details?id=com.dooboolab.cpk');
+  }
+};
+
+export const generateThumbnailFromVideo = async (
+  videoUri: string,
+  time?: number,
+): Promise<string | undefined> => {
+  if (Platform.OS === 'web') {
+    return;
+  }
+
+  try {
+    const {uri} = await VideoThumbnails.getThumbnailAsync(videoUri, {
+      time: time || 300,
+    });
+
+    return uri;
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('error', error);
   }
 };

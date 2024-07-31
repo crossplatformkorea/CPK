@@ -1,7 +1,7 @@
 import styled, {css} from '@emotion/native';
 import {Hr, Icon, Typography, useDooboo} from 'dooboo-ui';
 import {Stack, useLocalSearchParams, useRouter} from 'expo-router';
-import {ReplyWithJoins} from '../../../../src/types';
+import {Image, ReplyWithJoins} from '../../../../src/types';
 import useSWR from 'swr';
 import CustomLoadingIndicator from '../../../../src/components/uis/CustomLoadingIndicator';
 import {t} from '../../../../src/STRINGS';
@@ -22,8 +22,10 @@ import {useRecoilState} from 'recoil';
 import {authRecoilState} from '../../../../src/recoil/atoms';
 import {useAppLogic} from '../../../../src/providers/AppLogicProvider';
 import {fetchDeletePost, fetchPostById} from '../../../../src/apis/postQueries';
-import {supabase} from '../../../../src/supabase';
+import {getPublicUrlFromPath, supabase} from '../../../../src/supabase';
 import {toggleLike} from '../../../../src/apis/likeQueries';
+import ParsedText from 'react-native-parsed-text';
+import ImageCarousel from '../../../../src/components/uis/ImageCarousel';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -220,7 +222,37 @@ export default function PostDetails(): JSX.Element {
                   </View>
                 </Pressable>
               ) : null}
-              <Typography.Body1>{post.content}</Typography.Body1>
+              <ParsedText
+                parse={[
+                  {
+                    type: 'url',
+                    onPress: (url) => openURL(url),
+                    style: css`
+                      color: ${theme.role.link};
+                    `,
+                  },
+                ]}
+                selectable
+                style={css`
+                  color: ${theme.text.basic};
+                  font-size: 16px;
+                  line-height: 22.8px;
+                `}
+              >
+                {post.content}
+              </ParsedText>
+
+              {post.images && post.images.length > 0 ? (
+                <ImageCarousel
+                  borderRadius={8}
+                  images={post.images
+                    .map((el) => ({
+                      ...el,
+                      image_url: getPublicUrlFromPath(el.image_url!),
+                    })) as unknown as Image[]}
+                />
+              ) : null}
+
               <ControlItem
                 hasLiked={hasLiked}
                 likeCnt={postLikes}

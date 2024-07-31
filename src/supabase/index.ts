@@ -3,9 +3,10 @@ import 'react-native-url-polyfill/auto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createClient} from '@supabase/supabase-js';
 import {decode} from 'base64-arraybuffer';
-
 import {supabaseAnonKey, supabaseUrl} from '../../config';
+import * as FileSystem from 'expo-file-system';
 import type {Database} from '../../src/types/supabase';
+import {FileType, ImageInsertArgs} from '../types';
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
@@ -17,25 +18,49 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
 });
 
 export const uploadFileToSupabase = async ({
-  file,
+  uri,
   fileType,
   bucket,
   destPath,
 }: {
-  file: string;
-  fileType?: string;
+  uri: string;
+  fileType?: FileType;
   bucket: string;
   destPath: string;
-}): Promise<string | undefined> => {
+}): Promise<ImageInsertArgs | undefined> => {
+  const ext = uri.split('.').pop();
+  const base64 = await FileSystem.readAsStringAsync(uri, {encoding: 'base64'});
+
   const {data, error} = await supabase.storage
     .from(bucket)
-    .upload(destPath, decode(file), fileType ? {contentType: fileType} : {});
+    .upload(destPath, decode(base64), fileType ? {contentType: fileType} : {});
 
   if (error) {
     throw error;
   }
 
-  return data?.path;
+  return {
+    image_url: data.path,
+    url: data.fullPath,
+    id: data.id,
+    type: fileType || null,
+    mime_type:
+      fileType === 'Audio'
+        ? `audio/${ext}`
+        : fileType === 'Video'
+          ? `video/${ext}`
+          : `image/${ext}`,
+  };
+};
+
+export const getPublicUrlFromPath = (path: string): string => {
+  const {data} = supabase.storage.from('images').getPublicUrl(path);
+
+  if (!data?.publicUrl) {
+    throw new Error('Failed to get signed URL');
+  }
+
+  return data?.publicUrl;
 };
 
 export const getSignedUrlFromUploadFile = async ({
