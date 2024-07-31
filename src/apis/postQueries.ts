@@ -1,5 +1,19 @@
 import {supabase} from '../supabase';
-import {PostInsertArgs, PostWithJoins} from '../types';
+import {ImageInsertArgs, PostInsertArgs, PostWithJoins} from '../types';
+
+const filterDeletedImageInPost = (post: PostWithJoins): PostWithJoins => {
+  return {
+    ...post,
+    images: post.images.filter((image) => !image.deleted_at),
+  };
+}
+
+
+const filterDeletedImagesInPosts = (posts: PostWithJoins[]): PostWithJoins[] => {
+  return posts.map((post) => {
+    return filterDeletedImageInPost(post);
+  });
+}
 
 export const fetchPostById = async (
   id: string,
@@ -27,7 +41,7 @@ export const fetchPostById = async (
     return null;
   }
 
-  return data as unknown as PostWithJoins;
+  return filterDeletedImageInPost(data as unknown as PostWithJoins);
 };
 
 export const fetchPostPagination = async (
@@ -50,30 +64,63 @@ export const fetchPostPagination = async (
       likes (*)
     `,
     )
+    .is('deleted_at', null)
     .order('created_at', {ascending: false})
-    .filter('deleted_at', 'is', null)
     .range(from, to);
 
   if (error) {
     throw new Error(error.message);
   }
 
-  return data as unknown as PostWithJoins[];
+  return filterDeletedImagesInPosts(data as unknown as PostWithJoins[]);
 };
 
-export const fetchUpdatePost = async (
-  postId: string,
-  title: string,
-  content: string,
-  url: string | null,
-): Promise<number> => {
-  const {error, count} = await supabase
+export const fetchUpdatePost = async ({
+  postId,
+  title,
+  content,
+  url,
+  images,
+  imageUrlsToDelete,
+}: {
+  postId: string;
+  title: string;
+  content: string;
+  url: string | null;
+  images: ImageInsertArgs[];
+  imageUrlsToDelete: string[];
+}): Promise<number> => {
+  const {
+    data: post,
+    error: updateError,
+    count,
+  } = await supabase
     .from('posts')
     .update({title, content, url})
-    .eq('id', postId);
+    .eq('id', postId)
+    .select()
+    .single();
 
-  if (error) {
-    throw new Error(error.message);
+  if (updateError) {
+    throw new Error(updateError.message);
+  }
+
+  if (imageUrlsToDelete.length > 0) {
+    await supabase
+      .from('images')
+      .update({deleted_at: new Date().toISOString()})
+      .in('image_url', imageUrlsToDelete);
+  }
+
+  if (images && images.length > 0) {
+    const imageInsertPromises = images.map((image) =>
+      supabase.from('images').insert({
+        ...image,
+        post_id: post.id,
+      }),
+    );
+
+    await Promise.all(imageInsertPromises);
   }
 
   return count || 0;
@@ -97,6 +144,16 @@ export const fetchDeletePost = async ({
       throw new Error(error.message);
     }
 
+    const {error: imageError} = await supabase
+      .from('images')
+      .update({deleted_at: new Date().toISOString()})
+      .eq('post_id', id);
+
+    if (imageError) {
+      if (__DEV__) console.error('Error deleting images:', imageError);
+      throw new Error(imageError.message);
+    }
+
     return true;
   }
 
@@ -110,16 +167,33 @@ export const fetchDeletePost = async ({
   return true;
 };
 
-export const fetchCreatePost = async (post: PostInsertArgs) => {
-  const {data, error} = await supabase.from('posts').insert({
-    title: post.title,
-    content: post.content,
-    url: post.url,
-    user_id: post.user_id,
-  });
+export const fetchCreatePost = async (
+  post: PostInsertArgs & {images?: ImageInsertArgs[]},
+) => {
+  const {data, error} = await supabase
+    .from('posts')
+    .insert({
+      title: post.title,
+      content: post.content,
+      url: post.url,
+      user_id: post.user_id,
+    })
+    .select()
+    .single();
 
   if (error) {
     throw new Error(error.message);
+  }
+
+  if (post.images && post.images.length > 0) {
+    const imageInsertPromises = post.images.map((image) =>
+      supabase.from('images').insert({
+        ...image,
+        post_id: data.id,
+      }),
+    );
+
+    await Promise.all(imageInsertPromises);
   }
 
   return data;

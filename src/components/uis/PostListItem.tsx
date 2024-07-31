@@ -1,11 +1,12 @@
 import styled, {css} from '@emotion/native';
 import {Hr, Typography, useDooboo} from 'dooboo-ui';
-import type {Post, User} from '../../types';
+import type {Image, Post, User} from '../../types';
 import {formatDateTime} from '../../utils/date';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import UserListItem from './UserListItem';
 import {View} from 'react-native';
 import ControlItem, {ControlItemProps} from './ControlItem';
+import {Image as ExpoImage} from 'expo-image';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -19,7 +20,7 @@ const Content = styled.View`
 `;
 
 type Props = {
-  post: Post & {user: User};
+  post: Post & {user: User; images: Image[]};
   onPress?: () => void;
   controlItemProps?: ControlItemProps;
 };
@@ -32,17 +33,45 @@ export default function PostListItem({
   const {theme} = useDooboo();
 
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity onPress={onPress} activeOpacity={0.85}>
       <Container>
         <Content>
-          <Typography.Body2
+          <View
             style={css`
-              font-family: Pretendard-Bold;
+              flex-direction: row;
+              justify-content: space-between;
+              gap: 8px;
             `}
           >
-            {post.title}
-          </Typography.Body2>
-          <Typography.Body3 numberOfLines={4}>{post.content}</Typography.Body3>
+            <View
+              style={css`
+                gap: 8px;
+              `}
+            >
+              <Typography.Body2
+                style={css`
+                  font-family: Pretendard-Bold;
+                `}
+              >
+                {post.title}
+              </Typography.Body2>
+              <Typography.Body3 numberOfLines={4}>
+                {post.content}
+              </Typography.Body3>
+            </View>
+            {post.images?.[0]?.image_url ? (
+              <ExpoImage
+                source={{
+                  uri: post.images?.[0]?.image_url as string,
+                }}
+                style={css`
+                  width: 80px;
+                  height: 80px;
+                  border-radius: 8px;
+                `}
+              />
+            ) : null}
+          </View>
           <UserListItem user={post.user} />
           <Hr />
           <View

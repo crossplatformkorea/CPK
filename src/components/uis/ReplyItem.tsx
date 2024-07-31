@@ -187,7 +187,6 @@ export default function ReplyItem({
           </ImageWrapper>
         </MessageContent>
 
-        {/* 좋아요 & 날짜 */}
         <View
           style={css`
             flex-direction: row;

@@ -24,6 +24,8 @@ import {useAppLogic} from '../../../../src/providers/AppLogicProvider';
 import {fetchDeletePost, fetchPostById} from '../../../../src/apis/postQueries';
 import {supabase} from '../../../../src/supabase';
 import {toggleLike} from '../../../../src/apis/likeQueries';
+import ParsedText from 'react-native-parsed-text';
+import ImageCarousel from '../../../../src/components/uis/ImageCarousel';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -220,7 +222,30 @@ export default function PostDetails(): JSX.Element {
                   </View>
                 </Pressable>
               ) : null}
-              <Typography.Body1>{post.content}</Typography.Body1>
+              <ParsedText
+                parse={[
+                  {
+                    type: 'url',
+                    onPress: (url) => openURL(url),
+                    style: css`
+                      color: ${theme.role.link};
+                    `,
+                  },
+                ]}
+                selectable
+                style={css`
+                  color: ${theme.text.basic};
+                  font-size: 16px;
+                  line-height: 22.8px;
+                `}
+              >
+                {post.content}
+              </ParsedText>
+
+              {post.images && post.images.length > 0 ? (
+                <ImageCarousel borderRadius={8} images={post.images} />
+              ) : null}
+
               <ControlItem
                 hasLiked={hasLiked}
                 likeCnt={postLikes}

@@ -16,7 +16,7 @@ export type PostWithJoins = Post & {
 };
 export type ReplyWithJoins = Reply & {
   user: User;
-  images: Image[];
+  images?: Image[];
   likes: Like[];
 };
 

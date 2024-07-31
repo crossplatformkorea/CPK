@@ -118,7 +118,6 @@ export type Database = {
           organization: string | null
           threads_id: string | null
           twitter_id: string | null
-          updated_at: string | null
           user_id: string | null
         }
         Insert: {
@@ -136,7 +135,6 @@ export type Database = {
           organization?: string | null
           threads_id?: string | null
           twitter_id?: string | null
-          updated_at?: string | null
           user_id?: string | null
         }
         Update: {
@@ -154,7 +152,6 @@ export type Database = {
           organization?: string | null
           threads_id?: string | null
           twitter_id?: string | null
-          updated_at?: string | null
           user_id?: string | null
         }
         Relationships: [
@@ -170,6 +167,7 @@ export type Database = {
       images: {
         Row: {
           created_at: string | null
+          deleted_at: string | null
           duration: number | null
           encoding: string | null
           exif: string | null
@@ -183,11 +181,13 @@ export type Database = {
           size: number | null
           thumb_url: string | null
           type: Database["public"]["Enums"]["FileType"] | null
+          updated_at: string | null
           url: string | null
           width: number | null
         }
         Insert: {
           created_at?: string | null
+          deleted_at?: string | null
           duration?: number | null
           encoding?: string | null
           exif?: string | null
@@ -201,11 +201,13 @@ export type Database = {
           size?: number | null
           thumb_url?: string | null
           type?: Database["public"]["Enums"]["FileType"] | null
+          updated_at?: string | null
           url?: string | null
           width?: number | null
         }
         Update: {
           created_at?: string | null
+          deleted_at?: string | null
           duration?: number | null
           encoding?: string | null
           exif?: string | null
@@ -219,6 +221,7 @@ export type Database = {
           size?: number | null
           thumb_url?: string | null
           type?: Database["public"]["Enums"]["FileType"] | null
+          updated_at?: string | null
           url?: string | null
           width?: number | null
         }

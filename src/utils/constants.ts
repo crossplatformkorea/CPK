@@ -11,3 +11,4 @@ export const COMPONENT_WIDTH = 500;
 export const PAGE_SIZE = 10;
 export const HEADER_HEIGHT = 56;
 export const MAX_IMAGES_UPLOAD_LENGTH = 5;
+export const MAX_WIDTH = 1000;
