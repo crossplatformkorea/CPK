@@ -1,6 +1,7 @@
 import {Linking, Platform} from 'react-native';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import {ImagePickerAsset} from 'expo-image-picker';
+import {getDeviceTypeSync} from 'react-native-device-info';
 
 export const openURL = async (url: string): Promise<void> => {
   const supported = await Linking.canOpenURL(url);
@@ -78,3 +79,9 @@ export const filterUploadableAssets = (
     return !asset.uri || !isImageHttp(asset.uri);
   });
 };
+
+export const isDesktopDevice = (): boolean =>
+  getDeviceTypeSync() === 'Desktop' ||
+  Platform.OS === 'web' ||
+  Platform.OS === 'macos' ||
+  Platform.OS === 'windows';
