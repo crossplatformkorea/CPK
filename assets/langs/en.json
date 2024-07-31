@@ -34,7 +34,8 @@
     "viewsWithCount": {
       "one": "Views %{count}",
       "other": "Views %{count}"
-    }
+    },
+    "unknown": "Unknown"
   },
   "error": {
     "default": "Error occurred!"
@@ -84,5 +85,10 @@
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "title": "Sign In"
+  },
+  "blockUsers": {
+    "title": "Blocked Users",
+    "cancelBlock": "Cancel Block",
+    "cancelBlockDesc": "If you cancel the block, you will be able to access the user's content. Do you want to cancel the block?"
   }
 }

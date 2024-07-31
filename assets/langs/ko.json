@@ -34,7 +34,8 @@
     "viewsWithCount": {
       "one": "조회수 %{count}",
       "other": "조회수 %{count}"
-    }
+    },
+    "unknown": "알 수 없음"
   },
   "error": {
     "default": "오류가 발생했습니다!"
@@ -84,5 +85,10 @@
     "privacyPolicy": "개인정보 처리방침",
     "termsOfService": "서비스 약관",
     "title": "로그인"
+  },
+  "blockUsers": {
+    "title": "차단한 사용자",
+    "cancelBlock": "차단 취소",
+    "cancelBlockDesc": "차단을 취소하면 사용자의 콘텐츠에 접근할 수 있습니다. 차단을 취소하시겠습니까?"
   }
 }

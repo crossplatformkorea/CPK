@@ -1,21 +1,42 @@
-import styled from "@emotion/native";
-import { Typography } from "dooboo-ui";
-import { t } from "../../STRINGS";
+import type {StyleProp, ViewStyle} from 'react-native';
+import {View} from 'react-native';
+import {css} from '@emotion/native';
+import {Typography, useDooboo} from 'dooboo-ui';
+import { t } from '../../STRINGS';
 
-const Container = styled.SafeAreaView`
-  background-color: ${({theme}) => theme.bg.basic};
-  padding-bottom: 40px;
 
-  flex: 1;
-  align-self: stretch;
-  justify-content: center;
-  align-items: center;
-`;
+export default function NotFound({
+  text,
+  style,
+}: {
+  text?: string | JSX.Element;
+  style?: StyleProp<ViewStyle>;
+}): JSX.Element {
+  const {theme} = useDooboo();
 
-export default function NotFound(): JSX.Element {
   return (
-    <Container>
-      <Typography.Heading5>{t('common.notFound')}</Typography.Heading5>
-    </Container>
+    <View
+      style={[
+        css`
+          justify-content: center;
+          align-items: center;
+          padding: 24px 24px 0 24px;
+        `,
+        style,
+      ]}
+    >
+      {!text || typeof text === 'string' ? (
+        <Typography.Body3
+          style={css`
+            font-family: Pretendard-Bold;
+            color: ${theme.text.disabled};
+          `}
+        >
+          {text || t('common.notFound')}
+        </Typography.Body3>
+      ) : (
+        text
+      )}
+    </View>
   );
 }

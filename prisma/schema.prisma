@@ -48,9 +48,11 @@ model User {
   notificationsTarget Notification[] @relation("NotificationTargetUser")
   replies             Reply[]
   reports             Report[]
-  reportsTarget       Report[]       @relation("ReportTargetUser")
+  reportsTarget       Report[]             @relation("ReportTargetUser")
   likes               Like[]
-  Post                Post[]
+  posts               Post[]
+  blockUsers          Block[]        @relation("BlockUser")
+  blocks              Block[]
 
   @@map("users")
 }
@@ -256,4 +258,18 @@ model Tag {
 
   @@index(tag)
   @@map("tags")
+}
+
+model Block {
+  id  String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz()
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id") @db.Uuid
+
+  blockUser   User   @relation(fields: [blockUserId], references: [id], name: "BlockUser")
+  blockUserId String @map("block_user_id") @db.Uuid
+
+  @@unique([userId, blockUserId])
+  @@map("blocks")
 }
