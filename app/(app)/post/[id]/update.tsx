@@ -126,7 +126,7 @@ export default function PostUpdate(): JSX.Element {
           .filter((el) => !!el)
           .map((el) => ({
             ...el,
-            image_url: el.image_url
+            image_url: el?.image_url
               ? getPublicUrlFromPath(el.image_url)
               : undefined,
           })),

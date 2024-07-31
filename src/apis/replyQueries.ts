@@ -1,6 +1,21 @@
 import {supabase} from '../supabase';
 import {ImageInsertArgs, ReplyInsertArgs, ReplyWithJoins} from '../types';
 
+const filterDeletedImageInReply = (reply: ReplyWithJoins): ReplyWithJoins => {
+  return {
+    ...reply,
+    images: reply.images?.filter((image) => !image.deleted_at),
+  };
+};
+
+const filterDeletedImagesInReplies = (
+  replies: ReplyWithJoins[],
+): ReplyWithJoins[] => {
+  return replies.map((reply) => {
+    return filterDeletedImageInReply(reply);
+  });
+};
+
 export const fetchReplyPagination = async ({
   page,
   pageSize,
@@ -32,7 +47,7 @@ export const fetchReplyPagination = async ({
     throw new Error(error.message);
   }
 
-  return data as unknown as ReplyWithJoins[];
+  return filterDeletedImagesInReplies(data as unknown as ReplyWithJoins[]);
 };
 
 export const fetchReplyById = async (
@@ -56,7 +71,7 @@ export const fetchReplyById = async (
     return null;
   }
 
-  return data as unknown as ReplyWithJoins;
+  return filterDeletedImageInReply(data as unknown as ReplyWithJoins);
 };
 
 export const fetchCreateReply = async ({
@@ -76,6 +91,7 @@ export const fetchCreateReply = async ({
       post_id,
       reply_id,
     })
+    .select()
     .single();
 
   if (replyError) {
@@ -83,23 +99,15 @@ export const fetchCreateReply = async ({
   }
 
   if (imagesArg && imagesArg.length > 0) {
-    const imagePromises = imagesArg.map((image) => {
-      return supabase
-        .from('images')
-        .insert({
-          ...image,
-          post_id,
-        })
-        .single();
-    });
+    const imageInsertPromises = imagesArg.map((image) =>
+      supabase.from('images').insert({
+        ...image,
+        reply_id: reply.id,
+      }),
+    );
 
-    const imageResults = await Promise.all(imagePromises);
-    const imageErrors = imageResults.filter((result) => result.error);
-
-    if (imageErrors.length > 0) {
-      throw new Error(imageErrors.map((e) => e.error?.message).join(', '));
-    }
+    await Promise.all(imageInsertPromises);
   }
 
-  return reply as ReplyWithJoins;
+  return filterDeletedImageInReply(reply as unknown as ReplyWithJoins);
 };

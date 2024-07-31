@@ -9,7 +9,11 @@ import {t} from '../../../../src/STRINGS';
 import ReplyItem from '../../../../src/components/uis/ReplyItem';
 import ReplyInput from '../../../../src/components/uis/ReplyInput';
 import {ImagePickerAsset} from 'expo-image-picker';
-import {supabase} from '../../../../src/supabase';
+import {
+  getPublicUrlFromPath,
+  supabase,
+  uploadFileToSupabase,
+} from '../../../../src/supabase';
 import {
   fetchCreateReply,
   fetchReplyById,
@@ -40,6 +44,7 @@ export default function Replies({
   const [page, setPage] = useState(0);
   const [replies, setReplies] = useState<ReplyWithJoins[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [isCreateReplyInFlight, setIsCreateReplyInFlight] = useState(false);
 
   const {error, isValidating, mutate} = useSWR<ReplyWithJoins[]>(
     ['replies', postId, page],
@@ -115,16 +120,37 @@ export default function Replies({
   const handleCreateReply = async () => {
     if (!authId || !postId) return;
 
+    setIsCreateReplyInFlight(true);
+
     try {
+      const imageUploadPromises = assets.map(async (asset) => {
+        const destPath = `${asset.type === 'video' ? 'videos' : 'images'}/${Date.now()}_${asset.fileName}`;
+        const file = asset.uri;
+
+        return await uploadFileToSupabase({
+          uri: file,
+          fileType: asset.type === 'video' ? 'Video' : 'Image',
+          bucket: 'images',
+          destPath,
+        });
+      });
+
+      const images = await Promise.all(imageUploadPromises);
+
       const newReply = await fetchCreateReply({
         reply: {
           message: reply,
           user_id: authId,
           post_id: postId,
         },
-        images: assets.map((asset) => ({
-          url: asset.uri,
-        })),
+        images: images
+          .filter((el) => !!el)
+          .map((el) => ({
+            ...el,
+            image_url: el?.image_url
+              ? getPublicUrlFromPath(el.image_url)
+              : undefined,
+          })),
       });
 
       mutate(newReply ? [newReply, ...replies] : replies, false);
@@ -133,6 +159,7 @@ export default function Replies({
     } finally {
       setReply('');
       setAssets([]);
+      setIsCreateReplyInFlight(false);
     }
   };
 
@@ -144,7 +171,7 @@ export default function Replies({
 
   const handleRefresh = () => {
     setReplies([]);
-    setPage(1);
+    setPage(0);
     mutate();
   };
 
@@ -264,6 +291,7 @@ export default function Replies({
           style={css`
             padding: 0;
           `}
+          loading={isCreateReplyInFlight}
           styles={{
             container: css`
               border-radius: 0;
