@@ -15,6 +15,8 @@ import {
 import useSWR from 'swr';
 import FallbackComponent from '../../../src/components/uis/ErrorFallback';
 import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
+import {useRecoilValue} from 'recoil';
+import {authRecoilState} from '../../../src/recoil/atoms';
 
 const Container = styled.View`
   flex: 1;
@@ -24,6 +26,7 @@ const Container = styled.View`
 
 export default function Posts(): JSX.Element {
   const {push} = useRouter();
+  const {authId} = useRecoilValue(authRecoilState);
   const [page, setPage] = useState(0);
   const [allPosts, setAllPosts] = useState<PostWithJoins[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -136,7 +139,7 @@ export default function Posts(): JSX.Element {
                 post={item}
                 controlItemProps={{
                   hasLiked: item.likes?.some(
-                    (like) => like.user_id === item.user_id && like.liked,
+                    (like) => like.user_id === authId && like.liked,
                   ),
                   likeCnt: item.likes?.length || 0,
                   replyCnt: item.replies?.length || 0,

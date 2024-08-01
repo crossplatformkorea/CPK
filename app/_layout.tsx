@@ -108,7 +108,7 @@ function Layout(): JSX.Element | null {
         user: null,
       });
     });
-  }, []);
+  }, [setAuth, snackbar]);
 
   useEffect(() => {
     if (assetLoaded) {
