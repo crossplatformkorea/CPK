@@ -89,9 +89,7 @@ function SocialProvider({provider, email}: ProviderType): JSX.Element {
   );
 }
 
-type Props = {};
-
-export default function LoginInfo({}: Props): JSX.Element {
+export default function LoginInfo(): JSX.Element {
   const {back, replace} = useRouter();
   const {theme, alertDialog} = useDooboo();
   const {bottom} = useSafeAreaInsets();
@@ -219,7 +217,7 @@ export default function LoginInfo({}: Props): JSX.Element {
             font-size: 16px;
           `,
         }}
-        text="회원 탈퇴"
+        text={t('loginInfo.cancelAccount')}
         touchableHighlightProps={{
           underlayColor: theme.text.contrast,
         }}
