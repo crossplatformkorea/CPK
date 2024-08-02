@@ -1,5 +1,5 @@
 import {useCallback, useState} from 'react';
-import {Image, Platform, ScrollView} from 'react-native';
+import {Image, InteractionManager, Platform, ScrollView} from 'react-native';
 import styled, {css} from '@emotion/native';
 import {
   GoogleSignin,
@@ -59,25 +59,29 @@ export default function SignIn(): JSX.Element {
 
       const userInfo = await GoogleSignin.signIn();
 
-      if (userInfo.idToken) {
-        const {error} = await supabase.auth.signInWithIdToken({
-          provider: 'google',
-          token: userInfo.idToken,
-        });
+      InteractionManager.runAfterInteractions(async () => {
+        if (userInfo.idToken) {
+          const {error} = await supabase.auth.signInWithIdToken({
+            provider: 'google',
+            token: userInfo.idToken,
+          });
 
-        supabase.auth.updateUser({data: {avatar_url: userInfo.user.photo}});
+          supabase.auth.updateUser({
+            data: {avatar_url: userInfo.user.photo},
+          });
 
-        if (error && __DEV__) {
-          // eslint-disable-next-line no-console
-          console.error(error);
+          if (error && __DEV__) {
+            // eslint-disable-next-line no-console
+            console.error(error);
+
+            return;
+          }
 
           return;
         }
 
-        return;
-      }
-
-      showAlert(t('signIn.googleIdNotAvailable'));
+        showAlert(t('signIn.googleIdNotAvailable'));
+      });
     } catch (error: any) {
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
       } else if (error.code === statusCodes.IN_PROGRESS) {
