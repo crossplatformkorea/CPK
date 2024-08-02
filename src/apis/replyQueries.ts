@@ -1,5 +1,6 @@
 import {supabase} from '../supabase';
 import {ImageInsertArgs, ReplyInsertArgs, ReplyWithJoins} from '../types';
+import { PAGE_SIZE } from '../utils/constants';
 
 const filterDeletedImageInReply = (reply: ReplyWithJoins): ReplyWithJoins => {
   return {
@@ -17,17 +18,14 @@ const filterDeletedImagesInReplies = (
 };
 
 export const fetchReplyPagination = async ({
-  page,
-  pageSize,
+  cursor = new Date().toISOString(),
+  limit = PAGE_SIZE,
   postId,
 }: {
-  page: number;
-  pageSize: number;
+  cursor: string | undefined;
+  limit?: number;
   postId: string;
 }): Promise<ReplyWithJoins[]> => {
-  const from = (page - 1) * pageSize;
-  const to = from + pageSize - 1;
-
   const {data, error} = await supabase
     .from('replies')
     .select(
@@ -38,10 +36,11 @@ export const fetchReplyPagination = async ({
       likes (*)
     `,
     )
-    .order('created_at', {ascending: false})
     .eq('post_id', postId)
     .is('deleted_at', null)
-    .range(from, to);
+    .order('created_at', {ascending: false})
+    .limit(limit)
+    .lt('created_at', cursor);
 
   if (error) {
     throw new Error(error.message);

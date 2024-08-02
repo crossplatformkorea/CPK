@@ -1,4 +1,5 @@
 import {supabase} from '../supabase';
+import { User } from '../types';
 
 export async function fetchBlockUser({
   authId,
@@ -56,15 +57,12 @@ export async function fetchUnblockUser(userId: string, blockUserId: string) {
 
 export const fetchBlockUsersPagination = async (
   userId: string,
-  page: number,
-  pageSize: number,
+  cursor: string = new Date().toISOString(),
+  limit: number,
 ) => {
   if (!userId) {
     return [];
   }
-
-  const from = (page - 1) * pageSize;
-  const to = from + pageSize - 1;
 
   const {data, error} = await supabase
     .from('blocks')
@@ -75,13 +73,14 @@ export const fetchBlockUsersPagination = async (
     )
     .eq('user_id', userId)
     .order('created_at', {ascending: false})
-    .range(from, to);
+    .limit(limit)
+    .lt('created_at', cursor);
 
   if (error) {
     throw new Error(error.message);
   }
 
-  return data.map((block) => block.block_user);
+  return data.map((block) => block.block_user) as unknown as User[];
 };
 
 export const fetchBlockUserIds = async (userId: string): Promise<string[]> => {

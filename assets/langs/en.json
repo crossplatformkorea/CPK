@@ -71,7 +71,7 @@
     }
   },
   "settings": {
-    "bannedUsers": "Banned Users",
+    "blockedUsers": "Blocked Users",
     "darkMode": "Dark Mode",
     "loginInfo": "Login Information",
     "notificationSettings": "Notification Settings",

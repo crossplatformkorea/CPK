@@ -1,7 +1,7 @@
 import {useState, useEffect, Ref} from 'react';
 import {css} from '@emotion/native';
 import {KeyboardAvoidingView, Platform, View} from 'react-native';
-import {HEADER_HEIGHT, PAGE_SIZE} from '../../../../src/utils/constants';
+import {HEADER_HEIGHT} from '../../../../src/utils/constants';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {FlashList} from '@shopify/flash-list';
 import {Typography, useDooboo} from 'dooboo-ui';
@@ -41,19 +41,18 @@ export default function Replies({
   const {authId} = useRecoilValue(authRecoilState);
   const [reply, setReply] = useState('');
   const [assets, setAssets] = useState<ImagePickerAsset[]>([]);
-  const [page, setPage] = useState(0);
+  const [cursor, setCursor] = useState<string | undefined>(undefined);
   const [replies, setReplies] = useState<ReplyWithJoins[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [isCreateReplyInFlight, setIsCreateReplyInFlight] = useState(false);
 
   const {error, isValidating, mutate} = useSWR<ReplyWithJoins[]>(
-    ['replies', postId, page],
-    () =>
-      fetchReplyPagination({page, pageSize: PAGE_SIZE, postId: postId || ''}),
+    ['replies', postId, cursor],
+    () => fetchReplyPagination({cursor, postId: postId as string}),
     {
       revalidateOnFocus: false,
       onSuccess: (data) => {
-        if (page === 0) {
+        if (cursor === new Date().toISOString()) {
           setReplies(data);
         } else {
           setReplies((prevReplies) => [...prevReplies, ...data]);
@@ -166,12 +165,15 @@ export default function Replies({
   const loadMoreReplies = () => {
     if (loadingMore) return;
     setLoadingMore(true);
-    setPage((prevPage) => prevPage + 1);
+    const lastReply = replies[replies.length - 1];
+    if (lastReply) {
+      setCursor(lastReply.created_at || undefined);
+    }
   };
 
   const handleRefresh = () => {
     setReplies([]);
-    setPage(0);
+    setCursor(new Date().toISOString());
     mutate();
   };
 
@@ -221,10 +223,10 @@ export default function Replies({
   };
 
   useEffect(() => {
-    if (page === 1 && replies.length === 0) {
+    if (cursor === new Date().toISOString() && replies.length === 0) {
       mutate();
     }
-  }, [mutate, page, replies.length]);
+  }, [mutate, cursor, replies.length]);
 
   const content = (() => {
     switch (true) {

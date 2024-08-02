@@ -42,6 +42,7 @@ function AppLogicProvider({children}: Props): JSX.Element {
   const {showActionSheetWithOptions} = useActionSheet();
   const {alertDialog, snackbar} = useDooboo();
   const setReportModalState = useSetRecoilState(reportModalRecoilState);
+  const setAuthState = useSetRecoilState(authRecoilState);
   const [isCreateReportInFlight, setIsCreateReportInFlight] = useState(false);
 
   const handlePeerContentAction = async ({
@@ -60,10 +61,12 @@ function AppLogicProvider({children}: Props): JSX.Element {
 
       try {
         await fetchBlockUser({authId, userId});
+        snackbar.open({text: t('common.blockUserSuccess')});
 
-        snackbar.open({
-          text: t('common.blockUserSuccess'),
-        });
+        setAuthState((prev) => ({
+          ...prev,
+          blockedUserIds: [...prev.blockedUserIds, userId],
+        }));
 
         onCompleted?.('block');
       } catch (err) {

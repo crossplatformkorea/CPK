@@ -71,7 +71,7 @@
     }
   },
   "settings": {
-    "bannedUsers": "차단한 사용자",
+    "blockedUsers": "차단한 사용자",
     "darkMode": "다크 모드",
     "loginInfo": "로그인 정보",
     "notificationSettings": "알림 설정",

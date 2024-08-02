@@ -38,7 +38,7 @@ export default function Posts(): JSX.Element {
 
   const {error, isValidating, mutate} = useSWR(
     ['posts', cursor],
-    () => fetcher(cursor),
+    () => fetchPostPagination({cursor, blockedUserIds}),
     {
       revalidateOnFocus: false,
       revalidateIfStale: false,
