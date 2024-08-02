@@ -5,7 +5,7 @@ import {ReplyWithJoins} from '../../../../src/types';
 import useSWR from 'swr';
 import CustomLoadingIndicator from '../../../../src/components/uis/CustomLoadingIndicator';
 import {t} from '../../../../src/STRINGS';
-import ErrorFallback from '../../../../src/components/uis/ErrorFallback';
+import ErrorFallback from '../../../../src/components/uis/FallbackComponent';
 import NotFound from '../../../../src/components/uis/NotFound';
 import {Pressable, View} from 'react-native';
 import {openURL} from '../../../../src/utils/common';
@@ -97,8 +97,10 @@ export default function PostDetails(): JSX.Element {
     } else if (post?.user_id) {
       handlePeerContentAction({
         userId: post?.user_id,
-        onCompleted: async () => {
-          back();
+        onCompleted(type) {
+          if (type === 'block') {
+            back();
+          }
         },
       });
     }

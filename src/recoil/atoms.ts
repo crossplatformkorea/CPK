@@ -6,6 +6,7 @@ import { ReportModalProps } from '../components/modals/ReportModal';
 export type UserInfo = {
   authId: string | null;
   user: User | null;
+  blockedUserIds: string[];
 };
 
 export const authRecoilState = atom<UserInfo>({
@@ -13,6 +14,7 @@ export const authRecoilState = atom<UserInfo>({
   default: {
     authId: null,
     user: null,
+    blockedUserIds: []
   },
 });
 

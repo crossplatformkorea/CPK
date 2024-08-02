@@ -1,4 +1,9 @@
 {
+  "blockUsers": {
+    "cancelBlock": "Cancel Block",
+    "cancelBlockDesc": "If you cancel the block, you will be able to access the user's content. Do you want to cancel the block?",
+    "title": "Blocked Users"
+  },
   "common": {
     "appErrorMessage": "Communication is not smooth.\nPlease check your network status.",
     "block": "Block",
@@ -23,11 +28,15 @@
     "post": "Post",
     "profile": "Profile",
     "report": "Report",
+    "reportHint": "Please enter the information you wish to report.",
     "reportSubject": "Report {{subject}}",
+    "reportSuccess": "Thank you for reporting.",
     "retry": "Retry",
     "selectFromGallery": "Select from gallery",
     "takeAPhoto": "Take a photo",
+    "unblock": "Unblock",
     "unhandledError": "An unhandled error occurred.",
+    "unknown": "Unknown",
     "update": "Update",
     "updateApp": "Update App",
     "user": "User",
@@ -67,7 +76,7 @@
     }
   },
   "settings": {
-    "bannedUsers": "Banned Users",
+    "blockedUsers": "Blocked Users",
     "darkMode": "Dark Mode",
     "loginInfo": "Login Information",
     "notificationSettings": "Notification Settings",

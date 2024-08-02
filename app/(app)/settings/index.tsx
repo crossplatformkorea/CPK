@@ -141,7 +141,7 @@ export default function Settings(): JSX.Element {
             `}
           />
         ),
-        title: t('settings.bannedUsers'),
+        title: t('settings.blockedUsers'),
       },
       {
         startElement: (

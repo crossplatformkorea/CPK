@@ -11,10 +11,10 @@ import StatusBarBrightness from 'dooboo-ui/uis/StatusbarBrightness';
 import {Stack, useRouter} from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as SystemUI from 'expo-system-ui';
-import {useSetRecoilState} from 'recoil';
+import {useRecoilState, useSetRecoilState} from 'recoil';
 
 import RootProvider from '../src/providers';
-import {authRecoilState} from '../src/recoil/atoms';
+import {authRecoilState, reportModalRecoilState} from '../src/recoil/atoms';
 import {t} from '../src/STRINGS';
 import {supabase} from '../src/supabase';
 import {
@@ -23,6 +23,8 @@ import {
   delayPressIn,
   WEB_URL,
 } from '../src/utils/constants';
+import ReportModal from '../src/components/modals/ReportModal';
+import {fetchBlockUserIds} from '../src/apis/blockQueries';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -40,7 +42,7 @@ const Content = styled.View`
   background-color: ${({theme}) => theme.brand};
 `;
 
-function Layout(): JSX.Element | null {
+function App(): JSX.Element | null {
   const {assetLoaded, snackbar, theme} = useDooboo();
   const {back, replace} = useRouter();
   const setAuth = useSetRecoilState(authRecoilState);
@@ -94,9 +96,12 @@ function Layout(): JSX.Element | null {
             return;
           }
 
+          const blockedUserIds = await fetchBlockUserIds(session.user.id);
+
           setAuth({
             authId: session.user.id,
             user: data,
+            blockedUserIds,
           });
         }
 
@@ -106,9 +111,10 @@ function Layout(): JSX.Element | null {
       setAuth({
         authId: null,
         user: null,
+        blockedUserIds: [],
       });
     });
-  }, []);
+  }, [setAuth, snackbar]);
 
   useEffect(() => {
     if (assetLoaded) {
@@ -171,13 +177,35 @@ function Layout(): JSX.Element | null {
   );
 }
 
+function Layout(): JSX.Element | null {
+  const [reportModalState, setReportModalState] = useRecoilState(
+    reportModalRecoilState,
+  );
+
+  return (
+    <>
+      <App />
+      <ReportModal
+        {...reportModalState}
+        setVisible={(value) => {
+          setReportModalState({
+            ...reportModalState,
+            // @ts-ignore
+            visible: value,
+          });
+        }}
+      />
+    </>
+  );
+}
+
 export default function RootLayout(): JSX.Element | null {
   const colorScheme = useColorScheme();
+
   const [localThemeType, setLocalThemeType] = useState<string | undefined>(
     undefined,
   );
 
-  // 테마 불러오기
   useEffect(() => {
     const initializeThemeType = async (): Promise<void> => {
       const darkMode = await AsyncStorage.getItem(AsyncStorageKey.DarkMode);
