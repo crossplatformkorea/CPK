@@ -10,7 +10,7 @@ import {
   Platform,
   Pressable,
 } from 'react-native';
-import ErrorFallback from '../../../../src/components/uis/ErrorFallback';
+import ErrorFallback from '../../../../src/components/uis/FallbackComponent';
 import {useRecoilValue} from 'recoil';
 import {
   getPublicUrlFromPath,

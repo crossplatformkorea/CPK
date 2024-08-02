@@ -5,15 +5,14 @@ import {FlashList} from '@shopify/flash-list';
 import {useRouter} from 'expo-router';
 import {PostWithJoins} from '../../../src/types';
 import PostListItem from '../../../src/components/uis/PostListItem';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useState} from 'react';
 import {supabase} from '../../../src/supabase';
-import {PAGE_SIZE} from '../../../src/utils/constants';
 import {
   fetchPostById,
   fetchPostPagination,
 } from '../../../src/apis/postQueries';
 import useSWR from 'swr';
-import FallbackComponent from '../../../src/components/uis/ErrorFallback';
+import FallbackComponent from '../../../src/components/uis/FallbackComponent';
 import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
 import {useRecoilValue} from 'recoil';
 import {authRecoilState} from '../../../src/recoil/atoms';
@@ -26,27 +25,34 @@ const Container = styled.View`
 
 export default function Posts(): JSX.Element {
   const {push} = useRouter();
-  const {authId} = useRecoilValue(authRecoilState);
-  const [page, setPage] = useState(0);
+  const {authId, blockedUserIds} = useRecoilValue(authRecoilState);
+  const [cursor, setCursor] = useState<string | undefined>(undefined);
   const [allPosts, setAllPosts] = useState<PostWithJoins[]>([]);
   const [loadingMore, setLoadingMore] = useState(false);
 
-  const fetcher = (page: number) => fetchPostPagination(page, PAGE_SIZE);
+  const fetcher = useCallback(
+    (cursor: string | undefined) =>
+      fetchPostPagination({cursor, blockedUserIds}),
+    [blockedUserIds],
+  );
 
   const {error, isValidating, mutate} = useSWR(
-    ['posts', page],
-    () => fetcher(page),
+    ['posts', cursor],
+    () => fetcher(cursor),
     {
       revalidateOnFocus: false,
       revalidateIfStale: false,
       revalidateOnReconnect: false,
       onSuccess: (data) => {
-        if (page === 0) {
+        if (!cursor) {
           setAllPosts(data);
         } else {
           setAllPosts((prevPosts) => [...prevPosts, ...data]);
         }
         setLoadingMore(false);
+        if (data.length > 0) {
+          setCursor(data[data.length - 1].created_at || undefined);
+        }
       },
     },
   );
@@ -99,26 +105,18 @@ export default function Posts(): JSX.Element {
     };
   }, []);
 
-  useEffect(() => {
-    if (page !== 0) {
+  const loadMore = () => {
+    if (!loadingMore) {
       setLoadingMore(true);
-      fetcher(page).then((newPosts) => {
+      fetcher(cursor).then((newPosts) => {
         setAllPosts((prevPosts) => [...prevPosts, ...newPosts]);
         setLoadingMore(false);
       });
     }
-  }, [page]);
-
-  const loadMore = () => {
-    if (!loadingMore) {
-      setLoadingMore(true);
-      setPage((prevPage) => prevPage + 1);
-    }
   };
 
   const handleRefresh = () => {
-    setPage(0);
-    setAllPosts([]);
+    setCursor(undefined);
     mutate();
   };
 
@@ -133,7 +131,7 @@ export default function Posts(): JSX.Element {
           <FlashList
             data={allPosts}
             onRefresh={handleRefresh}
-            refreshing={isValidating && page === 0}
+            refreshing={isValidating && cursor === null}
             renderItem={({item}) => (
               <PostListItem
                 post={item}

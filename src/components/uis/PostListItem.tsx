@@ -7,6 +7,8 @@ import UserListItem from './UserListItem';
 import {View} from 'react-native';
 import ControlItem, {ControlItemProps} from './ControlItem';
 import {Image as ExpoImage} from 'expo-image';
+import { useRecoilValue } from 'recoil';
+import { authRecoilState } from '../../recoil/atoms';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -29,8 +31,13 @@ export default function PostListItem({
   post,
   onPress,
   controlItemProps,
-}: Props): JSX.Element {
+}: Props): JSX.Element | null {
   const {theme} = useDooboo();
+  const {blockedUserIds} = useRecoilValue(authRecoilState);
+
+  if (blockedUserIds.includes(post.user_id)) {
+    return null;
+  }
 
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.85}>

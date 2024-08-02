@@ -14,6 +14,7 @@ export type PostWithJoins = Post & {
   likes: Like[];
   replies: {id: string}[];
 };
+
 export type ReplyWithJoins = Reply & {
   user: User;
   images?: Image[];
@@ -33,3 +34,4 @@ export type ReplyInsertArgs = Database['public']['Tables']['replies']['Insert'];
 export type ReplyUpdateArgs = Database['public']['Tables']['replies']['Update'];
 export type ImageInsertArgs = Database['public']['Tables']['images']['Insert'];
 export type ImageUpdateArgs = Database['public']['Tables']['images']['Update'];
+export type ReportInsertArgs = Database['public']['Tables']['reports']['Insert'];

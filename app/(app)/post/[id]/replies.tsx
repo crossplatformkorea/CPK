@@ -23,7 +23,7 @@ import {useRecoilValue} from 'recoil';
 import {authRecoilState} from '../../../../src/recoil/atoms';
 import useSWR from 'swr';
 import {ReplyWithJoins} from '../../../../src/types';
-import FallbackComponent from '../../../../src/components/uis/ErrorFallback';
+import FallbackComponent from '../../../../src/components/uis/FallbackComponent';
 import {toggleLike} from '../../../../src/apis/likeQueries';
 
 export default function Replies({

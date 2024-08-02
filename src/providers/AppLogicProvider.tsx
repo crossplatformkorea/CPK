@@ -8,11 +8,12 @@ import {useRecoilValue, useSetRecoilState} from 'recoil';
 
 import {authRecoilState, reportModalRecoilState} from '../recoil/atoms';
 import {t} from '../STRINGS';
-import {User} from '../types';
+import {fetchBlockUser} from '../apis/blockQueries';
+import {fetchCreateReport} from '../apis/reportQueries';
 
 type PeerContentActionProps = {
   userId: string;
-  onCompleted?: () => void;
+  onCompleted?: (type: 'block' | 'report') => void;
 };
 
 type UserContentActionProps = {
@@ -41,6 +42,7 @@ function AppLogicProvider({children}: Props): JSX.Element {
   const {showActionSheetWithOptions} = useActionSheet();
   const {alertDialog, snackbar} = useDooboo();
   const setReportModalState = useSetRecoilState(reportModalRecoilState);
+  const [isCreateReportInFlight, setIsCreateReportInFlight] = useState(false);
 
   const handlePeerContentAction = async ({
     userId,
@@ -49,16 +51,49 @@ function AppLogicProvider({children}: Props): JSX.Element {
     const destructiveButtonIndex = 0;
     const cancelButtonIndex = 2;
 
-    const handleBlockUser = (): void => {
+    const handleBlockUser = async () => {
       if (!userId || !authId) {
         return;
       }
+
+      setIsCreateReportInFlight(true);
+
+      try {
+        await fetchBlockUser({authId, userId});
+
+        snackbar.open({
+          text: t('common.blockUserSuccess'),
+        });
+
+        onCompleted?.('block');
+      } catch (err) {
+        snackbar.open({text: t('error.default')});
+
+        if (__DEV__) {
+          console.error(err);
+        }
+      } finally {
+        setIsCreateReportInFlight(false);
+      }
     };
 
-    const handleReport = (content: string): void => {
-      if (!content || !userId) {
+    const handleReport = async (content: string): Promise<void> => {
+      if (!content || !userId || !authId) {
         return;
       }
+
+      await fetchCreateReport({
+        content,
+        src_user_id: authId,
+        title: t('common.reportSubject', {subject: t('common.user')}),
+        user_id: userId,
+      });
+
+      snackbar.open({
+        text: t('common.reportSuccess'),
+      });
+
+      onCompleted?.('report');
     };
 
     showActionSheetWithOptions(
@@ -91,8 +126,10 @@ function AppLogicProvider({children}: Props): JSX.Element {
                 <Button
                   color="danger"
                   key="button-danger"
-                  // loading={isBlockUserInFlight}
-                  onPress={handleBlockUser}
+                  onPress={() => {
+                    alertDialog.close();
+                    handleBlockUser();
+                  }}
                   styles={{
                     container: css`
                       height: 48px;
@@ -108,7 +145,7 @@ function AppLogicProvider({children}: Props): JSX.Element {
             setReportModalState({
               visible: true,
               subject: t('common.user'),
-              // loading: isCreateReportInFlight,
+              loading: isCreateReportInFlight,
               onReport: (content) => handleReport(content),
             });
             break;

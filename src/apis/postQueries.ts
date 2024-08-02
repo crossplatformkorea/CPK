@@ -1,19 +1,21 @@
 import {supabase} from '../supabase';
 import {ImageInsertArgs, PostInsertArgs, PostWithJoins} from '../types';
+import {PAGE_SIZE} from '../utils/constants';
 
 const filterDeletedImageInPost = (post: PostWithJoins): PostWithJoins => {
   return {
     ...post,
     images: post.images.filter((image) => !image.deleted_at),
   };
-}
+};
 
-
-const filterDeletedImagesInPosts = (posts: PostWithJoins[]): PostWithJoins[] => {
+const filterDeletedImagesInPosts = (
+  posts: PostWithJoins[],
+): PostWithJoins[] => {
   return posts.map((post) => {
     return filterDeletedImageInPost(post);
   });
-}
+};
 
 export const fetchPostById = async (
   id: string,
@@ -44,35 +46,48 @@ export const fetchPostById = async (
   return filterDeletedImageInPost(data as unknown as PostWithJoins);
 };
 
-export const fetchPostPagination = async (
-  page: number,
-  pageSize: number,
-): Promise<PostWithJoins[]> => {
-  const from = (page - 1) * pageSize;
-  const to = from + pageSize - 1;
-
+export const fetchPostPagination = async ({
+  cursor = new Date().toISOString(),
+  limit = PAGE_SIZE,
+  blockedUserIds = [],
+}: {
+  cursor: string | undefined;
+  blockedUserIds?: string[];
+  limit?: number;
+}): Promise<PostWithJoins[]> => {
   const {data, error} = await supabase
     .from('posts')
     .select(
       `
-      *,
-      user:user_id (*),
-      images (*),
-      replies (
-        id
-      ),
-      likes (*)
-    `,
+        *,
+        user:user_id (*),
+        images (*),
+        replies (
+          id
+        ),
+        likes (*)
+      `,
     )
     .is('deleted_at', null)
     .order('created_at', {ascending: false})
-    .range(from, to);
+    .limit(limit)
+    .lt('created_at', cursor);
 
   if (error) {
-    throw new Error(error.message);
+    if (__DEV__) {
+      console.error(error.message);
+    }
+
+    return [];
   }
 
-  return filterDeletedImagesInPosts(data as unknown as PostWithJoins[]);
+  const filteredPosts = data.filter(
+    (post) => !blockedUserIds.includes(post.user_id),
+  );
+
+  return filterDeletedImagesInPosts(
+    filteredPosts as unknown as PostWithJoins[],
+  );
 };
 
 export const fetchUpdatePost = async ({

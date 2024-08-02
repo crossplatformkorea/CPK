@@ -102,6 +102,42 @@ export type Database = {
         }
         Relationships: []
       }
+      blocks: {
+        Row: {
+          block_user_id: string
+          created_at: string | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          block_user_id: string
+          created_at?: string | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          block_user_id?: string
+          created_at?: string | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blocks_block_user_id_fkey"
+            columns: ["block_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blocks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       developers: {
         Row: {
           bio: string | null

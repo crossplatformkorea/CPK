@@ -29,7 +29,10 @@ export default function ReportModal(props: ReportModalProps): JSX.Element {
       maxLength={200}
       numberOfLines={6}
       onCancel={() => setVisible?.(false)}
-      onConfirm={onReport}
+      onConfirm={(message) => {
+        setVisible?.(false);
+        onReport?.(message);
+      }}
       setOpened={setVisible}
       textInputProps={{
         textAlignVertical: 'top',
