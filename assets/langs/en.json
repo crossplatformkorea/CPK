@@ -1,8 +1,12 @@
 {
+  "blockUsers": {
+    "cancelBlock": "Cancel Block",
+    "cancelBlockDesc": "If you cancel the block, you will be able to access the user's content. Do you want to cancel the block?",
+    "title": "Blocked Users"
+  },
   "common": {
     "appErrorMessage": "Communication is not smooth.\nPlease check your network status.",
     "block": "Block",
-    "unblock": "Unblock",
     "blockUser": "Block {{user}}",
     "blockUserDesc": "If you block a user, you will not be able to access the user's content. Do you want to block this user?",
     "blockUserSuccess": "User has been blocked",
@@ -24,21 +28,22 @@
     "post": "Post",
     "profile": "Profile",
     "report": "Report",
-    "reportSubject": "Report {{subject}}",
     "reportHint": "Please enter the information you wish to report.",
+    "reportSubject": "Report {{subject}}",
     "reportSuccess": "Thank you for reporting.",
     "retry": "Retry",
     "selectFromGallery": "Select from gallery",
     "takeAPhoto": "Take a photo",
+    "unblock": "Unblock",
     "unhandledError": "An unhandled error occurred.",
+    "unknown": "Unknown",
     "update": "Update",
     "updateApp": "Update App",
     "user": "User",
     "viewsWithCount": {
       "one": "Views %{count}",
       "other": "Views %{count}"
-    },
-    "unknown": "Unknown"
+    }
   },
   "error": {
     "default": "Error occurred!"
@@ -88,10 +93,5 @@
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "title": "Sign In"
-  },
-  "blockUsers": {
-    "title": "Blocked Users",
-    "cancelBlock": "Cancel Block",
-    "cancelBlockDesc": "If you cancel the block, you will be able to access the user's content. Do you want to cancel the block?"
   }
 }

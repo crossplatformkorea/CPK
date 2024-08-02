@@ -1,9 +1,13 @@
 {
+  "blockUsers": {
+    "cancelBlock": "차단 취소",
+    "cancelBlockDesc": "차단을 취소하면 사용자의 콘텐츠에 접근할 수 있습니다. 차단을 취소하시겠습니까?",
+    "title": "차단한 사용자"
+  },
   "common": {
     "appErrorMessage": "통신이 원활하지 않습니다.\n네트워크 상태를 확인해주세요.",
     "block": "차단",
     "blockUser": "{{user}} 차단",
-    "unblock": "차단 해제",
     "blockUserDesc": "사용자를 차단하면 해당 사용자의 콘텐츠에 접근할 수 없습니다. 이 사용자를 차단하시겠습니까?",
     "blockUserSuccess": "사용자가 차단되었습니다",
     "cancel": "취소",
@@ -24,21 +28,22 @@
     "post": "게시판",
     "profile": "프로필",
     "report": "신고",
-    "reportSubject": "{{subject}} 신고",
     "reportHint": "신고할 내용을 입력해주세요.",
+    "reportSubject": "{{subject}} 신고",
     "reportSuccess": "신고해주셔서 감사합니다.",
     "retry": "재시도",
     "selectFromGallery": "갤러리에서 선택",
     "takeAPhoto": "사진 찍기",
+    "unblock": "차단 해제",
     "unhandledError": "처리되지 않은 오류가 발생했습니다.",
+    "unknown": "알 수 없음",
     "update": "업데이트",
     "updateApp": "앱 업데이트",
     "user": "사용자",
     "viewsWithCount": {
       "one": "조회수 %{count}",
       "other": "조회수 %{count}"
-    },
-    "unknown": "알 수 없음"
+    }
   },
   "error": {
     "default": "오류가 발생했습니다!"
@@ -88,10 +93,5 @@
     "privacyPolicy": "개인정보 처리방침",
     "termsOfService": "서비스 약관",
     "title": "로그인"
-  },
-  "blockUsers": {
-    "title": "차단한 사용자",
-    "cancelBlock": "차단 취소",
-    "cancelBlockDesc": "차단을 취소하면 사용자의 콘텐츠에 접근할 수 있습니다. 차단을 취소하시겠습니까?"
   }
 }
