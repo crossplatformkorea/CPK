@@ -58,9 +58,6 @@ function App(): JSX.Element | null {
         return;
       }
 
-      console.log('session', session?.user.id);
-      console.log('evt', evt);
-
       if (session?.user) {
         const {status} = await supabase
           .from('users')

@@ -11,7 +11,10 @@ import {delayPressIn, PAGE_SIZE} from '../../../src/utils/constants';
 import {authRecoilState} from '../../../src/recoil/atoms';
 import NotFound from '../../../src/components/uis/NotFound';
 import {t} from '../../../src/STRINGS';
-import {fetchBlockUsersPagination, fetchUnblockUser} from '../../../src/apis/blockQueries';
+import {
+  fetchBlockUsersPagination,
+  fetchUnblockUser,
+} from '../../../src/apis/blockQueries';
 import {User} from '../../../src/types';
 
 const Profile = styled.View`
@@ -72,7 +75,7 @@ const Container = styled.View`
 
 export default function BlockUser(): JSX.Element {
   const {alertDialog} = useDooboo();
-  const [{authId}, setAuth] = useRecoilState(authRecoilState);
+  const [{authId, blockedUserIds}, setAuth] = useRecoilState(authRecoilState);
   const [blockUsers, setBlockUsers] = useState<User[]>([]);
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -80,7 +83,8 @@ export default function BlockUser(): JSX.Element {
 
   const loadBlockedUsers = useCallback(
     async (loadMore = false) => {
-      if (loadingMore || refreshing || !authId) return;
+      if (loadingMore || refreshing || !authId || blockedUserIds.length === 0)
+        return;
 
       if (loadMore) {
         setLoadingMore(true);
@@ -108,7 +112,7 @@ export default function BlockUser(): JSX.Element {
         setRefreshing(false);
       }
     },
-    [authId, cursor, loadingMore, refreshing],
+    [authId, blockedUserIds.length, cursor, loadingMore, refreshing],
   );
 
   useEffect(() => {
@@ -143,7 +147,14 @@ export default function BlockUser(): JSX.Element {
             alertDialog.close();
 
             fetchUnblockUser(authId, userId);
-            setAuth((prev) => ({...prev, blockedUserIds: prev.blockedUserIds.filter((id) => id !== userId)}));
+            setAuth((prev) => {
+              return {
+                ...prev,
+                blockedUserIds: prev.blockedUserIds.filter(
+                  (id) => id !== userId,
+                ),
+              };
+            });
           }}
           styles={{
             container: css`
