@@ -25,6 +25,7 @@ import {
 } from '../src/utils/constants';
 import ReportModal from '../src/components/modals/ReportModal';
 import {fetchBlockUserIds} from '../src/apis/blockQueries';
+import {AuthChangeEvent} from '@supabase/supabase-js';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -48,7 +49,18 @@ function App(): JSX.Element | null {
   const setAuth = useSetRecoilState(authRecoilState);
 
   useEffect(() => {
-    supabase.auth.onAuthStateChange(async (_, session) => {
+    const {data} = supabase.auth.onAuthStateChange(async (evt, session) => {
+      if (
+        !(
+          ['INITIAL_SESSION', 'SIGNED_IN', 'SIGNED_OUT'] as AuthChangeEvent[]
+        ).includes(evt)
+      ) {
+        return;
+      }
+
+      console.log('session', session?.user.id);
+      console.log('evt', evt);
+
       if (session?.user) {
         const {status} = await supabase
           .from('users')
@@ -114,6 +126,10 @@ function App(): JSX.Element | null {
         blockedUserIds: [],
       });
     });
+
+    return () => {
+      data.subscription.unsubscribe();
+    };
   }, [setAuth, snackbar]);
 
   useEffect(() => {

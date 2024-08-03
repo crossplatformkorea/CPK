@@ -13,7 +13,8 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
     storage: AsyncStorage,
     autoRefreshToken: true,
     persistSession: true,
-    detectSessionInUrl: false,
+    // https://github.com/supabase/auth-js/issues/23#issuecomment-2253757376
+    // detectSessionInUrl: false,
   },
 });
 
