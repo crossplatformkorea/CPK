@@ -570,6 +570,7 @@ export type Database = {
           created_at: string | null
           deleted_at: string | null
           description: string | null
+          display_name: string | null
           email: string | null
           email_confirmed_at: string | null
           full_name: string | null
@@ -592,6 +593,7 @@ export type Database = {
           created_at?: string | null
           deleted_at?: string | null
           description?: string | null
+          display_name?: string | null
           email?: string | null
           email_confirmed_at?: string | null
           full_name?: string | null
@@ -614,6 +616,7 @@ export type Database = {
           created_at?: string | null
           deleted_at?: string | null
           description?: string | null
+          display_name?: string | null
           email?: string | null
           email_confirmed_at?: string | null
           full_name?: string | null

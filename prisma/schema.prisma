@@ -25,6 +25,7 @@ model User {
   email            String?
   fullName         String?   @map("full_name")
   name             String?
+  displayName      String?   @map("display_name")
   avatarUrl        String?   @map("avatar_url")
   phoneVerified    Boolean?  @default(false) @map("phone_verified")
   providerId       String?   @map("provider_id")
@@ -48,7 +49,7 @@ model User {
   notificationsTarget Notification[] @relation("NotificationTargetUser")
   replies             Reply[]
   reports             Report[]
-  reportsTarget       Report[]             @relation("ReportTargetUser")
+  reportsTarget       Report[]       @relation("ReportTargetUser")
   likes               Like[]
   posts               Post[]
   blockUsers          Block[]        @relation("BlockUser")
@@ -261,7 +262,7 @@ model Tag {
 }
 
 model Block {
-  id  String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz()
 
   user   User   @relation(fields: [userId], references: [id])

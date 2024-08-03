@@ -30,6 +30,7 @@
     "generate:supabase": "bunx supabase gen types typescript --project-id \"dnwizkmicoxcnzlfeali\" --schema public > src/types/supabase.ts",
     "migrate:dev": "dotenv -e .env -- prisma migrate dev",
     "migrate:local": "dotenv -e .env -- prisma migrate deploy",
+    "db-push": "dotenv -e .env.production -- prisma db push",
     "migrate:deploy": "dotenv -e .env.production -- prisma migrate deploy"
   },
   "dependencies": {

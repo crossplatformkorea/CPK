@@ -21,7 +21,7 @@
     "leaveComment": "Leave a comment",
     "noComment": "No comments",
     "notFound": "Not found",
-    "dataNotFound": "Data not found",
+    "notFoundData": "Data not found",
     "ok": "OK",
     "or": "or",
     "permissionGrantCamera": "Please grant camera permission to take pictures.",
@@ -32,6 +32,7 @@
     "reportHint": "Please enter the information you wish to report.",
     "reportSubject": "Report {{subject}}",
     "reportSuccess": "Thank you for reporting.",
+    "requiredField": "Required field",
     "retry": "Retry",
     "selectFromGallery": "Select from gallery",
     "takeAPhoto": "Take a photo",
@@ -57,6 +58,11 @@
     "loginMethod": "Login Method",
     "logout": "Logout",
     "title": "Login Information"
+  },
+  "onboarding": {
+    "displayName": "Display Name",
+    "displayNamePlaceholder": "Enter your display name",
+    "title": "Onboarding"
   },
   "post": {
     "update": {

@@ -88,7 +88,7 @@ export default function ReplyItem({
         onPress={() => {
           push({
             pathname: `/[displayName]`,
-            params: {displayName: `@${item.user.name}`},
+            params: {displayName: `@${item.user.display_name}`},
           });
         }}
         style={css`
@@ -113,7 +113,7 @@ export default function ReplyItem({
                 font-family: Pretendard-Bold;
               `}
             >
-              {item.user.name}
+              {item.user.display_name}
             </Typography.Body3>
             <CustomPressable
               onPress={handlePressMore}

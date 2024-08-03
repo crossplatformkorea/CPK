@@ -34,7 +34,7 @@ export default function NotFound({
             color: ${theme.text.disabled};
           `}
         >
-          {text || t('common.dataNotFound')}
+          {text || t('common.notFoundData')}
         </Typography.Body3>
       ) : (
         text

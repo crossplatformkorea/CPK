@@ -32,6 +32,7 @@
     "reportHint": "신고할 내용을 입력해주세요.",
     "reportSubject": "{{subject}} 신고",
     "reportSuccess": "신고해주셔서 감사합니다.",
+    "requiredField": "This field is required",
     "retry": "재시도",
     "selectFromGallery": "갤러리에서 선택",
     "takeAPhoto": "사진 찍기",
@@ -57,6 +58,11 @@
     "loginMethod": "로그인 수단",
     "logout": "로그아웃",
     "title": "로그인 정보"
+  },
+  "onboarding": {
+    "displayName": "닉네임",
+    "displayNamePlaceholder": "닉네임을 입력하세요",
+    "title": "온보딩"
   },
   "post": {
     "update": {
