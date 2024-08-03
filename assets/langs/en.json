@@ -15,6 +15,7 @@
     "delete": "Delete",
     "deleteSuccess": "Successfully deleted",
     "deletedAccount": "Retired account.",
+    "done": "Done",
     "image": "Image",
     "invalidUrl": "Invalid URL",
     "latest": "Latest",
@@ -62,7 +63,9 @@
   "onboarding": {
     "displayName": "Display Name",
     "displayNamePlaceholder": "Enter your display name",
-    "title": "Onboarding"
+    "title": "Onboarding",
+    "sectionTitle": "Welcome to Dev Community!",
+    "sectionDescription": "Please submit your welcome card below to proceed!"
   },
   "post": {
     "update": {

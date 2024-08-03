@@ -15,6 +15,7 @@
     "delete": "삭제",
     "deleteSuccess": "성공적으로 삭제되었습니다",
     "deletedAccount": "탈퇴한 계정입니다.",
+    "done": "완료",
     "image": "이미지",
     "invalidUrl": "유효하지 않은 URL",
     "latest": "최신순",
@@ -62,7 +63,9 @@
   "onboarding": {
     "displayName": "닉네임",
     "displayNamePlaceholder": "닉네임을 입력하세요",
-    "title": "온보딩"
+    "title": "온보딩",
+    "sectionTitle": "개발자 커뮤니티에 오신 것을 환영합니다!",
+    "sectionDescription": "계속 진행하기 위해 아래 웰컴 카드를 제출해주세요!"
   },
   "post": {
     "update": {

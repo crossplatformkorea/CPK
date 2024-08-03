@@ -28,14 +28,14 @@ function SettingsMenu(): JSX.Element {
 
 export default function TabLayout(): JSX.Element {
   const {theme} = useDooboo();
-  const {authId} = useRecoilValue(authRecoilState);
-
-  if (!authId) {
-    return <Redirect href="sign-in" />;
-  }
+  const {authId, user} = useRecoilValue(authRecoilState);
 
   if (!authId) {
     return <Redirect href="/sign-in" />;
+  }
+
+  if (!user?.display_name) {
+    return <Redirect href="/onboarding" />;
   }
 
   return (
