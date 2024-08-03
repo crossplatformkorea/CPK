@@ -43,7 +43,7 @@ const Buttons = styled.View`
 
 export default function SignIn(): JSX.Element {
   const {theme} = useDooboo();
-  const {authId} = useRecoilValue(authRecoilState);
+  const {authId, user} = useRecoilValue(authRecoilState);
   const [isHorizontal, setIsHorizontal] = useState(false);
   const {push} = useRouter();
 
@@ -123,6 +123,9 @@ export default function SignIn(): JSX.Element {
   }, []);
 
   if (authId) {
+    if (!user?.display_name) {
+      return <Redirect href="/onboarding" />;
+    }
     return <Redirect href="/" />;
   }
 
@@ -153,7 +156,7 @@ export default function SignIn(): JSX.Element {
 
           <Typography.Heading5
             style={css`
-              color: white;
+              color: ${theme.text.basic};
               font-size: 16px;
               padding: 2px 20px 12px;
               text-align: center;
@@ -214,7 +217,7 @@ export default function SignIn(): JSX.Element {
                 margin-top: 4px;
                 text-align: center;
                 line-height: 20px;
-                color: ${theme.text.placeholderContrast};
+                color: ${theme.text.label};
               `}
             >
               {t('signIn.policyAgreement', {
@@ -237,7 +240,7 @@ export default function SignIn(): JSX.Element {
                       }}
                       style={css`
                         text-decoration-line: underline;
-                        color: white;
+                        color: ${theme.text.basic};
                         text-decoration-line: underline;
                       `}
                     >

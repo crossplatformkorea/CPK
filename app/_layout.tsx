@@ -11,7 +11,7 @@ import StatusBarBrightness from 'dooboo-ui/uis/StatusbarBrightness';
 import {Stack, useRouter} from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as SystemUI from 'expo-system-ui';
-import {useRecoilState, useSetRecoilState} from 'recoil';
+import {useRecoilState} from 'recoil';
 
 import RootProvider from '../src/providers';
 import {authRecoilState, reportModalRecoilState} from '../src/recoil/atoms';
@@ -26,6 +26,7 @@ import {
 import ReportModal from '../src/components/modals/ReportModal';
 import {fetchBlockUserIds} from '../src/apis/blockQueries';
 import {AuthChangeEvent} from '@supabase/supabase-js';
+import CustomLoadingIndicator from '../src/components/uis/CustomLoadingIndicator';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -46,7 +47,8 @@ const Content = styled.View`
 function App(): JSX.Element | null {
   const {assetLoaded, snackbar, theme} = useDooboo();
   const {back, replace} = useRouter();
-  const setAuth = useSetRecoilState(authRecoilState);
+  const [{authId}, setAuth] = useRecoilState(authRecoilState);
+  const [initialRouteName, setInitialRouteName] = useState<string>();
 
   useEffect(() => {
     const {data} = supabase.auth.onAuthStateChange(async (evt, session) => {
@@ -134,17 +136,24 @@ function App(): JSX.Element | null {
       // Adhoc: Set a timeout to hide the splash screen
       const timeout = setTimeout(() => {
         SplashScreen.hideAsync();
+        setInitialRouteName(authId ? '/' : 'sign-in');
+
         if (timeout) {
           clearTimeout(timeout);
         }
-      }, 1200);
+      }, 1000);
     }
-  }, [assetLoaded]);
+  }, [assetLoaded, authId]);
+
+  if (!initialRouteName) {
+    return <CustomLoadingIndicator />;
+  }
 
   return (
     <Container>
       <Content>
         <Stack
+          initialRouteName={initialRouteName}
           screenOptions={{
             headerStyle: {backgroundColor: theme.bg.basic},
             headerTintColor: theme.text.label,
