@@ -21,6 +21,7 @@
     "leaveComment": "Leave a comment",
     "noComment": "No comments",
     "notFound": "Not found",
+    "dataNotFound": "Data not found",
     "ok": "OK",
     "or": "or",
     "permissionGrantCamera": "Please grant camera permission to take pictures.",

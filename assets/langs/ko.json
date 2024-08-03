@@ -21,6 +21,7 @@
     "leaveComment": "댓글 남기기",
     "noComment": "댓글이 없습니다",
     "notFound": "찾을 수 없습니다",
+    "notFoundData": "데이터를 찾을 수 없습니다",
     "ok": "확인",
     "or": "또는",
     "permissionGrantCamera": "촬영을 위해 카메라 권한을 부여해주세요.",
