@@ -9,36 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      _DeveloperToTag: {
-        Row: {
-          A: string
-          B: string
-        }
-        Insert: {
-          A: string
-          B: string
-        }
-        Update: {
-          A?: string
-          B?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "_DeveloperToTag_A_fkey"
-            columns: ["A"]
-            isOneToOne: false
-            referencedRelation: "developers"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "_DeveloperToTag_B_fkey"
-            columns: ["B"]
-            isOneToOne: false
-            referencedRelation: "tags"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       _PostToTag: {
         Row: {
           A: string
@@ -102,6 +72,36 @@ export type Database = {
         }
         Relationships: []
       }
+      _TagToUser: {
+        Row: {
+          A: string
+          B: string
+        }
+        Insert: {
+          A: string
+          B: string
+        }
+        Update: {
+          A?: string
+          B?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "_TagToUser_A_fkey"
+            columns: ["A"]
+            isOneToOne: false
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "_TagToUser_B_fkey"
+            columns: ["B"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blocks: {
         Row: {
           block_user_id: string
@@ -131,68 +131,6 @@ export type Database = {
           },
           {
             foreignKeyName: "blocks_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      developers: {
-        Row: {
-          bio: string | null
-          created_at: string | null
-          deleted_at: string | null
-          desired_connection: string | null
-          email: string | null
-          future_expectations: string | null
-          github_id: string | null
-          id: string
-          meetup_id: string | null
-          motivation_for_event_participation: string | null
-          nationality: string | null
-          organization: string | null
-          threads_id: string | null
-          twitter_id: string | null
-          user_id: string | null
-        }
-        Insert: {
-          bio?: string | null
-          created_at?: string | null
-          deleted_at?: string | null
-          desired_connection?: string | null
-          email?: string | null
-          future_expectations?: string | null
-          github_id?: string | null
-          id?: string
-          meetup_id?: string | null
-          motivation_for_event_participation?: string | null
-          nationality?: string | null
-          organization?: string | null
-          threads_id?: string | null
-          twitter_id?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          bio?: string | null
-          created_at?: string | null
-          deleted_at?: string | null
-          desired_connection?: string | null
-          email?: string | null
-          future_expectations?: string | null
-          github_id?: string | null
-          id?: string
-          meetup_id?: string | null
-          motivation_for_event_participation?: string | null
-          nationality?: string | null
-          organization?: string | null
-          threads_id?: string | null
-          twitter_id?: string | null
-          user_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "developers_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -564,21 +502,29 @@ export type Database = {
       }
       users: {
         Row: {
+          affiliation: string | null
           avatar_url: string | null
           birthday: string | null
           confirmed_at: string | null
           created_at: string | null
           deleted_at: string | null
-          description: string | null
+          desired_connection: string | null
           display_name: string | null
           email: string | null
           email_confirmed_at: string | null
           full_name: string | null
+          future_expectations: string | null
           gender: Database["public"]["Enums"]["Gender"] | null
+          github_id: string | null
           id: string
+          introduction: string | null
           last_sign_in_at: string | null
           locale: string | null
+          meetup_id: string | null
+          motivation_for_event_participation: string | null
           name: string | null
+          nationality: string | null
+          other_sns_ids: string | null
           phone: string | null
           phone_verified: boolean | null
           provider: Database["public"]["Enums"]["AuthType"]
@@ -587,21 +533,29 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          affiliation?: string | null
           avatar_url?: string | null
           birthday?: string | null
           confirmed_at?: string | null
           created_at?: string | null
           deleted_at?: string | null
-          description?: string | null
+          desired_connection?: string | null
           display_name?: string | null
           email?: string | null
           email_confirmed_at?: string | null
           full_name?: string | null
+          future_expectations?: string | null
           gender?: Database["public"]["Enums"]["Gender"] | null
+          github_id?: string | null
           id?: string
+          introduction?: string | null
           last_sign_in_at?: string | null
           locale?: string | null
+          meetup_id?: string | null
+          motivation_for_event_participation?: string | null
           name?: string | null
+          nationality?: string | null
+          other_sns_ids?: string | null
           phone?: string | null
           phone_verified?: boolean | null
           provider?: Database["public"]["Enums"]["AuthType"]
@@ -610,21 +564,29 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          affiliation?: string | null
           avatar_url?: string | null
           birthday?: string | null
           confirmed_at?: string | null
           created_at?: string | null
           deleted_at?: string | null
-          description?: string | null
+          desired_connection?: string | null
           display_name?: string | null
           email?: string | null
           email_confirmed_at?: string | null
           full_name?: string | null
+          future_expectations?: string | null
           gender?: Database["public"]["Enums"]["Gender"] | null
+          github_id?: string | null
           id?: string
+          introduction?: string | null
           last_sign_in_at?: string | null
           locale?: string | null
+          meetup_id?: string | null
+          motivation_for_event_participation?: string | null
           name?: string | null
+          nationality?: string | null
+          other_sns_ids?: string | null
           phone?: string | null
           phone_verified?: boolean | null
           provider?: Database["public"]["Enums"]["AuthType"]
