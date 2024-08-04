@@ -5,6 +5,7 @@
     "title": "Blocked Users"
   },
   "common": {
+    "add": "Add",
     "appErrorMessage": "Communication is not smooth.\nPlease check your network status.",
     "block": "Block",
     "blockUser": "Block {{user}}",
@@ -61,11 +62,31 @@
     "title": "Login Information"
   },
   "onboarding": {
+    "affiliation": "Affiliation",
+    "affiliationPlaceholder": "Enter your affiliation",
     "displayName": "Display Name",
     "displayNamePlaceholder": "Enter your display name",
-    "title": "Onboarding",
+    "futureExpectations": "Future Expectations",
+    "futureExpectationsPlaceholder": "Enter your future expectations",
+    "githubId": "GitHub ID",
+    "githubIdPlaceholder": "Enter your GitHub ID",
+    "introduction": "Introduction",
+    "introductionPlaceholder": "Enter your introduction",
+    "meetupId": "Meetup ID",
+    "meetupIdPlaceholder": "Enter your meetup ID",
+    "motivationForEventParticipation": "Motivation for Event Participation",
+    "motivationForEventParticipationPlaceholder": "Please enter your motivation for participating in the event if you are attending the meetup.",
+    "nationality": "Nationality",
+    "nationalityPlaceholder": "Enter your nationality",
+    "otherSnsUrls": "Other SNS URLs",
+    "otherSnsUrlsPlaceholder": "Enter your other SNS URLs",
+    "sectionDescription": "Please submit your welcome card below to proceed!",
     "sectionTitle": "Welcome to Dev Community!",
-    "sectionDescription": "Please submit your welcome card below to proceed!"
+    "title": "Onboarding",
+    "desiredConnection": "Desired Connection",
+    "desiredConnectionPlaceholder": "Enter whom you wish to connect with",
+    "yourTags": "Your Tags",
+    "yourTagsPlaceholder": "Please enter tags related to you"
   },
   "post": {
     "update": {
