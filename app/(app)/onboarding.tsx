@@ -14,12 +14,17 @@ import {
 } from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import {useState} from 'react';
-import {ImagePickerAsset} from 'expo-image-picker';
 import {t} from '../../src/STRINGS';
 import CustomScrollView from '../../src/components/uis/CustomScrollView';
 import ProfileImageInput from '../../src/components/fragments/ProfileImageInput';
 import CustomPressable from 'dooboo-ui/uis/CustomPressable';
 import {delayPressIn} from '../../src/utils/constants';
+import {fetchUpdateProfile} from '../../src/apis/profileQueries';
+import {uploadFileToSupabase} from '../../src/supabase';
+import {useRecoilState} from 'recoil';
+import {authRecoilState} from '../../src/recoil/atoms';
+import {ImageInsertArgs} from '../../src/types';
+
 const Container = styled.SafeAreaView`
   flex: 1;
   background-color: ${({theme}) => theme.bg.basic};
@@ -27,53 +32,50 @@ const Container = styled.SafeAreaView`
 
 const SectionHeaderGradient = styled(LinearGradient)`
   height: 180px;
-
   justify-content: center;
   align-items: center;
 `;
 
 const UserImageView = styled.View`
-  width: 96px;
-  height: 96px;
-
   position: absolute;
-  bottom: -46px;
+  bottom: -56px;
   left: 20px;
 `;
 
 const Content = styled.View`
   flex: 1;
   padding: 60px 24px 24px 24px;
-
   gap: 16px;
 `;
 
 const schema = yup.object().shape({
-  displayName: yup.string().required(t('common.requiredField')),
-  avatarUrl: yup.string(),
-  meetupId: yup.string(),
+  display_name: yup.string().required(t('common.requiredField')),
+  avatar_url: yup.string(),
+  meetup_id: yup.string(),
   affiliation: yup.string(),
-  githubId: yup.string(),
-  otherSnsUrls: yup.array().of(yup.string()),
+  github_id: yup.string(),
+  other_sns_urls: yup.array().of(yup.string()),
   tags: yup.array().of(yup.string()),
-  desiredConnection: yup.string(),
+  desired_connection: yup.string(),
   introduction: yup.string(),
-  motivationForEventParticipation: yup.string(),
-  futureExpectations: yup.string(),
+  motivation_for_event_participation: yup.string(),
+  future_expectations: yup.string(),
 });
 
 type FormData = yup.InferType<
   typeof schema & {
     tags: string[];
+    profileImg?: string;
   }
 >;
 
 export default function Onboarding(): JSX.Element {
-  const {back} = useRouter();
   const {theme} = useDooboo();
-  const [assets, setAssets] = useState<ImagePickerAsset[]>([]);
+  const [{authId}, setAuth] = useRecoilState(authRecoilState);
   const [tag, setTag] = useState('');
   const [tags, setTags] = useState<string[]>([]);
+  const [profileImg, setProfileImg] = useState<string>();
+  const {replace} = useRouter();
 
   const handleAddTag = () => {
     if (tag && !tags.includes(tag)) {
@@ -91,11 +93,40 @@ export default function Onboarding(): JSX.Element {
   });
 
   const handleFinishOnboarding: SubmitHandler<FormData> = async (data) => {
+    if (!authId) return;
+
+    let image: ImageInsertArgs | undefined = {};
+
+    if (profileImg) {
+      const destPath = `users/${authId}`;
+
+      image = await uploadFileToSupabase({
+        uri: profileImg,
+        fileType: 'Image',
+        bucket: 'images',
+        destPath,
+      });
+    }
+
     const formDataWithTags = {
       ...data,
-      tags,
+      avatar_url: image?.image_url || undefined,
     };
-    console.log(formDataWithTags);
+
+    try {
+      const user = await fetchUpdateProfile({
+        args: formDataWithTags,
+        authId,
+        tags: tags || [],
+      });
+
+      if (user) {
+        setAuth((prev) => ({...prev, user}));
+        replace('/');
+      }
+    } catch (error) {
+      if (__DEV__) console.error(error);
+    }
   };
 
   return (
@@ -168,13 +199,20 @@ export default function Onboarding(): JSX.Element {
               </Text>
             </SectionHeaderGradient>
             <UserImageView>
-              <ProfileImageInput />
+              <ProfileImageInput
+                imageUri={profileImg}
+                onChangeImageUri={setProfileImg}
+                onDeleteImageUri={() => setProfileImg(undefined)}
+                style={css`
+                  margin-bottom: 12px;
+                `}
+              />
             </UserImageView>
           </View>
           <Content>
             <Controller
               control={control}
-              name="displayName"
+              name="display_name"
               render={({field: {onChange, value}}) => (
                 <EditText
                   required
@@ -192,14 +230,14 @@ export default function Onboarding(): JSX.Element {
                   placeholder={t('onboarding.displayNamePlaceholder')}
                   value={value}
                   decoration="boxed"
-                  error={errors.displayName ? errors.displayName.message : ''}
+                  error={errors.display_name ? errors.display_name.message : ''}
                 />
               )}
               rules={{required: true, validate: (value) => !!value}}
             />
             <Controller
               control={control}
-              name="meetupId"
+              name="meetup_id"
               render={({field: {onChange, value}}) => (
                 <EditText
                   styles={{
@@ -216,14 +254,14 @@ export default function Onboarding(): JSX.Element {
                   placeholder={t('onboarding.meetupIdPlaceholder')}
                   value={value}
                   decoration="boxed"
-                  error={errors.meetupId ? errors.meetupId.message : ''}
+                  error={errors.meetup_id ? errors.meetup_id.message : ''}
                 />
               )}
               rules={{validate: (value) => !!value}}
             />
             <Controller
               control={control}
-              name="githubId"
+              name="github_id"
               render={({field: {onChange, value}}) => (
                 <EditText
                   styles={{
@@ -240,7 +278,7 @@ export default function Onboarding(): JSX.Element {
                   placeholder={t('onboarding.githubIdPlaceholder')}
                   value={value}
                   decoration="boxed"
-                  error={errors.githubId ? errors.githubId.message : ''}
+                  error={errors.github_id ? errors.github_id.message : ''}
                 />
               )}
               rules={{validate: (value) => !!value}}
@@ -299,7 +337,7 @@ export default function Onboarding(): JSX.Element {
             />
             <Controller
               control={control}
-              name="desiredConnection"
+              name="desired_connection"
               render={({field: {onChange, value}}) => (
                 <EditText
                   styles={{
@@ -320,14 +358,18 @@ export default function Onboarding(): JSX.Element {
                   placeholder={t('onboarding.desiredConnectionPlaceholder')}
                   value={value}
                   decoration="boxed"
-                  error={errors.desiredConnection ? errors.desiredConnection.message : ''}
+                  error={
+                    errors.desired_connection
+                      ? errors.desired_connection.message
+                      : ''
+                  }
                 />
               )}
               rules={{validate: (value) => !!value}}
             />
             <Controller
               control={control}
-              name="motivationForEventParticipation"
+              name="motivation_for_event_participation"
               render={({field: {onChange, value}}) => (
                 <EditText
                   styles={{
@@ -351,8 +393,8 @@ export default function Onboarding(): JSX.Element {
                   value={value}
                   decoration="boxed"
                   error={
-                    errors.motivationForEventParticipation
-                      ? errors.motivationForEventParticipation.message
+                    errors.motivation_for_event_participation
+                      ? errors.motivation_for_event_participation.message
                       : ''
                   }
                 />
@@ -361,7 +403,7 @@ export default function Onboarding(): JSX.Element {
             />
             <Controller
               control={control}
-              name="futureExpectations"
+              name="future_expectations"
               render={({field: {onChange, value}}) => (
                 <EditText
                   styles={{
@@ -383,8 +425,8 @@ export default function Onboarding(): JSX.Element {
                   value={value}
                   decoration="boxed"
                   error={
-                    errors.futureExpectations
-                      ? errors.futureExpectations.message
+                    errors.future_expectations
+                      ? errors.future_expectations.message
                       : ''
                   }
                 />

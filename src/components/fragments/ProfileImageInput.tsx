@@ -1,5 +1,5 @@
 import {memo} from 'react';
-import type {TextStyle, ViewStyle} from 'react-native';
+import {Pressable, type TextStyle, type ViewStyle} from 'react-native';
 import styled, {css} from '@emotion/native';
 import {useActionSheet} from '@expo/react-native-action-sheet';
 import {IconButton, useDooboo} from 'dooboo-ui';
@@ -98,35 +98,55 @@ function SingleUploadImageInput({
 
   return (
     <Container style={style}>
-      <Image
-        contentFit="cover"
-        source={hasImage ? {uri: imageUri} : IC_ICON}
-        style={[
-          css`
-            flex: 1;
-            align-self: stretch;
-            width: 96px;
-            height: 96px;
-            border-radius: 48px;
-            background-color: ${theme.bg.paper};
-            opacity: 0.9;
-          `,
-          styles?.image ? styles.image : {},
-        ]}
-      />
-      <IconButton
-        icon="Image"
-        onPress={
-          !imageUri ? handlePickImage : () => onDeleteImageUri?.(imageUri)
-        }
-        size="small"
-        color="light"
+      <Pressable
         style={css`
-          position: absolute;
-          top: 0px;
-          right: -12px;
+          flex: 1;
         `}
-      />
+        onPress={handlePickImage}
+      >
+        <Image
+          contentFit="cover"
+          source={hasImage ? {uri: imageUri} : IC_ICON}
+          style={[
+            css`
+              flex: 1;
+              align-self: stretch;
+              width: 96px;
+              height: 96px;
+              border-radius: 48px;
+              background-color: ${theme.bg.paper};
+              opacity: 0.9;
+            `,
+            styles?.image ? styles.image : {},
+          ]}
+        />
+      </Pressable>
+
+      {!hasImage ? (
+        <IconButton
+          icon="Image"
+          onPress={handlePickImage}
+          size="small"
+          color="light"
+          style={css`
+            position: absolute;
+            top: 0px;
+            right: -12px;
+          `}
+        />
+      ) : (
+        <IconButton
+          icon="Trash"
+          onPress={() => onDeleteImageUri?.(imageUri)}
+          size="small"
+          color="light"
+          style={css`
+            position: absolute;
+            top: 0px;
+            right: -12px;
+          `}
+        />
+      )}
     </Container>
   );
 }
