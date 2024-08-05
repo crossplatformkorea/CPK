@@ -235,7 +235,7 @@ model Like {
 
 model Tag {
   id  String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tag String @unique @db.Uuid
+  tag String @unique
 
   posts Post[]
   users User[]

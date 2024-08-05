@@ -26,19 +26,26 @@ export const fetchUpdateProfile = async ({
   tags.forEach(async (tag) => {
     if (!tag) return;
 
+    const tagData = tag.toLowerCase();
+
     const {data} = await supabase
       .from('tags')
-      .upsert({tag})
-      .eq('tag', tag)
+      .upsert({tag: tagData})
+      .eq('tag', tagData)
       .eq('id', authId)
       .select('id')
       .single();
 
     if (data?.id) {
-      await supabase.from('_TagToUser').upsert({
-        A: data.id,
-        B: authId,
-      });
+      await supabase.from('_TagToUser').upsert(
+        {
+          A: data.id,
+          B: authId,
+        },
+        {
+          ignoreDuplicates: true,
+        },
+      );
     }
   });
 

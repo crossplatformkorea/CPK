@@ -1,5 +1,5 @@
 import styled, {css} from '@emotion/native';
-import {Stack, useRouter} from 'expo-router';
+import {Redirect, Stack} from 'expo-router';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {EditText, Icon, Typography, useDooboo} from 'dooboo-ui';
 import * as yup from 'yup';
@@ -71,11 +71,10 @@ type FormData = yup.InferType<
 
 export default function Onboarding(): JSX.Element {
   const {theme} = useDooboo();
-  const [{authId}, setAuth] = useRecoilState(authRecoilState);
+  const [{authId, user}, setAuth] = useRecoilState(authRecoilState);
   const [tag, setTag] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [profileImg, setProfileImg] = useState<string>();
-  const {replace} = useRouter();
 
   const handleAddTag = () => {
     if (tag && !tags.includes(tag)) {
@@ -122,12 +121,19 @@ export default function Onboarding(): JSX.Element {
 
       if (user) {
         setAuth((prev) => ({...prev, user}));
-        replace('/');
       }
     } catch (error) {
       if (__DEV__) console.error(error);
     }
   };
+
+  if (!authId) {
+    return <Redirect href={'/sign-in'} />;
+  }
+
+  if (user?.display_name) {
+    return <Redirect href={'/'} />;
+  }
 
   return (
     <Container>
