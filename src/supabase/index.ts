@@ -34,14 +34,19 @@ export const uploadFileToSupabase = async ({
 
   const {data, error} = await supabase.storage
     .from(bucket)
-    .upload(destPath, decode(base64), fileType ? {contentType: fileType} : {});
+    .upload(
+      destPath,
+      decode(base64),
+      fileType ? {contentType: fileType, upsert: true} : {upsert: true},
+    );
+
 
   if (error) {
     throw error;
   }
 
   return {
-    image_url: data.path,
+    image_url: getPublicUrlFromPath(data.path),
     url: data.fullPath,
     id: data.id,
     type: fileType || null,

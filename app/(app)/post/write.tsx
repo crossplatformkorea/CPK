@@ -19,10 +19,7 @@ import {useState} from 'react';
 import {ImagePickerAsset} from 'expo-image-picker';
 import {MAX_IMAGES_UPLOAD_LENGTH} from '../../../src/utils/constants';
 import CustomScrollView from '../../../src/components/uis/CustomScrollView';
-import {
-  getPublicUrlFromPath,
-  uploadFileToSupabase,
-} from '../../../src/supabase';
+import {uploadFileToSupabase} from '../../../src/supabase';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -86,9 +83,7 @@ export default function PostWrite(): JSX.Element {
           .filter((el) => !!el)
           .map((el) => ({
             ...el,
-            image_url: el?.image_url
-              ? getPublicUrlFromPath(el.image_url)
-              : undefined,
+            image_url: el?.image_url || undefined,
           })),
       });
 
