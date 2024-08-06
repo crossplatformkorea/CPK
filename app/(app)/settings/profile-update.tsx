@@ -170,11 +170,21 @@ export default function ProfileUpdate(): JSX.Element {
   }, [user, setValue]);
 
   if (error) {
-    return <FallbackComponent />;
+    return (
+      <>
+        <Stack.Screen options={{title: t('profileUpdate.title')}} />
+        <FallbackComponent />
+      </>
+    );
   }
 
   if (!user) {
-    return <CustomLoadingIndicator />;
+    return (
+      <>
+        <Stack.Screen options={{title: t('profileUpdate.title')}} />
+        <CustomLoadingIndicator />
+      </>
+    );
   }
 
   return (

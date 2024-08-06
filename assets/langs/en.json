@@ -143,7 +143,7 @@
   },
   "signIn": {
     "continueWithProvider": "Continue with {{provider}}",
-    "description": "A place where Korean developers and developers around the world communicate!",
+    "description": "A place where developers from around the world meet Korean developers!",
     "googleIdNotAvailable": "Google ID is not available",
     "playServiceNotAvailable": "Google Play Service is not available",
     "policyAgreement": "By signing in, you agree to our {{termsOfService}} and {{privacyPolicy}}.",

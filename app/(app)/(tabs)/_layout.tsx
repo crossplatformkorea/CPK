@@ -15,7 +15,7 @@ function SettingsMenu(): JSX.Element {
 
   return (
     <Link asChild href="/settings">
-      <Pressable onPress={() => push('settings')}>
+      <Pressable onPress={() => push('/settings')}>
         {({pressed}) => (
           <Icon
             color={theme.text.basic}
@@ -44,6 +44,7 @@ export default function TabLayout(): JSX.Element {
   const responseListener = useRef<Notifications.Subscription>();
 
   console.log('expoPushToken', expoPushToken);
+  console.log('notification', notification);
 
   useEffect(() => {
     registerForPushNotificationsAsync().then(
