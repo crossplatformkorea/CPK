@@ -13,6 +13,7 @@ import {
   View,
 } from 'react-native';
 import {useState, useEffect} from 'react';
+import useSwr from 'swr';
 import {t} from '../../../src/STRINGS';
 import {useRecoilState} from 'recoil';
 import {authRecoilState} from '../../../src/recoil/atoms';
@@ -26,6 +27,8 @@ import {
   fetchUpdateProfile,
   fetchUserProfile,
 } from '../../../src/apis/profileQueries';
+import FallbackComponent from '../../../src/components/uis/FallbackComponent';
+import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -65,12 +68,23 @@ type FormData = yup.InferType<
   }
 >;
 
+const fetcher = async (authId?: string | null) => {
+  if (!authId) return;
+
+  const {profile, userTags} = await fetchUserProfile(authId);
+  return {profile, userTags};
+};
+
 export default function ProfileUpdate(): JSX.Element {
   const {theme} = useDooboo();
   const [{authId}, setAuth] = useRecoilState(authRecoilState);
   const [tag, setTag] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [profileImg, setProfileImg] = useState<string>();
+
+  const {data, error} = useSwr(authId && `/profile/${authId}`, () =>
+    fetcher(authId),
+  );
 
   const handleAddTag = () => {
     if (tag && !tags.includes(tag)) {
@@ -125,34 +139,32 @@ export default function ProfileUpdate(): JSX.Element {
   };
 
   useEffect(() => {
-    const loadUserProfile = async () => {
-      if (!authId) return;
+    if (data?.profile) {
+      setValue('display_name', data.profile.display_name || '');
+      setValue('meetup_id', data.profile.meetup_id || '');
+      setValue('github_id', data.profile.github_id || '');
+      setValue('affiliation', data.profile.affiliation || '');
+      setValue('introduction', data.profile.introduction || '');
+      setValue('desired_connection', data.profile.desired_connection || '');
+      setValue(
+        'motivation_for_event_participation',
+        data.profile.motivation_for_event_participation || '',
+      );
+      setValue('future_expectations', data.profile.future_expectations || '');
+      setTags(data.userTags);
+      setProfileImg(data.profile.avatar_url || undefined);
+    }
+  }, [data, setValue]);
 
-      try {
-        const {profile, userTags} = await fetchUserProfile(authId);
+  if (error) {
+    return <FallbackComponent />;
+  }
 
-        if (profile) {
-          setValue('display_name', profile.display_name || '');
-          setValue('meetup_id', profile.meetup_id || '');
-          setValue('github_id', profile.github_id || '');
-          setValue('affiliation', profile.affiliation || '');
-          setValue('introduction', profile.introduction || '');
-          setValue('desired_connection', profile.desired_connection || '');
-          setValue(
-            'motivation_for_event_participation',
-            profile.motivation_for_event_participation || '',
-          );
-          setValue('future_expectations', profile.future_expectations || '');
-          setTags(userTags);
-          setProfileImg(profile.avatar_url || undefined);
-        }
-      } catch (error) {
-        if (__DEV__) console.error(error);
-      }
-    };
-
-    loadUserProfile();
-  }, [authId, setValue]);
+  if (!data) {
+    return (
+      <CustomLoadingIndicator />
+    );
+  }
 
   return (
     <Container>

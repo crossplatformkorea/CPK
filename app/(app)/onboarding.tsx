@@ -13,17 +13,22 @@ import {
   View,
 } from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
+import useSwr from 'swr';
 import {t} from '../../src/STRINGS';
 import CustomScrollView from '../../src/components/uis/CustomScrollView';
 import ProfileImageInput from '../../src/components/fragments/ProfileImageInput';
 import CustomPressable from 'dooboo-ui/uis/CustomPressable';
 import {delayPressIn} from '../../src/utils/constants';
-import {fetchUpdateProfile} from '../../src/apis/profileQueries';
+import {
+  fetchUpdateProfile,
+  fetchUserProfile,
+} from '../../src/apis/profileQueries';
 import {uploadFileToSupabase} from '../../src/supabase';
 import {useRecoilState} from 'recoil';
 import {authRecoilState} from '../../src/recoil/atoms';
 import {ImageInsertArgs} from '../../src/types';
+import FallbackComponent from '../../src/components/uis/FallbackComponent';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -69,12 +74,23 @@ type FormData = yup.InferType<
   }
 >;
 
+const fetcher = async (authId: string | null) => {
+  if (!authId) return;
+
+  const {profile, userTags} = await fetchUserProfile(authId);
+  return {profile, userTags};
+};
+
 export default function Onboarding(): JSX.Element {
   const {theme} = useDooboo();
   const [{authId, user}, setAuth] = useRecoilState(authRecoilState);
   const [tag, setTag] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [profileImg, setProfileImg] = useState<string>();
+
+  const {data, error} = useSwr(authId && `/profile/${authId}`, () =>
+    fetcher(authId),
+  );
 
   const handleAddTag = () => {
     if (tag && !tags.includes(tag)) {
@@ -87,6 +103,7 @@ export default function Onboarding(): JSX.Element {
     control,
     handleSubmit,
     formState: {errors, isSubmitting},
+    setValue,
   } = useForm<FormData>({
     resolver: yupResolver(schema),
   });
@@ -113,19 +130,37 @@ export default function Onboarding(): JSX.Element {
     };
 
     try {
-      const user = await fetchUpdateProfile({
+      const updatedUser = await fetchUpdateProfile({
         args: formDataWithTags,
         authId,
         tags: tags || [],
       });
 
-      if (user) {
-        setAuth((prev) => ({...prev, user}));
+      if (updatedUser) {
+        setAuth((prev) => ({...prev, user: updatedUser}));
       }
     } catch (error) {
       if (__DEV__) console.error(error);
     }
   };
+
+  useEffect(() => {
+    if (data?.profile) {
+      setValue('display_name', data.profile.display_name || '');
+      setValue('meetup_id', data.profile.meetup_id || '');
+      setValue('github_id', data.profile.github_id || '');
+      setValue('affiliation', data.profile.affiliation || '');
+      setValue('introduction', data.profile.introduction || '');
+      setValue('desired_connection', data.profile.desired_connection || '');
+      setValue(
+        'motivation_for_event_participation',
+        data.profile.motivation_for_event_participation || '',
+      );
+      setValue('future_expectations', data.profile.future_expectations || '');
+      setTags(data.userTags);
+      setProfileImg(data.profile.avatar_url || undefined);
+    }
+  }, [data, setValue]);
 
   if (!authId) {
     return <Redirect href={'/sign-in'} />;
@@ -133,6 +168,18 @@ export default function Onboarding(): JSX.Element {
 
   if (user?.display_name) {
     return <Redirect href={'/'} />;
+  }
+
+  if (error) {
+    return <FallbackComponent />;
+  }
+
+  if (!data) {
+    return (
+      <Container>
+        <ActivityIndicator size="large" color={theme.text.label} />
+      </Container>
+    );
   }
 
   return (
