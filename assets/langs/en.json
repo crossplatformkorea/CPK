@@ -12,6 +12,7 @@
     "blockUserDesc": "If you block a user, you will not be able to access the user's content. Do you want to block this user?",
     "blockUserSuccess": "User has been blocked",
     "cancel": "Cancel",
+    "community": "Community",
     "confirm": "Confirm",
     "delete": "Delete",
     "deleteSuccess": "Successfully deleted",
@@ -97,9 +98,9 @@
     "sectionDescription": "Please submit your welcome card below to proceed!",
     "sectionTitle": "Welcome to Dev Community!",
     "title": "Onboarding",
+    "userTags": "User Tags",
     "yourTags": "Your Tags",
-    "yourTagsPlaceholder": "Please enter tags related to you",
-    "userTags": "User Tags"
+    "yourTagsPlaceholder": "Please enter tags related to you"
   },
   "post": {
     "update": {

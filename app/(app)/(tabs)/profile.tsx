@@ -35,7 +35,7 @@ const UserAvatar = styled.Image`
   border-color: ${({theme}) => theme.role.border};
 `;
 
-const UserName = styled.Text`
+const UserName = styled(Typography.Heading5)`
   font-size: 28px;
   font-weight: bold;
   margin-bottom: 8px;
@@ -67,6 +67,7 @@ const InfoItem = styled.View`
 `;
 
 const InfoLabel = styled(Typography.Body2)`
+  color: ${({theme}) => theme.text.label};
   font-family: Pretendard-Bold;
 `;
 
