@@ -5,9 +5,10 @@ import {useRecoilValue} from 'recoil';
 
 import {authRecoilState} from '../../../src/recoil/atoms';
 import {t} from '../../../src/STRINGS';
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useRef} from 'react';
 import {registerForPushNotificationsAsync} from '../../../src/utils/notifications';
 import * as Notifications from 'expo-notifications';
+import {fetchAddPushToken} from '../../../src/apis/pushTokenQueries';
 
 function SettingsMenu(): JSX.Element {
   const {theme} = useDooboo();
@@ -32,42 +33,32 @@ function SettingsMenu(): JSX.Element {
 export default function TabLayout(): JSX.Element {
   const {theme} = useDooboo();
   const {authId, user} = useRecoilValue(authRecoilState);
-  const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState<
-    Notifications.Notification | undefined
-  >(undefined);
-
-  const notificationListener = useRef<Notifications.Subscription>();
-  const responseListener = useRef<Notifications.Subscription>();
-
-  console.log('expoPushToken', expoPushToken);
-  console.log('notification', notification);
+  const notificationResponseListener = useRef<Notifications.Subscription>();
 
   useEffect(() => {
-    registerForPushNotificationsAsync().then(
-      (token) => token && setExpoPushToken(token),
-    );
+    if (!authId) return;
 
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
+    registerForPushNotificationsAsync().then((token) => {
+      if (token) {
+        fetchAddPushToken({
+          authId,
+          expoPushToken: token,
+        });
+      }
+    });
 
-    responseListener.current =
+    notificationResponseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
+        console.log(JSON.stringify(response.notification.request));
       });
 
     return () => {
-      notificationListener.current &&
+      notificationResponseListener.current &&
         Notifications.removeNotificationSubscription(
-          notificationListener.current,
+          notificationResponseListener.current,
         );
-
-      responseListener.current &&
-        Notifications.removeNotificationSubscription(responseListener.current);
     };
-  }, []);
+  }, [authId]);
 
   if (!authId) {
     return <Redirect href="/sign-in" />;

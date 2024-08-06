@@ -67,8 +67,22 @@ model User {
   tags                Tag[]
   followers           Follow[]
   followings          Follow[]       @relation("Following")
+  pushTokens          PushToken[]
 
   @@map("users")
+}
+
+model PushToken {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  token     String
+  platform  String?
+  createdAt DateTime? @default(now()) @map("created_at")
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id") @db.Uuid
+
+  @@unique([token, userId])
+  @@map("push_tokens")
 }
 
 model Follow {
