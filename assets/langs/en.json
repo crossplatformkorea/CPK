@@ -64,6 +64,8 @@
   "onboarding": {
     "affiliation": "Affiliation",
     "affiliationPlaceholder": "Enter your affiliation",
+    "desiredConnection": "Desired Connection",
+    "desiredConnectionPlaceholder": "Enter whom you wish to connect with",
     "displayName": "Display Name",
     "displayNamePlaceholder": "Enter your display name",
     "futureExpectations": "Future Expectations",
@@ -83,8 +85,6 @@
     "sectionDescription": "Please submit your welcome card below to proceed!",
     "sectionTitle": "Welcome to Dev Community!",
     "title": "Onboarding",
-    "desiredConnection": "Desired Connection",
-    "desiredConnectionPlaceholder": "Enter whom you wish to connect with",
     "yourTags": "Your Tags",
     "yourTagsPlaceholder": "Please enter tags related to you"
   },
@@ -105,6 +105,9 @@
       "writeFailed": "Write failed!",
       "writeSuccess": "Successfully written!"
     }
+  },
+  "profileUpdate": {
+    "title": "Profile Update"
   },
   "settings": {
     "blockedUsers": "Blocked Users",

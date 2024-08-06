@@ -1,6 +1,46 @@
 import {supabase} from '../supabase';
 import {User, UserUpdateArgs} from '../types';
 
+export const fetchUserProfile = async (authId: string) => {
+  const {data: profile, error: profileError} = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', authId)
+    .single();
+
+  if (profileError) {
+    if (__DEV__) {
+      console.error(profileError);
+    }
+  }
+
+  const {data: tagsData, error: tagsError} = await supabase
+    .from('_TagToUser')
+    .select('A')
+    .eq('B', authId);
+
+  if (tagsError) {
+    throw new Error(tagsError.message);
+  }
+
+  const tagIds = tagsData.map((tag) => tag.A);
+
+  const {data: tags, error: tagsFetchError} = await supabase
+    .from('tags')
+    .select('tag')
+    .in('id', tagIds);
+
+  if (tagsFetchError) {
+    if (__DEV__) {
+      console.error(tagsFetchError);
+    }
+  }
+
+  const userTags = tags?.map((tag) => tag.tag) || [];
+
+  return {profile, userTags};
+};
+
 export const fetchUpdateProfile = async ({
   args,
   authId,

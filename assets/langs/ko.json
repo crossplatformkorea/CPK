@@ -64,6 +64,8 @@
   "onboarding": {
     "affiliation": "소속",
     "affiliationPlaceholder": "소속을 입력하세요",
+    "desiredConnection": "연결되고 싶은 분",
+    "desiredConnectionPlaceholder": "연결되고 싶은 분을 입력하세요",
     "displayName": "닉네임",
     "displayNamePlaceholder": "닉네임을 입력하세요",
     "futureExpectations": "앞으로 기대하는 것",
@@ -83,8 +85,6 @@
     "sectionDescription": "계속 진행하기 위해 아래 웰컴 카드를 제출해주세요!",
     "sectionTitle": "개발자 커뮤니티에 오신 것을 환영합니다!",
     "title": "온보딩",
-    "desiredConnection": "연결되고 싶은 분",
-    "desiredConnectionPlaceholder": "연결되고 싶은 분을 입력하세요",
     "yourTags": "나의 태그",
     "yourTagsPlaceholder": "나와 관련된 태그들을 입력하세요"
   },
@@ -105,6 +105,9 @@
       "writeFailed": "작성에 실패했습니다!",
       "writeSuccess": "성공적으로 작성되었습니다!"
     }
+  },
+  "profileUpdate": {
+    "title": "프로필 수정"
   },
   "settings": {
     "blockedUsers": "차단한 사용자",
