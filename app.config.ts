@@ -60,6 +60,14 @@ export default ({config}: ConfigContext): ExpoConfig => ({
         ],
       },
     ],
+    [
+      'expo-notifications',
+      {
+        icon: './assets/notification-icon.png',
+        color: '#ffffff',
+        defaultChannel: 'default',
+      },
+    ],
   ],
   experiments: {
     typedRoutes: true,
@@ -119,6 +127,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
       'WRITE_EXTERNAL_STORAGE',
       'NOTIFICATIONS',
       'USER_FACING_NOTIFICATIONS',
+      'SCHEDULE_EXACT_ALARM',
     ],
     adaptiveIcon: {
       foregroundImage: './assets/adaptive_icon.png',

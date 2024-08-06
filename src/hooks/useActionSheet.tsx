@@ -9,8 +9,6 @@ import {
   MediaTypeOptions,
   requestCameraPermissionsAsync,
 } from 'expo-image-picker';
-import {useRouter} from 'expo-router';
-import {useRecoilValue, useSetRecoilState} from 'recoil';
 import {showAlert} from '../utils/alert';
 import {launchMediaLibraryAsync} from '../utils/imagePicker';
 import {t} from '../STRINGS';

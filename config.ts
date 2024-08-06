@@ -7,4 +7,4 @@ export const supabaseAnonKey = extra?.supabaseAnonKey;
 export const googleClientIdAndroid = extra?.googleClientIdAndroid;
 export const googleClientIdIOS = extra?.googleClientIdIOS;
 export const googleClientIdWeb = extra?.googleClientIdWeb;
-export const expoProjectId = extra?.expoProjectId;
+export const expoProjectId = extra?.eas?.projectId;

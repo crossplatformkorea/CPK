@@ -1,4 +1,4 @@
-import {Platform, Pressable, View} from 'react-native';
+import {Pressable, View} from 'react-native';
 import {Icon, useDooboo} from 'dooboo-ui';
 import {Link, Redirect, Tabs, useRouter} from 'expo-router';
 import {useRecoilValue} from 'recoil';
@@ -33,9 +33,6 @@ export default function TabLayout(): JSX.Element {
   const {theme} = useDooboo();
   const {authId, user} = useRecoilValue(authRecoilState);
   const [expoPushToken, setExpoPushToken] = useState('');
-  const [channels, setChannels] = useState<Notifications.NotificationChannel[]>(
-    [],
-  );
   const [notification, setNotification] = useState<
     Notifications.Notification | undefined
   >(undefined);
@@ -51,11 +48,6 @@ export default function TabLayout(): JSX.Element {
       (token) => token && setExpoPushToken(token),
     );
 
-    if (Platform.OS === 'android') {
-      Notifications.getNotificationChannelsAsync().then((value) =>
-        setChannels(value ?? []),
-      );
-    }
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
         setNotification(notification);
