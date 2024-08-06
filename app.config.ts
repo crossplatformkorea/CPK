@@ -95,6 +95,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
       'com.apple.developer.applesignin': ['Default'],
     },
     infoPlist: {
+      LSApplicationQueriesSchemes: ['mailto'],
       CFBundleAllowMixedLocalizations: true,
       CFBundleURLTypes: [
         {

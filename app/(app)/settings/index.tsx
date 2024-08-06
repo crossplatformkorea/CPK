@@ -1,9 +1,10 @@
-import {Fragment, useMemo, useState} from 'react';
+import {Fragment, useEffect, useMemo, useState} from 'react';
 import {Platform, ScrollView, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {dark, light} from '@dooboo-ui/theme';
 import styled, {css} from '@emotion/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Notifications from 'expo-notifications';
 import {Icon, SwitchToggle, Typography, useDooboo} from 'dooboo-ui';
 import CustomPressable from 'dooboo-ui/uis/CustomPressable';
 import * as Linking from 'expo-linking';
@@ -15,6 +16,8 @@ import {authRecoilState} from '../../../src/recoil/atoms';
 import {t} from '../../../src/STRINGS';
 import {AsyncStorageKey} from '../../../src/utils/constants';
 import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
+import useAppState from '../../../src/hooks/useAppState';
+import { openEmail } from '../../../src/utils/common';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -38,35 +41,30 @@ const Divider = styled.View`
 
 export default function Settings(): JSX.Element {
   const {push} = useRouter();
-  const {theme, changeThemeType, themeType} = useDooboo();
+  const {theme,changeThemeType, themeType} = useDooboo();
   const authId = useRecoilValue(authRecoilState);
   const {bottom} = useSafeAreaInsets();
 
   const [hasNotificationPermission, setHasNotificationPermission] =
     useState(false);
 
-  // useEffect(() => {
-  //   const checkNotiPermission = async (): Promise<void> => {
-  //     setHasNotificationPermission(
-  //       await RNOnesignal?.Notifications.getPermissionAsync(),
-  //     );
-  //   };
-  //   checkNotiPermission();
-  // }, []);
+  const checkNotificationPermission = async (): Promise<void> => {
+    const {status} = await Notifications.getPermissionsAsync();
+    setHasNotificationPermission(status === 'granted');
+  };
 
-  // useAppState((state) => {
-  //   if (state === 'active') {
-  //     const timeout = setTimeout(async () => {
-  //       setHasNotificationPermission(
-  //         await RNOnesignal?.Notifications.getPermissionAsync(),
-  //       );
+  useEffect(() => {
+    checkNotificationPermission();
+  }, []);
 
-  //       if (timeout) {
-  //         clearTimeout(timeout);
-  //       }
-  //     }, 100);
-  //   }
-  // });
+  useAppState((state) => {
+    if (state === 'active') {
+      const timeout = setTimeout(async () => {
+        await checkNotificationPermission();
+        clearTimeout(timeout);
+      }, 100);
+    }
+  });
 
   type Menu = {
     onPress?: () => void;
@@ -248,6 +246,39 @@ export default function Settings(): JSX.Element {
         bounces={false}
         showsVerticalScrollIndicator={Platform.OS === 'web'}
       >
+        <SettingButton
+          onPress={openEmail}
+          style={css`
+            background-color: ${theme.role.primary};
+          `}
+        >
+          <>
+            <Icon
+              color={theme.button.primary.text}
+              name="AutoAwesome"
+              size={24}
+              style={css`
+                margin-right: 16px;
+              `}
+            />
+            <Typography.Body2
+              style={css`
+                font-family: Pretendard-Bold;
+                color: ${theme.button.primary.text};
+              `}
+            >
+              {t('common.contactUs')}
+            </Typography.Body2>
+            <Icon
+              color={theme.button.primary.text}
+              name="OpenInNew"
+              size={16}
+              style={css`
+                margin-left: auto;
+              `}
+            />
+          </>
+        </SettingButton>
         {menus.map((menu) => (
           <Fragment key={menu.title}>
             {!menu.onPress ? (

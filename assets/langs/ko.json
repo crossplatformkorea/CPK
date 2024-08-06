@@ -14,10 +14,12 @@
     "cancel": "취소",
     "community": "커뮤니티",
     "confirm": "확인",
+    "contactUs": "문의하기",
     "delete": "삭제",
     "deleteSuccess": "성공적으로 삭제되었습니다",
     "deletedAccount": "탈퇴한 계정입니다.",
     "done": "완료",
+    "error": "오류",
     "follow": "팔로우",
     "followers": {
       "one": "팔로워",
@@ -63,7 +65,8 @@
     "default": "오류가 발생했습니다!",
     "displayNameExists": "이미 존재하는 닉네임입니다",
     "displayNameInvalid": "닉네임은 2자 이상 20자 이하여야 합니다",
-    "displayNameIsEmpty": "닉네임을 입력해주세요"
+    "displayNameIsEmpty": "닉네임을 입력해주세요",
+    "unableToOpenEmailClient": "이메일 클라이언트를 열 수 없습니다"
   },
   "loginInfo": {
     "cancel": "취소",
