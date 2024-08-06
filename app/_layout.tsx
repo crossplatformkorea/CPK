@@ -4,6 +4,7 @@ import {Platform, useColorScheme} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {dark, light} from '@dooboo-ui/theme';
 import styled, {css} from '@emotion/native';
+import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Icon, useDooboo} from 'dooboo-ui';
 import CustomPressable from 'dooboo-ui/uis/CustomPressable';
@@ -44,6 +45,14 @@ const Content = styled.View`
   max-width: ${COMPONENT_WIDTH + 'px'};
   background-color: ${({theme}) => theme.brand};
 `;
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 function App(): JSX.Element | null {
   const {assetLoaded, snackbar, theme} = useDooboo();

@@ -6,7 +6,6 @@ import * as yup from 'yup';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {
   ActivityIndicator,
-  Alert,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -30,6 +29,7 @@ import {useRecoilState} from 'recoil';
 import {authRecoilState} from '../../src/recoil/atoms';
 import {ImageInsertArgs} from '../../src/types';
 import FallbackComponent from '../../src/components/uis/FallbackComponent';
+import { showAlert } from '../../src/utils/alert';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -148,7 +148,7 @@ export default function Onboarding(): JSX.Element {
         return;
       }
 
-      Alert.alert((error as Error)?.message || '');
+      showAlert((error as Error)?.message || '');
     }
   };
 

@@ -6,7 +6,6 @@ import * as yup from 'yup';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {
   ActivityIndicator,
-  Alert,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -30,6 +29,7 @@ import {
 } from '../../../src/apis/profileQueries';
 import FallbackComponent from '../../../src/components/uis/FallbackComponent';
 import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
+import { showAlert } from '../../../src/utils/alert';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -147,7 +147,7 @@ export default function ProfileUpdate(): JSX.Element {
         return;
       }
 
-      Alert.alert((error as Error)?.message || '');
+      showAlert((error as Error)?.message || '');
     }
   };
 

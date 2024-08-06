@@ -59,14 +59,17 @@
     "viewsWithCount": {
       "one": "Views %{count}",
       "other": "Views %{count}"
-    }
+    },
+    "pushNotifications": "Push Notifications"
   },
   "error": {
     "default": "Error occurred!",
     "displayNameExists": "The nickname already exists",
     "displayNameInvalid": "Nickname must be between 2 and 20 characters",
     "displayNameIsEmpty": "Please enter a nickname",
-    "unableToOpenEmailClient": "Unable to open email client"
+    "unableToOpenEmailClient": "Unable to open email client",
+    "projectIdNotFound": "Project ID not found",
+    "mustUsePhysicalDeviceForSubject": "Must use physical device for {{subject}}"
   },
   "loginInfo": {
     "cancel": "Cancel",

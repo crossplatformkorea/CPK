@@ -59,14 +59,17 @@
     "viewsWithCount": {
       "one": "조회수 %{count}",
       "other": "조회수 %{count}"
-    }
+    },
+    "pushNotifications": "푸시 알림"
   },
   "error": {
     "default": "오류가 발생했습니다!",
     "displayNameExists": "이미 존재하는 닉네임입니다",
     "displayNameInvalid": "닉네임은 2자 이상 20자 이하여야 합니다",
     "displayNameIsEmpty": "닉네임을 입력해주세요",
-    "unableToOpenEmailClient": "이메일 클라이언트를 열 수 없습니다"
+    "unableToOpenEmailClient": "이메일 클라이언트를 열 수 없습니다",
+    "projectIdNotFound": "프로젝트 ID를 찾을 수 없습니다",
+    "mustUsePhysicalDeviceForSubject": "{{subject}}을(를) 위해 실제 기기를 사용해야 합니다"
   },
   "loginInfo": {
     "cancel": "취소",
