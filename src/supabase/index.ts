@@ -59,6 +59,22 @@ export const uploadFileToSupabase = async ({
   };
 };
 
+export const deleteFileFromSupabase = async ({
+  bucket,
+  filePath,
+}: {
+  bucket: string;
+  filePath: string;
+}): Promise<void> => {
+  const {error} = await supabase.storage
+    .from(bucket)
+    .remove([filePath]);
+
+  if (error) {
+    throw error;
+  }
+};
+
 export const getPublicUrlFromPath = (path: string): string => {
   const {data} = supabase.storage.from('images').getPublicUrl(path);
 

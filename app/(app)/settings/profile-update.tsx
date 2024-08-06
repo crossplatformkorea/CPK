@@ -85,7 +85,7 @@ export default function ProfileUpdate(): JSX.Element {
   const [displayNameError, setDisplayNameError] = useState<string>();
   const {back} = useRouter();
 
-  const {data, error} = useSwr(authId && `/profile/${authId}`, () =>
+  const {data: user, error} = useSwr(authId && `/profile/${authId}`, () =>
     fetcher(authId),
   );
 
@@ -123,7 +123,10 @@ export default function ProfileUpdate(): JSX.Element {
 
     const formDataWithTags = {
       ...data,
-      avatar_url: image?.image_url || undefined,
+      avatar_url:
+        !profileImg && user?.profile?.avatar_url
+          ? null
+          : image?.image_url || undefined,
     };
 
     try {
@@ -149,28 +152,28 @@ export default function ProfileUpdate(): JSX.Element {
   };
 
   useEffect(() => {
-    if (data?.profile) {
-      setValue('display_name', data.profile.display_name || '');
-      setValue('meetup_id', data.profile.meetup_id || '');
-      setValue('github_id', data.profile.github_id || '');
-      setValue('affiliation', data.profile.affiliation || '');
-      setValue('introduction', data.profile.introduction || '');
-      setValue('desired_connection', data.profile.desired_connection || '');
+    if (user?.profile) {
+      setValue('display_name', user.profile.display_name || '');
+      setValue('meetup_id', user.profile.meetup_id || '');
+      setValue('github_id', user.profile.github_id || '');
+      setValue('affiliation', user.profile.affiliation || '');
+      setValue('introduction', user.profile.introduction || '');
+      setValue('desired_connection', user.profile.desired_connection || '');
       setValue(
         'motivation_for_event_participation',
-        data.profile.motivation_for_event_participation || '',
+        user.profile.motivation_for_event_participation || '',
       );
-      setValue('future_expectations', data.profile.future_expectations || '');
-      setTags(data.userTags);
-      setProfileImg(data.profile.avatar_url || undefined);
+      setValue('future_expectations', user.profile.future_expectations || '');
+      setTags(user.userTags);
+      setProfileImg(`${user.profile.avatar_url}` || undefined);
     }
-  }, [data, setValue]);
+  }, [user, setValue]);
 
   if (error) {
     return <FallbackComponent />;
   }
 
-  if (!data) {
+  if (!user) {
     return <CustomLoadingIndicator />;
   }
 

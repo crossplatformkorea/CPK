@@ -7,6 +7,7 @@ import {authRecoilState} from '../../../src/recoil/atoms';
 import CustomScrollView from '../../../src/components/uis/CustomScrollView';
 import {css} from '@emotion/native';
 import {View} from 'react-native';
+import {IC_ICON} from '../../../src/icons';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -50,18 +51,18 @@ const UserBio = styled.Text`
 const InfoCard = styled.View`
   background-color: ${({theme}) => theme.bg.paper};
   border-radius: 15px;
-  padding: 16px;
+  padding: 16px 16px 24px 16px;
   margin-bottom: 16px;
   shadow-color: ${({theme}) => theme.role.underlayContrast};
   shadow-offset: 0px 1px;
   shadow-opacity: 0.1;
   shadow-radius: 2px;
   elevation: 2;
+
+  gap: 16px;
 `;
 
 const InfoItem = styled.View`
-  margin-bottom: 12px;
-
   gap: 4px;
 `;
 
@@ -76,7 +77,6 @@ const InfoValue = styled(Typography.Body2)`
 const TagContainer = styled.View`
   flex-direction: row;
   flex-wrap: wrap;
-  margin-top: 8px;
 `;
 
 const Tag = styled.View`
@@ -84,7 +84,7 @@ const Tag = styled.View`
   border-radius: 20px;
   padding: 6px 12px;
   margin-right: 8px;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
 `;
 
 const TagText = styled.Text`
@@ -104,7 +104,9 @@ export default function Profile(): JSX.Element {
       />
       <CustomScrollView bounces={false}>
         <ProfileHeader>
-          <UserAvatar source={{uri: user?.avatar_url || ''}} />
+          <UserAvatar
+            source={user?.avatar_url ? {uri: user?.avatar_url} : IC_ICON}
+          />
           <UserName>{user?.display_name || ''}</UserName>
           <UserBio>{user?.introduction || ''}</UserBio>
         </ProfileHeader>

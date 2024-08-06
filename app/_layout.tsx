@@ -62,33 +62,41 @@ function App(): JSX.Element | null {
       }
 
       if (session?.user) {
-        const {status} = await supabase
+        const {data: existingUser} = await supabase
           .from('users')
-          .upsert({
-            id: session.user.id,
-            // AuthType
-            provider: session.user.app_metadata.provider as any,
-            provider_id: session.user.app_metadata.provider_id,
-            last_sign_in_at: session.user.app_metadata.last_sign_in_at,
-            full_name: session.user.user_metadata.full_name,
-            name: session.user.user_metadata.name,
-            sub: session.user.user_metadata.sub,
-            email: session.user.email,
-            email_confirmed_at: session.user.email_confirmed_at,
-            birthday: session.user.user_metadata.birthday,
-            confirmed_at: session.user.user_metadata.confirmed_at,
-            avatar_url: session.user.user_metadata.avatar_url,
-            description: session.user.user_metadata.description,
-            phone_number: session.user.user_metadata.phone_number,
-            phone: session.user.user_metadata.phone,
-            phone_verified: session.user.user_metadata.phone_verified,
-          })
+          .select('id')
+          .eq('id', session.user.id)
           .single();
 
-        if (status !== 201 && status !== 200) {
-          await supabase.auth.signOut();
+        if (!existingUser) {
+          const {status} = await supabase
+            .from('users')
+            .upsert({
+              id: session.user.id,
+              // AuthType
+              provider: session.user.app_metadata.provider as any,
+              provider_id: session.user.app_metadata.provider_id,
+              last_sign_in_at: session.user.app_metadata.last_sign_in_at,
+              full_name: session.user.user_metadata.full_name,
+              name: session.user.user_metadata.name,
+              sub: session.user.user_metadata.sub,
+              email: session.user.email,
+              email_confirmed_at: session.user.email_confirmed_at,
+              birthday: session.user.user_metadata.birthday,
+              confirmed_at: session.user.user_metadata.confirmed_at,
+              avatar_url: session.user.user_metadata.avatar_url,
+              description: session.user.user_metadata.description,
+              phone_number: session.user.user_metadata.phone_number,
+              phone: session.user.user_metadata.phone,
+              phone_verified: session.user.user_metadata.phone_verified,
+            })
+            .single();
 
-          return;
+          if (status !== 201 && status !== 200) {
+            await supabase.auth.signOut();
+
+            return;
+          }
         }
 
         const {profile, userTags} = await fetchUserProfile(session.user.id);

@@ -115,6 +115,8 @@ function SingleUploadImageInput({
               height: 96px;
               border-radius: 48px;
               background-color: ${theme.bg.paper};
+              border-color: ${theme.role.border};
+              border-width: 1px;
               opacity: 0.9;
             `,
             styles?.image ? styles.image : {},
