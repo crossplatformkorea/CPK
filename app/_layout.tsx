@@ -27,6 +27,7 @@ import ReportModal from '../src/components/modals/ReportModal';
 import {fetchBlockUserIds} from '../src/apis/blockQueries';
 import {AuthChangeEvent} from '@supabase/supabase-js';
 import CustomLoadingIndicator from '../src/components/uis/CustomLoadingIndicator';
+import {fetchUserProfile} from '../src/apis/profileQueries';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -90,14 +91,10 @@ function App(): JSX.Element | null {
           return;
         }
 
-        const {data} = await supabase
-          .from('users')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
+        const {profile, userTags} = await fetchUserProfile(session.user.id);
 
-        if (data) {
-          if (data?.deleted_at) {
+        if (profile) {
+          if (profile?.deleted_at) {
             await supabase.auth.signOut();
             snackbar.open({
               text: t('common.deletedAccount'),
@@ -111,8 +108,9 @@ function App(): JSX.Element | null {
 
           setAuth({
             authId: session.user.id,
-            user: data,
+            user: profile,
             blockedUserIds,
+            tags: userTags,
           });
         }
 
@@ -123,6 +121,7 @@ function App(): JSX.Element | null {
         authId: null,
         user: null,
         blockedUserIds: [],
+        tags: [],
       });
     });
 

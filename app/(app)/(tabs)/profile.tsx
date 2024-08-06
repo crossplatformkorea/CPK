@@ -1,20 +1,155 @@
-import {useCallback, useState} from 'react';
-import {View} from 'react-native';
-import {Typography} from 'dooboo-ui';
+import styled from '@emotion/native';
 import {Stack} from 'expo-router';
-import {useRecoilValue} from 'recoil';
-
-import {authRecoilState} from '../../../src/recoil/atoms';
+import {Icon, Typography} from 'dooboo-ui';
 import {t} from '../../../src/STRINGS';
-import {supabase} from '../../../src/supabase';
+import {useRecoilValue} from 'recoil';
+import {authRecoilState} from '../../../src/recoil/atoms';
+import CustomScrollView from '../../../src/components/uis/CustomScrollView';
+import {css} from '@emotion/native';
+import {View} from 'react-native';
+
+const Container = styled.SafeAreaView`
+  flex: 1;
+  background-color: ${({theme}) => theme.bg.basic};
+`;
+
+const ProfileHeader = styled.View`
+  align-items: center;
+  padding: 24px;
+  background-color: ${({theme}) => theme.bg.paper};
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+`;
+
+const Content = styled.View`
+  padding: 24px;
+`;
+
+const UserAvatar = styled.Image`
+  width: 120px;
+  height: 120px;
+  border-radius: 60px;
+  margin-bottom: 16px;
+  border-width: 3px;
+  border-color: ${({theme}) => theme.role.border};
+`;
+
+const UserName = styled.Text`
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 8px;
+`;
+
+const UserBio = styled.Text`
+  font-size: 16px;
+  color: ${({theme}) => theme.role.secondary};
+  text-align: center;
+  margin-bottom: 16px;
+`;
+
+const InfoCard = styled.View`
+  background-color: ${({theme}) => theme.bg.paper};
+  border-radius: 15px;
+  padding: 16px;
+  margin-bottom: 16px;
+  shadow-color: ${({theme}) => theme.role.underlayContrast};
+  shadow-offset: 0px 1px;
+  shadow-opacity: 0.1;
+  shadow-radius: 2px;
+  elevation: 2;
+`;
+
+const InfoItem = styled.View`
+  margin-bottom: 12px;
+
+  gap: 4px;
+`;
+
+const InfoLabel = styled(Typography.Body2)`
+  font-family: Pretendard-Bold;
+`;
+
+const InfoValue = styled(Typography.Body2)`
+  flex: 1;
+`;
+
+const TagContainer = styled.View`
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 8px;
+`;
+
+const Tag = styled.View`
+  background-color: ${({theme}) => theme.role.accent};
+  border-radius: 20px;
+  padding: 6px 12px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+`;
+
+const TagText = styled.Text`
+  color: ${({theme}) => theme.text.basic};
+  font-size: 14px;
+`;
 
 export default function Profile(): JSX.Element {
-  const [loading, setLoading] = useState(true);
+  const {user, tags} = useRecoilValue(authRecoilState);
 
   return (
-    <View>
-      <Stack.Screen options={{title: t('common.profile')}} />
-      <Typography.Heading3>{t('common.profile')}</Typography.Heading3>
-    </View>
+    <Container>
+      <Stack.Screen
+        options={{
+          title: t('profile.title'),
+        }}
+      />
+      <CustomScrollView bounces={false}>
+        <ProfileHeader>
+          <UserAvatar source={{uri: user?.avatar_url || ''}} />
+          <UserName>{user?.display_name || ''}</UserName>
+          <UserBio>{user?.introduction || ''}</UserBio>
+        </ProfileHeader>
+        <Content>
+          <InfoCard>
+            <InfoItem>
+              <InfoLabel>{t('onboarding.githubId')}</InfoLabel>
+              <View
+                style={css`
+                  flex-direction: row;
+                  align-items: center;
+                  gap: 4px;
+                `}
+              >
+                <Icon name="GithubLogo" size={16} color="#333" />
+                <InfoValue>{user?.github_id || ''}</InfoValue>
+              </View>
+            </InfoItem>
+            <InfoItem>
+              <InfoLabel>{t('onboarding.affiliation')}</InfoLabel>
+              <InfoValue>{user?.affiliation || ''}</InfoValue>
+            </InfoItem>
+          </InfoCard>
+          <InfoCard>
+            <InfoItem>
+              <InfoLabel>{t('onboarding.desiredConnection')}</InfoLabel>
+              <InfoValue>{user?.desired_connection || ''}</InfoValue>
+            </InfoItem>
+            <InfoItem>
+              <InfoLabel>{t('onboarding.futureExpectations')}</InfoLabel>
+              <InfoValue>{user?.future_expectations || ''}</InfoValue>
+            </InfoItem>
+          </InfoCard>
+          <InfoCard>
+            <InfoLabel>{t('onboarding.userTags')}:</InfoLabel>
+            <TagContainer>
+              {tags?.map((tag, index) => (
+                <Tag key={index}>
+                  <TagText>{tag}</TagText>
+                </Tag>
+              ))}
+            </TagContainer>
+          </InfoCard>
+        </Content>
+      </CustomScrollView>
+    </Container>
   );
 }

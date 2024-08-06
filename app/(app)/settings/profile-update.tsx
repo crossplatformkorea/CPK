@@ -105,7 +105,7 @@ export default function ProfileUpdate(): JSX.Element {
     resolver: yupResolver(schema),
   });
 
-  const handleFinishOnboarding: SubmitHandler<FormData> = async (data) => {
+  const handleProfileUpdate: SubmitHandler<FormData> = async (data) => {
     if (!authId) return;
 
     let image: ImageInsertArgs | undefined = {};
@@ -134,6 +134,7 @@ export default function ProfileUpdate(): JSX.Element {
       });
 
       if (user) {
+        setTags(tags);
         setAuth((prev) => ({...prev, user}));
         back();
       }
@@ -180,7 +181,7 @@ export default function ProfileUpdate(): JSX.Element {
           title: t('profileUpdate.title'),
           headerRight: () => (
             <Pressable
-              onPress={handleSubmit(handleFinishOnboarding)}
+              onPress={handleSubmit(handleProfileUpdate)}
               hitSlop={{
                 bottom: 8,
                 left: 8,
@@ -344,6 +345,70 @@ export default function ProfileUpdate(): JSX.Element {
                   value={value}
                   decoration="boxed"
                   error={errors.introduction ? errors.introduction.message : ''}
+                />
+              )}
+              rules={{validate: (value) => !!value}}
+            />
+            <Controller
+              control={control}
+              name="desired_connection"
+              render={({field: {onChange, value}}) => (
+                <EditText
+                  styles={{
+                    label: css`
+                      font-size: 14px;
+                    `,
+                    labelContainer: css`
+                      margin-bottom: 8px;
+                    `,
+                    input: css`
+                      min-height: 120px;
+                    `,
+                  }}
+                  multiline
+                  colors={{focused: theme.role.primary}}
+                  label={t('onboarding.desiredConnection')}
+                  onChangeText={onChange}
+                  placeholder={t('onboarding.desiredConnectionPlaceholder')}
+                  value={value}
+                  decoration="boxed"
+                  error={
+                    errors.desired_connection
+                      ? errors.desired_connection.message
+                      : ''
+                  }
+                />
+              )}
+              rules={{validate: (value) => !!value}}
+            />
+            <Controller
+              control={control}
+              name="future_expectations"
+              render={({field: {onChange, value}}) => (
+                <EditText
+                  styles={{
+                    label: css`
+                      font-size: 14px;
+                    `,
+                    labelContainer: css`
+                      margin-bottom: 8px;
+                    `,
+                    input: css`
+                      min-height: 120px;
+                    `,
+                  }}
+                  multiline
+                  colors={{focused: theme.role.primary}}
+                  label={t('onboarding.futureExpectations')}
+                  onChangeText={onChange}
+                  placeholder={t('onboarding.futureExpectationsPlaceholder')}
+                  value={value}
+                  decoration="boxed"
+                  error={
+                    errors.future_expectations
+                      ? errors.future_expectations.message
+                      : ''
+                  }
                 />
               )}
               rules={{validate: (value) => !!value}}

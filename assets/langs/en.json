@@ -98,7 +98,8 @@
     "sectionTitle": "Welcome to Dev Community!",
     "title": "Onboarding",
     "yourTags": "Your Tags",
-    "yourTagsPlaceholder": "Please enter tags related to you"
+    "yourTagsPlaceholder": "Please enter tags related to you",
+    "userTags": "User Tags"
   },
   "post": {
     "update": {

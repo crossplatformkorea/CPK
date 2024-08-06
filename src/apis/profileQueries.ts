@@ -61,7 +61,7 @@ export const fetchUpdateProfile = async ({
     .from('users')
     .select('id')
     .eq('display_name', args.display_name)
-    // .neq('id', authId)
+    .neq('id', authId)
     .single();
 
   // PGRST116 means no matching record found

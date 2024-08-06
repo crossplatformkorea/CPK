@@ -139,6 +139,7 @@ export default function Onboarding(): JSX.Element {
       });
 
       if (updatedUser) {
+        setTags(tags);
         setAuth((prev) => ({...prev, user: updatedUser}));
       }
     } catch (error: any) {

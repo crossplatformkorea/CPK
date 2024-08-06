@@ -98,7 +98,8 @@
     "sectionTitle": "개발자 커뮤니티에 오신 것을 환영합니다!",
     "title": "온보딩",
     "yourTags": "나의 태그",
-    "yourTagsPlaceholder": "나와 관련된 태그들을 입력하세요"
+    "yourTagsPlaceholder": "나와 관련된 태그들을 입력하세요",
+    "userTags": "사용자 태그"
   },
   "post": {
     "update": {
