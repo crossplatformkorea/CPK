@@ -29,6 +29,8 @@ import {fetchBlockUserIds} from '../src/apis/blockQueries';
 import {AuthChangeEvent} from '@supabase/supabase-js';
 import CustomLoadingIndicator from '../src/components/uis/CustomLoadingIndicator';
 import {fetchUserProfile} from '../src/apis/profileQueries';
+import {registerForPushNotificationsAsync} from '../src/utils/notifications';
+import {fetchAddPushToken} from '../src/apis/pushTokenQueries';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -129,6 +131,28 @@ function App(): JSX.Element | null {
             blockedUserIds,
             tags: userTags,
           });
+
+          registerForPushNotificationsAsync()
+            .then((token) => {
+              if (token) {
+                setAuth((prev) => ({
+                  ...prev,
+                  pushToken: token,
+                }));
+
+                fetchAddPushToken({
+                  authId: session.user.id,
+                  expoPushToken: token,
+                });
+              }
+
+              return;
+            })
+            .catch((err) => {
+              if (__DEV__) {
+                console.error(err);
+              }
+            });
         }
 
         return;
@@ -138,6 +162,7 @@ function App(): JSX.Element | null {
         authId: null,
         user: null,
         blockedUserIds: [],
+        pushToken: null,
         tags: [],
       });
     });

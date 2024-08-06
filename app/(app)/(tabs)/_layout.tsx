@@ -1,14 +1,12 @@
 import {Pressable, View} from 'react-native';
 import {Icon, useDooboo} from 'dooboo-ui';
 import {Link, Redirect, Tabs, useRouter} from 'expo-router';
-import {useRecoilValue} from 'recoil';
+import {useRecoilState} from 'recoil';
 
 import {authRecoilState} from '../../../src/recoil/atoms';
 import {t} from '../../../src/STRINGS';
 import {useEffect, useRef} from 'react';
-import {registerForPushNotificationsAsync} from '../../../src/utils/notifications';
 import * as Notifications from 'expo-notifications';
-import {fetchAddPushToken} from '../../../src/apis/pushTokenQueries';
 
 function SettingsMenu(): JSX.Element {
   const {theme} = useDooboo();
@@ -32,21 +30,11 @@ function SettingsMenu(): JSX.Element {
 
 export default function TabLayout(): JSX.Element {
   const {theme} = useDooboo();
-  const {authId, user} = useRecoilValue(authRecoilState);
+  const [{authId, user}, setAuth] = useRecoilState(authRecoilState);
   const notificationResponseListener = useRef<Notifications.Subscription>();
 
   useEffect(() => {
     if (!authId) return;
-
-    registerForPushNotificationsAsync().then((token) => {
-      if (token) {
-        fetchAddPushToken({
-          authId,
-          expoPushToken: token,
-        });
-      }
-    });
-
     notificationResponseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
         console.log(JSON.stringify(response.notification.request));
@@ -58,7 +46,7 @@ export default function TabLayout(): JSX.Element {
           notificationResponseListener.current,
         );
     };
-  }, [authId]);
+  }, [authId, setAuth]);
 
   if (!authId) {
     return <Redirect href="/sign-in" />;

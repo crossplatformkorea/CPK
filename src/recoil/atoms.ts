@@ -8,6 +8,7 @@ export type UserInfo = {
   user: User | null;
   tags: string[];
   blockedUserIds: string[];
+  pushToken?: string | null;
 };
 
 export const authRecoilState = atom<UserInfo>({
@@ -15,6 +16,7 @@ export const authRecoilState = atom<UserInfo>({
   default: {
     authId: null,
     user: null,
+    pushToken: null,
     tags: [],
     blockedUserIds: []
   },

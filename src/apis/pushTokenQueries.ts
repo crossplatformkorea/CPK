@@ -35,3 +35,26 @@ export async function fetchAddPushToken({
 
   return newToken;
 }
+
+export async function fetchDeletePushToken({
+  authId,
+  expoPushToken,
+}: {
+  authId: string;
+  expoPushToken: string;
+}) {
+  const {data: deletedToken, error: deleteError} = await supabase
+    .from('push_tokens')
+    .delete()
+    .eq('user_id', authId)
+    .eq('token', expoPushToken)
+    .single();
+
+  if (deleteError) {
+    if (__DEV__) {
+      console.error(deleteError);
+    }
+  }
+
+  return deletedToken;
+}
