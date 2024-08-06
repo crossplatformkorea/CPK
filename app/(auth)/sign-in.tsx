@@ -1,4 +1,4 @@
-import {useCallback, useState} from 'react';
+import {useCallback} from 'react';
 import {Image, InteractionManager, Platform, ScrollView} from 'react-native';
 import styled, {css} from '@emotion/native';
 import {
@@ -6,7 +6,6 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import {Icon, Typography, useDooboo} from 'dooboo-ui';
-import StatusBarBrightness from 'dooboo-ui/uis/StatusbarBrightness';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import {Redirect, Stack, useRouter} from 'expo-router';
 import {useRecoilValue} from 'recoil';
@@ -18,8 +17,9 @@ import {t} from '../../src/STRINGS';
 import {supabase} from '../../src/supabase';
 import SocialSignInButton from '../../src/components/uis/SocialSignInButton';
 import {showAlert} from '../../src/utils/alert';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const Container = styled.SafeAreaView`
+const Container = styled.View`
   flex: 1;
   align-self: stretch;
   background-color: ${({theme}) => theme.brand};
@@ -29,6 +29,7 @@ const Container = styled.SafeAreaView`
 `;
 
 const Content = styled.View`
+  align-self: center;
   gap: 20px;
   justify-content: center;
   align-items: center;
@@ -37,6 +38,7 @@ const Content = styled.View`
 const Buttons = styled.View`
   align-self: stretch;
   margin-top: 8px;
+  margin-bottom: 20px;
   padding: 20px;
   gap: 12px;
 `;
@@ -44,8 +46,8 @@ const Buttons = styled.View`
 export default function SignIn(): JSX.Element {
   const {theme} = useDooboo();
   const {authId, user} = useRecoilValue(authRecoilState);
-  const [isHorizontal, setIsHorizontal] = useState(false);
   const {push} = useRouter();
+  const {top, bottom, left, right} = useSafeAreaInsets();
 
   GoogleSignin.configure({
     scopes: ['https://www.googleapis.com/auth/drive.readonly'],
@@ -130,19 +132,15 @@ export default function SignIn(): JSX.Element {
   }
 
   return (
-    <Container
-      onLayout={(e) => {
-        setIsHorizontal(
-          e.nativeEvent.layout.width > e.nativeEvent.layout.height,
-        );
-      }}
-    >
-      <StatusBarBrightness type="light-content" />
+    <Container>
       <Stack.Screen options={{headerShown: false}} />
       <ScrollView>
         <Content
           style={css`
-            padding-top: ${!isHorizontal ? '16%' : '5%'};
+            padding-top: ${top + 48 + 'px'};
+            padding-bottom: ${bottom + 'px'};
+            padding-left: ${left + 'px'};
+            padding-right: ${right + 'px'};
           `}
         >
           <Image

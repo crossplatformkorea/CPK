@@ -146,7 +146,7 @@
     "description": "한국의 개발자들과 전세계 개발자들이 소통하는 곳!",
     "googleIdNotAvailable": "존재하지 않는 Google ID입니다",
     "playServiceNotAvailable": "Google Play 서비스를 사용할 수 없습니다",
-    "policyAgreement": "{{termsOfService}} 및 {{privacyPolicy}}에 동의하면 로그인합니다.",
+    "policyAgreement": "다음 단계로 진행함과 동시에 {{termsOfService}} 및 {{privacyPolicy}}에 동의하는 것으로 간주합니다.",
     "privacyPolicy": "개인정보 처리방침",
     "termsOfService": "서비스 약관",
     "title": "로그인"
