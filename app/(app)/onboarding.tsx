@@ -6,6 +6,7 @@ import * as yup from 'yup';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {
   ActivityIndicator,
+  Alert,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -83,6 +84,7 @@ const fetcher = async (authId: string | null) => {
 
 export default function Onboarding(): JSX.Element {
   const {theme} = useDooboo();
+  const [displayNameError, setDisplayNameError] = useState<string>();
   const [{authId, user}, setAuth] = useRecoilState(authRecoilState);
   const [tag, setTag] = useState('');
   const [tags, setTags] = useState<string[]>([]);
@@ -139,8 +141,13 @@ export default function Onboarding(): JSX.Element {
       if (updatedUser) {
         setAuth((prev) => ({...prev, user: updatedUser}));
       }
-    } catch (error) {
-      if (__DEV__) console.error(error);
+    } catch (error: any) {
+      if (error?.name === 'displayName') {
+        setDisplayNameError(error?.message || '');
+        return;
+      }
+
+      Alert.alert((error as Error)?.message || '');
     }
   };
 
@@ -283,7 +290,13 @@ export default function Onboarding(): JSX.Element {
                   placeholder={t('onboarding.displayNamePlaceholder')}
                   value={value}
                   decoration="boxed"
-                  error={errors.display_name ? errors.display_name.message : ''}
+                  error={
+                    displayNameError
+                      ? displayNameError
+                      : errors.display_name
+                        ? errors.display_name.message
+                        : ''
+                  }
                 />
               )}
               rules={{required: true, validate: (value) => !!value}}

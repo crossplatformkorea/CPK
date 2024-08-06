@@ -1,11 +1,12 @@
 import styled, {css} from '@emotion/native';
-import {Stack} from 'expo-router';
+import {Stack, useRouter} from 'expo-router';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {EditText, Icon, Typography, useDooboo} from 'dooboo-ui';
 import * as yup from 'yup';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {
   ActivityIndicator,
+  Alert,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -81,6 +82,8 @@ export default function ProfileUpdate(): JSX.Element {
   const [tag, setTag] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [profileImg, setProfileImg] = useState<string>();
+  const [displayNameError, setDisplayNameError] = useState<string>();
+  const {back} = useRouter();
 
   const {data, error} = useSwr(authId && `/profile/${authId}`, () =>
     fetcher(authId),
@@ -107,7 +110,7 @@ export default function ProfileUpdate(): JSX.Element {
 
     let image: ImageInsertArgs | undefined = {};
 
-    if (profileImg) {
+    if (profileImg && !profileImg.startsWith('http')) {
       const destPath = `users/${authId}`;
 
       image = await uploadFileToSupabase({
@@ -132,9 +135,15 @@ export default function ProfileUpdate(): JSX.Element {
 
       if (user) {
         setAuth((prev) => ({...prev, user}));
+        back();
       }
-    } catch (error) {
-      if (__DEV__) console.error(error);
+    } catch (error: any) {
+      if (error?.name === 'displayName') {
+        setDisplayNameError(error?.message || '');
+        return;
+      }
+
+      Alert.alert((error as Error)?.message || '');
     }
   };
 
@@ -161,9 +170,7 @@ export default function ProfileUpdate(): JSX.Element {
   }
 
   if (!data) {
-    return (
-      <CustomLoadingIndicator />
-    );
+    return <CustomLoadingIndicator />;
   }
 
   return (
@@ -230,7 +237,13 @@ export default function ProfileUpdate(): JSX.Element {
                   placeholder={t('onboarding.displayNamePlaceholder')}
                   value={value}
                   decoration="boxed"
-                  error={errors.display_name ? errors.display_name.message : ''}
+                  error={
+                    displayNameError
+                      ? displayNameError
+                      : errors.display_name
+                        ? errors.display_name.message
+                        : ''
+                  }
                 />
               )}
               rules={{required: true, validate: (value) => !!value}}

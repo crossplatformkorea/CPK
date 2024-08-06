@@ -1,3 +1,4 @@
+import {t} from '../STRINGS';
 import {supabase} from '../supabase';
 import {User, UserUpdateArgs} from '../types';
 
@@ -50,6 +51,33 @@ export const fetchUpdateProfile = async ({
   tags: string[];
   authId: string;
 }) => {
+  if (!args.display_name) {
+    const error = new Error(t('error.displayNameIsEmpty'));
+    error.name = 'displayName';
+    throw error;
+  }
+
+  const {data: existingUser, error: checkError} = await supabase
+    .from('users')
+    .select('id')
+    .eq('display_name', args.display_name)
+    // .neq('id', authId)
+    .single();
+
+  // PGRST116 means no matching record found
+  if (checkError && checkError.code !== 'PGRST116') {
+    if (__DEV__) {
+      console.error(checkError);
+    }
+    throw new Error(t('error.default'));
+  }
+
+  if (existingUser) {
+    const error = new Error(t('error.displayNameExists'));
+    error.name = 'displayName';
+    throw error;
+  }
+
   const {data: updatedProfile, error: updateError} = await supabase
     .from('users')
     .update({
