@@ -29,7 +29,7 @@ import {
 } from '../../../src/apis/profileQueries';
 import FallbackComponent from '../../../src/components/uis/FallbackComponent';
 import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
-import { showAlert } from '../../../src/utils/alert';
+import {showAlert} from '../../../src/utils/alert';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -49,11 +49,11 @@ const Content = styled.View`
 `;
 
 const schema = yup.object().shape({
-  display_name: yup.string().required(t('common.requiredField')),
-  avatar_url: yup.string(),
+  display_name: yup.string().required(t('common.requiredField')).min(2).max(20),
+  github_id: yup.string().required(t('common.requiredField')),
+  affiliation: yup.string().required(t('common.requiredField')),
   meetup_id: yup.string(),
-  affiliation: yup.string(),
-  github_id: yup.string(),
+  avatar_url: yup.string(),
   other_sns_urls: yup.array().of(yup.string()),
   tags: yup.array().of(yup.string()),
   desired_connection: yup.string(),
@@ -245,7 +245,7 @@ export default function ProfileUpdate(): JSX.Element {
                     displayNameError
                       ? displayNameError
                       : errors.display_name
-                        ? errors.display_name.message
+                        ? t('error.displayNameInvalid')
                         : ''
                   }
                 />
@@ -254,33 +254,10 @@ export default function ProfileUpdate(): JSX.Element {
             />
             <Controller
               control={control}
-              name="meetup_id"
-              render={({field: {onChange, value}}) => (
-                <EditText
-                  styles={{
-                    label: css`
-                      font-size: 14px;
-                    `,
-                    labelContainer: css`
-                      margin-bottom: 8px;
-                    `,
-                  }}
-                  colors={{focused: theme.role.primary}}
-                  label={t('onboarding.meetupId')}
-                  onChangeText={onChange}
-                  placeholder={t('onboarding.meetupIdPlaceholder')}
-                  value={value}
-                  decoration="boxed"
-                  error={errors.meetup_id ? errors.meetup_id.message : ''}
-                />
-              )}
-              rules={{validate: (value) => !!value}}
-            />
-            <Controller
-              control={control}
               name="github_id"
               render={({field: {onChange, value}}) => (
                 <EditText
+                  required
                   styles={{
                     label: css`
                       font-size: 14px;
@@ -305,6 +282,7 @@ export default function ProfileUpdate(): JSX.Element {
               name="affiliation"
               render={({field: {onChange, value}}) => (
                 <EditText
+                  required
                   styles={{
                     label: css`
                       font-size: 14px;
@@ -320,6 +298,30 @@ export default function ProfileUpdate(): JSX.Element {
                   value={value}
                   decoration="boxed"
                   error={errors.affiliation ? errors.affiliation.message : ''}
+                />
+              )}
+              rules={{validate: (value) => !!value}}
+            />
+            <Controller
+              control={control}
+              name="meetup_id"
+              render={({field: {onChange, value}}) => (
+                <EditText
+                  styles={{
+                    label: css`
+                      font-size: 14px;
+                    `,
+                    labelContainer: css`
+                      margin-bottom: 8px;
+                    `,
+                  }}
+                  colors={{focused: theme.role.primary}}
+                  label={t('onboarding.meetupId')}
+                  onChangeText={onChange}
+                  placeholder={t('onboarding.meetupIdPlaceholder')}
+                  value={value}
+                  decoration="boxed"
+                  error={errors.meetup_id ? errors.meetup_id.message : ''}
                 />
               )}
               rules={{validate: (value) => !!value}}

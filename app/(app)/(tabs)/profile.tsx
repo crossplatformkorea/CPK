@@ -1,6 +1,6 @@
 import styled from '@emotion/native';
 import {Stack} from 'expo-router';
-import {Icon, Typography} from 'dooboo-ui';
+import {Icon, Typography, useDooboo} from 'dooboo-ui';
 import {t} from '../../../src/STRINGS';
 import {useRecoilValue} from 'recoil';
 import {authRecoilState} from '../../../src/recoil/atoms';
@@ -95,6 +95,7 @@ const TagText = styled.Text`
 
 export default function Profile(): JSX.Element {
   const {user, tags} = useRecoilValue(authRecoilState);
+  const {theme} = useDooboo();
 
   return (
     <Container>
@@ -109,7 +110,7 @@ export default function Profile(): JSX.Element {
             source={user?.avatar_url ? {uri: user?.avatar_url} : IC_ICON}
           />
           <UserName>{user?.display_name || ''}</UserName>
-          <UserBio>{user?.introduction || ''}</UserBio>
+          {user?.introduction ? <UserBio>{user?.introduction}</UserBio> : null}
         </ProfileHeader>
         <Content>
           <InfoCard>
@@ -122,7 +123,7 @@ export default function Profile(): JSX.Element {
                   gap: 4px;
                 `}
               >
-                <Icon name="GithubLogo" size={16} color="#333" />
+                <Icon name="GithubLogo" size={16} color={theme.role.secondary} />
                 <InfoValue>{user?.github_id || ''}</InfoValue>
               </View>
             </InfoItem>
@@ -131,26 +132,36 @@ export default function Profile(): JSX.Element {
               <InfoValue>{user?.affiliation || ''}</InfoValue>
             </InfoItem>
           </InfoCard>
-          <InfoCard>
-            <InfoItem>
-              <InfoLabel>{t('onboarding.desiredConnection')}</InfoLabel>
-              <InfoValue>{user?.desired_connection || ''}</InfoValue>
-            </InfoItem>
-            <InfoItem>
-              <InfoLabel>{t('onboarding.futureExpectations')}</InfoLabel>
-              <InfoValue>{user?.future_expectations || ''}</InfoValue>
-            </InfoItem>
-          </InfoCard>
-          <InfoCard>
-            <InfoLabel>{t('onboarding.userTags')}:</InfoLabel>
-            <TagContainer>
-              {tags?.map((tag, index) => (
-                <Tag key={index}>
-                  <TagText>{tag}</TagText>
-                </Tag>
-              ))}
-            </TagContainer>
-          </InfoCard>
+
+          {user?.desired_connection || user?.future_expectations ? (
+            <InfoCard>
+              {user?.desired_connection ? (
+                <InfoItem>
+                  <InfoLabel>{t('onboarding.desiredConnection')}</InfoLabel>
+                  <InfoValue>{user?.desired_connection || ''}</InfoValue>
+                </InfoItem>
+              ) : null}
+              {user?.future_expectations ? (
+                <InfoItem>
+                  <InfoLabel>{t('onboarding.futureExpectations')}</InfoLabel>
+                  <InfoValue>{user?.future_expectations || ''}</InfoValue>
+                </InfoItem>
+              ) : null}
+            </InfoCard>
+          ) : null}
+
+          {tags?.length ? (
+            <InfoCard>
+              <InfoLabel>{t('onboarding.userTags')}</InfoLabel>
+              <TagContainer>
+                {tags.map((tag, index) => (
+                  <Tag key={index}>
+                    <TagText>{tag}</TagText>
+                  </Tag>
+                ))}
+              </TagContainer>
+            </InfoCard>
+          ) : null}
         </Content>
       </CustomScrollView>
     </Container>
