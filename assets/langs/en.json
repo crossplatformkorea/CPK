@@ -5,6 +5,7 @@
     "title": "Blocked Users"
   },
   "common": {
+    "add": "Add",
     "appErrorMessage": "Communication is not smooth.\nPlease check your network status.",
     "block": "Block",
     "blockUser": "Block {{user}}",
@@ -15,6 +16,16 @@
     "delete": "Delete",
     "deleteSuccess": "Successfully deleted",
     "deletedAccount": "Retired account.",
+    "done": "Done",
+    "follow": "Follow",
+    "followers": {
+      "one": "Follower",
+      "other": "Followers"
+    },
+    "followings": {
+      "one": "Following",
+      "other": "Followings"
+    },
     "image": "Image",
     "invalidUrl": "Invalid URL",
     "latest": "Latest",
@@ -48,7 +59,10 @@
     }
   },
   "error": {
-    "default": "Error occurred!"
+    "default": "Error occurred!",
+    "displayNameExists": "The nickname already exists",
+    "displayNameInvalid": "Nickname must be between 2 and 20 characters",
+    "displayNameIsEmpty": "Please enter a nickname"
   },
   "loginInfo": {
     "cancel": "Cancel",
@@ -60,9 +74,32 @@
     "title": "Login Information"
   },
   "onboarding": {
+    "affiliation": "Affiliation",
+    "affiliationPlaceholder": "Enter your affiliation",
+    "desiredConnection": "Desired Connection",
+    "desiredConnectionPlaceholder": "Enter whom you wish to connect with",
     "displayName": "Display Name",
     "displayNamePlaceholder": "Enter your display name",
-    "title": "Onboarding"
+    "futureExpectations": "Future Expectations",
+    "futureExpectationsPlaceholder": "Enter your future expectations",
+    "githubId": "GitHub ID",
+    "githubIdPlaceholder": "Enter your GitHub ID",
+    "introduction": "Introduction",
+    "introductionPlaceholder": "Enter your introduction",
+    "meetupId": "Meetup ID",
+    "meetupIdPlaceholder": "Enter your meetup ID",
+    "motivationForEventParticipation": "Motivation for Event Participation",
+    "motivationForEventParticipationPlaceholder": "Please enter your motivation for participating in the event if you are attending the meetup.",
+    "nationality": "Nationality",
+    "nationalityPlaceholder": "Enter your nationality",
+    "otherSnsUrls": "Other SNS URLs",
+    "otherSnsUrlsPlaceholder": "Enter your other SNS URLs",
+    "sectionDescription": "Please submit your welcome card below to proceed!",
+    "sectionTitle": "Welcome to Dev Community!",
+    "title": "Onboarding",
+    "yourTags": "Your Tags",
+    "yourTagsPlaceholder": "Please enter tags related to you",
+    "userTags": "User Tags"
   },
   "post": {
     "update": {
@@ -81,6 +118,12 @@
       "writeFailed": "Write failed!",
       "writeSuccess": "Successfully written!"
     }
+  },
+  "profile": {
+    "title": "Profile"
+  },
+  "profileUpdate": {
+    "title": "Profile Update"
   },
   "settings": {
     "blockedUsers": "Blocked Users",

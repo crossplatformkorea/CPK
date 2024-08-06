@@ -21,30 +21,40 @@ enum AuthType {
 }
 
 model User {
-  id               String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email            String?
-  fullName         String?   @map("full_name")
-  name             String?
-  displayName      String?   @map("display_name")
-  avatarUrl        String?   @map("avatar_url")
-  phoneVerified    Boolean?  @default(false) @map("phone_verified")
-  providerId       String?   @map("provider_id")
-  sub              String?
-  provider         AuthType  @default(email)
-  description      String?
-  birthday         DateTime?
-  gender           Gender?
-  phone            String?
-  locale           String?
-  confirmedAt      DateTime? @map("confirmed_at")
-  emailConfirmedAt DateTime? @map("email_confirmed_at")
-  lastSignInAt     DateTime? @map("last_sign_in_at")
+  id                              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                           String?   @unique
+  fullName                        String?   @map("full_name")
+  name                            String?
+  displayName                     String?   @map("display_name")
+  avatarUrl                       String?   @map("avatar_url")
+  phoneVerified                   Boolean?  @default(false) @map("phone_verified")
+  providerId                      String?   @map("provider_id")
+  sub                             String?
+  provider                        AuthType  @default(email)
+  birthday                        DateTime?
+  gender                          Gender?
+  phone                           String?
+  locale                          String?
+  confirmedAt                     DateTime? @map("confirmed_at")
+  emailConfirmedAt                DateTime? @map("email_confirmed_at")
+  lastSignInAt                    DateTime? @map("last_sign_in_at")
+  nationality                     String?   @default("Unknown")
+  affiliation                     String?
+  meetupId                        String?   @map("meetup_id")
+  githubId                        String?   @map("github_id")
+  otherSnsUrls                    String?   @map("other_sns_ids")
+  introduction                    String?
+  /// 연결되고 싶은 분
+  desiredConnection               String?   @map("desired_connection")
+  /// 행사 참여중일 때 동기 입력
+  motivationForEventParticipation String?   @map("motivation_for_event_participation")
+  /// 앞으로 기대하는 것
+  futureExpectations              String?   @map("future_expectations")
 
   createdAt DateTime? @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
-  developers          Developer[]
   notifications       Notification[]
   notificationsTarget Notification[] @relation("NotificationTargetUser")
   replies             Reply[]
@@ -54,42 +64,31 @@ model User {
   posts               Post[]
   blockUsers          Block[]        @relation("BlockUser")
   blocks              Block[]
+  tags                Tag[]
+  followers           Follow[]
+  followings          Follow[]       @relation("Following")
 
   @@map("users")
+}
+
+model Follow {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime? @default(now()) @map("created_at")
+  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at")
+
+  user        User?   @relation(fields: [userId], references: [id])
+  userId      String  @map("user_id") @db.Uuid
+  following   User?   @relation(fields: [followingId], references: [id], "Following")
+  followingId String? @map("following_id") @db.Uuid
+
+  @@unique([userId, followingId])
+  @@map("follows")
 }
 
 enum Nationality {
   SouthKorea
   UnitedStates
   Unknown
-}
-
-model Developer {
-  id                              String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email                           String? @unique
-  bio                             String?
-  nationality                     String? @default("Unknown")
-  organization                    String?
-  meetupId                        String? @map("meetup_id")
-  githubId                        String? @map("github_id")
-  twitterId                       String? @map("twitter_id")
-  threadsId                       String? @map("threads_id")
-  /// 연결되고 싶은 분
-  desiredConnection               String? @map("desired_connection")
-  /// 행사 참여중일 때 동기 입력
-  motivationForEventParticipation String? @map("motivation_for_event_participation")
-  /// 앞으로 기대하는 것
-  futureExpectations              String? @map("future_expectations")
-
-  createdAt DateTime? @default(now()) @map("created_at")
-  deletedAt DateTime? @map("deleted_at")
-
-  tags Tag[]
-
-  userId String? @map("user_id") @db.Uuid
-  user   User?   @relation(fields: [userId], references: [id])
-
-  @@map("developers")
 }
 
 model Post {
@@ -252,10 +251,10 @@ model Like {
 
 model Tag {
   id  String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  tag String @unique @db.Uuid
+  tag String @unique
 
-  developers Developer[]
-  posts      Post[]
+  posts Post[]
+  users User[]
 
   @@index(tag)
   @@map("tags")

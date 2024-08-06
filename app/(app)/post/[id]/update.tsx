@@ -12,10 +12,7 @@ import {
 } from 'react-native';
 import ErrorFallback from '../../../../src/components/uis/FallbackComponent';
 import {useRecoilValue} from 'recoil';
-import {
-  getPublicUrlFromPath,
-  uploadFileToSupabase,
-} from '../../../../src/supabase';
+import {uploadFileToSupabase} from '../../../../src/supabase';
 import {authRecoilState} from '../../../../src/recoil/atoms';
 import {t} from '../../../../src/STRINGS';
 import useSWR from 'swr';
@@ -126,9 +123,7 @@ export default function PostUpdate(): JSX.Element {
           .filter((el) => !!el)
           .map((el) => ({
             ...el,
-            image_url: el?.image_url
-              ? getPublicUrlFromPath(el.image_url)
-              : undefined,
+            image_url: el?.image_url || undefined,
           })),
         imageUrlsToDelete: deleteImageUrls,
       });
