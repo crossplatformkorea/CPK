@@ -138,7 +138,7 @@ export default function ProfileUpdate(): JSX.Element {
 
       if (user) {
         setTags(tags);
-        setAuth((prev) => ({...prev, user}));
+        setAuth((prev) => ({...prev, user, tags}));
         back();
       }
     } catch (error: any) {

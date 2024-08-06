@@ -39,8 +39,9 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     [
       'expo-build-properties',
       {
-        ios: {newArchEnabled: true},
-        android: {newArchEnabled: true},
+        // https://github.com/software-mansion/react-native-screens/issues/2219
+        // ios: {newArchEnabled: true},
+        // android: {newArchEnabled: true},
       },
     ],
     // @ts-ignore
@@ -94,6 +95,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     entitlements: {
       'com.apple.developer.applesignin': ['Default'],
     },
+    googleServicesFile: process.env.GOOGLE_SERVICES_IOS,
     infoPlist: {
       LSApplicationQueriesSchemes: ['mailto'],
       CFBundleAllowMixedLocalizations: true,
@@ -107,7 +109,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     },
   },
   android: {
-    googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
+    googleServicesFile: process.env.GOOGLE_SERVICES_ANDROID,
     userInterfaceStyle: 'automatic',
     permissions: [
       'RECEIVE_BOOT_COMPLETED',

@@ -81,7 +81,7 @@ const TagContainer = styled.View`
 `;
 
 const Tag = styled.View`
-  background-color: ${({theme}) => theme.role.accent};
+  background-color: ${({theme}) => theme.role.link};
   border-radius: 20px;
   padding: 6px 12px;
   margin-right: 8px;
@@ -89,7 +89,7 @@ const Tag = styled.View`
 `;
 
 const TagText = styled.Text`
-  color: ${({theme}) => theme.text.basic};
+  color: ${({theme}) => theme.text.contrast};
   font-size: 14px;
 `;
 
@@ -123,7 +123,7 @@ export default function Profile(): JSX.Element {
                   gap: 4px;
                 `}
               >
-                <Icon name="GithubLogo" size={16} color={theme.role.secondary} />
+                <Icon name="GithubLogo" size={16} color={theme.role.link} />
                 <InfoValue>{user?.github_id || ''}</InfoValue>
               </View>
             </InfoItem>

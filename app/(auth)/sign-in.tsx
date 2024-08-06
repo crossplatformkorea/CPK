@@ -17,7 +17,7 @@ import {t} from '../../src/STRINGS';
 import {supabase} from '../../src/supabase';
 import SocialSignInButton from '../../src/components/uis/SocialSignInButton';
 import {showAlert} from '../../src/utils/alert';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const Container = styled.View`
   flex: 1;
@@ -58,7 +58,6 @@ export default function SignIn(): JSX.Element {
   const googleSignIn = useCallback(async () => {
     try {
       await GoogleSignin.hasPlayServices();
-
       const userInfo = await GoogleSignin.signIn();
 
       InteractionManager.runAfterInteractions(async () => {
