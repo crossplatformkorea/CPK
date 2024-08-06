@@ -10,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
+  View,
 } from 'react-native';
 import {useRecoilValue} from 'recoil';
 import {authRecoilState} from '../../../src/recoil/atoms';
@@ -131,7 +132,7 @@ export default function PostWrite(): JSX.Element {
       />
       <KeyboardAvoidingView
         behavior={Platform.select({ios: 'padding', default: undefined})}
-        keyboardVerticalOffset={Platform.select({ios: 116, default: 88})}
+        keyboardVerticalOffset={Platform.select({ios: 56})}
         style={css`
           background-color: ${theme.bg.basic};
         `}
@@ -242,6 +243,11 @@ export default function PostWrite(): JSX.Element {
                   opacity: ${isCreatePostInFlight ? '0.5' : '1'};
                 `,
               }}
+            />
+            <View
+              style={css`
+                height: 48px;
+              `}
             />
           </Content>
         </CustomScrollView>
