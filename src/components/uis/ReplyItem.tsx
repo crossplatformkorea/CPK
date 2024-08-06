@@ -86,10 +86,10 @@ export default function ReplyItem({
     <Container>
       <Pressable
         onPress={() => {
-          push({
-            pathname: `/[displayName]`,
-            params: {displayName: `@${item.user.display_name}`},
-          });
+          // push({
+          //   pathname: `/[displayName]`,
+          //   params: {displayName: `@${item.user.display_name}`},
+          // });
         }}
         style={css`
           width: 48px;

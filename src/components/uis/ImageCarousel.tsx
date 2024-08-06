@@ -80,14 +80,14 @@ function ImageCarouselItem({
       <Pressable
         delayHoverIn={delayPressIn}
         onPress={() => {
-          if (item.type === 'Video') {
-            return push({
-              pathname: '/video',
-              params: {
-                uri: encodeURIComponent(item.url as string),
-              },
-            });
-          }
+          // if (item.type === 'Video') {
+          //   return push({
+          //     pathname: '/video',
+          //     params: {
+          //       uri: encodeURIComponent(item.url as string),
+          //     },
+          //   });
+          // }
 
           return push({
             pathname: '/picture',
