@@ -1,6 +1,6 @@
 import {supabase} from '../supabase';
 import {ImageInsertArgs, ReplyInsertArgs, ReplyWithJoins} from '../types';
-import { PAGE_SIZE } from '../utils/constants';
+import {PAGE_SIZE} from '../utils/constants';
 
 const filterDeletedImageInReply = (reply: ReplyWithJoins): ReplyWithJoins => {
   return {
@@ -90,7 +90,14 @@ export const fetchCreateReply = async ({
       post_id,
       reply_id,
     })
-    .select()
+    .select(
+      `
+      *,
+      user:user_id (*),
+      images (*),
+      likes (*)
+    `,
+    )
     .single();
 
   if (replyError) {

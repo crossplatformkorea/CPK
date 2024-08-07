@@ -108,6 +108,9 @@ export default function Profile(): JSX.Element {
       <CustomScrollView bounces={false}>
         <ProfileHeader>
           <UserAvatar
+            style={css`
+              opacity: ${user?.avatar_url ? '1' : '0.7'};
+            `}
             source={user?.avatar_url ? {uri: user?.avatar_url} : IC_ICON}
           />
           <UserName>{user?.display_name || ''}</UserName>

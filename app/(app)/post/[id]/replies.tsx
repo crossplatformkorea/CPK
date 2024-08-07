@@ -16,7 +16,6 @@ import {
 } from '../../../../src/supabase';
 import {
   fetchCreateReply,
-  fetchReplyById,
   fetchReplyPagination,
 } from '../../../../src/apis/replyQueries';
 import {useRecoilValue} from 'recoil';
@@ -62,60 +61,6 @@ export default function Replies({
     },
   );
 
-  useEffect(() => {
-    const channel = supabase
-      .channel('schema-db-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'replies',
-        },
-        async (payload) => {
-          const newReply = await fetchReplyById(payload.new.id);
-          if (newReply) {
-            mutate((replies) => [newReply, ...(replies || [])], false);
-          }
-        },
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'replies',
-        },
-        async (payload) => {
-          const updatedReply = await fetchReplyById(payload.new.id);
-          if (updatedReply) {
-            if (updatedReply.deleted_at) {
-              mutate(
-                (replies) =>
-                  (replies || []).filter(
-                    (reply) => reply.id !== updatedReply.id,
-                  ),
-                false,
-              );
-              return;
-            }
-            mutate(
-              (replies) =>
-                (replies || []).map((reply) =>
-                  reply.id === updatedReply.id ? updatedReply : reply,
-                ),
-              false,
-            );
-          }
-        },
-      )
-      .subscribe();
-
-    return () => {
-      channel.unsubscribe();
-    };
-  }, [mutate]);
-
   const handleCreateReply = async () => {
     if (!authId || !postId) return;
 
@@ -152,7 +97,11 @@ export default function Replies({
           })),
       });
 
-      mutate(newReply ? [newReply, ...replies] : replies, false);
+      console.log('newReply', newReply);
+
+      if (newReply) {
+        setReplies((prevReplies) => [newReply, ...prevReplies]);
+      }
     } catch (error) {
       if (__DEV__) console.error('Failed to create reply:', error);
     } finally {
@@ -255,7 +204,7 @@ export default function Replies({
             ListHeaderComponent={header}
             data={replies}
             estimatedItemSize={400}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item?.id}
             onEndReached={loadMoreReplies}
             onEndReachedThreshold={0.1}
             onRefresh={handleRefresh}

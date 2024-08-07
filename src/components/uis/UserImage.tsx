@@ -1,7 +1,7 @@
 import type {StyleProp, ViewStyle} from 'react-native';
 import styled, {css} from '@emotion/native';
-import {Icon, useDooboo} from 'dooboo-ui';
 import {Image} from 'expo-image';
+import {IC_ICON} from '../../icons';
 
 const Container = styled.View`
   border: 0.3px solid ${({theme}) => theme.role.border};
@@ -22,8 +22,6 @@ export default function UserImage({
   imageUrl?: string | undefined | null;
   style?: StyleProp<ViewStyle>;
 }): JSX.Element {
-  const {theme} = useDooboo();
-
   return (
     <Container
       style={[
@@ -35,18 +33,15 @@ export default function UserImage({
         style,
       ]}
     >
-      {imageUrl ? (
-        <Image
-          source={{uri: imageUrl}}
-          style={css`
-            width: ${width + 'px'};
-            height: ${height + 'px'};
-            border-radius: ${width / 2 + 'px'};
-          `}
-        />
-      ) : (
-        <Icon color={theme.role.border} name="QuestBoxFill" size={width / 2} />
-      )}
+      <Image
+        source={imageUrl ? {uri: imageUrl} : IC_ICON}
+        style={css`
+          width: ${width + 'px'};
+          height: ${height + 'px'};
+          border-radius: ${width / 2 + 'px'};
+          opacity: ${imageUrl ? '1' : '0.7'};
+        `}
+      />
     </Container>
   );
 }
