@@ -6,8 +6,9 @@ import {useRecoilValue} from 'recoil';
 import {authRecoilState} from '../../../src/recoil/atoms';
 import CustomScrollView from '../../../src/components/uis/CustomScrollView';
 import {css} from '@emotion/native';
-import {View} from 'react-native';
+import {Pressable, View} from 'react-native';
 import {IC_ICON} from '../../../src/icons';
+import {openURL} from '../../../src/utils/common';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -116,7 +117,11 @@ export default function Profile(): JSX.Element {
           <InfoCard>
             <InfoItem>
               <InfoLabel>{t('onboarding.githubId')}</InfoLabel>
-              <View
+              <Pressable
+                onPress={() =>
+                  user?.github_id &&
+                  openURL(`https://github.com/${user.github_id}`)
+                }
                 style={css`
                   flex-direction: row;
                   align-items: center;
@@ -125,7 +130,7 @@ export default function Profile(): JSX.Element {
               >
                 <Icon name="GithubLogo" size={16} color={theme.role.link} />
                 <InfoValue>{user?.github_id || ''}</InfoValue>
-              </View>
+              </Pressable>
             </InfoItem>
             <InfoItem>
               <InfoLabel>{t('onboarding.affiliation')}</InfoLabel>
