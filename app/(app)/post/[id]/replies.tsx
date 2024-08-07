@@ -1,4 +1,4 @@
-import {useState, useEffect, Ref} from 'react';
+import {useState, useEffect, Ref, useCallback} from 'react';
 import {css} from '@emotion/native';
 import {KeyboardAvoidingView, Platform, View} from 'react-native';
 import {HEADER_HEIGHT} from '../../../../src/utils/constants';
@@ -177,6 +177,11 @@ export default function Replies({
     }
   }, [mutate, cursor, replies.length]);
 
+  const keyExtractor = useCallback(
+    (item: any, i: number) => `${i}-${item.id}`,
+    [],
+  );
+
   const content = (() => {
     switch (true) {
       case !!error:
@@ -204,7 +209,8 @@ export default function Replies({
             ListHeaderComponent={header}
             data={replies}
             estimatedItemSize={400}
-            keyExtractor={(item) => item?.id}
+            // https://github.com/Shopify/flash-list/issues/730#issuecomment-1741385659
+            keyExtractor={keyExtractor}
             onEndReached={loadMoreReplies}
             onEndReachedThreshold={0.1}
             onRefresh={handleRefresh}

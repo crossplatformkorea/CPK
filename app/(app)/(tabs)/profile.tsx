@@ -6,7 +6,7 @@ import {useRecoilValue} from 'recoil';
 import {authRecoilState} from '../../../src/recoil/atoms';
 import CustomScrollView from '../../../src/components/uis/CustomScrollView';
 import {css} from '@emotion/native';
-import {Pressable, View} from 'react-native';
+import {Pressable} from 'react-native';
 import {IC_ICON} from '../../../src/icons';
 import {openURL} from '../../../src/utils/common';
 

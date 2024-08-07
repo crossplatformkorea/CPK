@@ -2,10 +2,7 @@ import styled, {css} from '@emotion/native';
 import {Hr, Icon, Typography, useDooboo} from 'dooboo-ui';
 import {Stack, useLocalSearchParams, useRouter} from 'expo-router';
 import {ReplyWithJoins} from '../../../../src/types';
-import useSWR from 'swr';
-import CustomLoadingIndicator from '../../../../src/components/uis/CustomLoadingIndicator';
 import {t} from '../../../../src/STRINGS';
-import ErrorFallback from '../../../../src/components/uis/FallbackComponent';
 import NotFound from '../../../../src/components/uis/NotFound';
 import {Pressable, View} from 'react-native';
 import {openURL} from '../../../../src/utils/common';
@@ -19,10 +16,9 @@ import {FlashList} from '@shopify/flash-list';
 import CustomPressable from 'dooboo-ui/uis/CustomPressable';
 import {delayPressIn} from '../../../../src/utils/constants';
 import {useRecoilState} from 'recoil';
-import {authRecoilState} from '../../../../src/recoil/atoms';
+import {authRecoilState, postsRecoilState} from '../../../../src/recoil/atoms';
 import {useAppLogic} from '../../../../src/providers/AppLogicProvider';
-import {fetchDeletePost, fetchPostById} from '../../../../src/apis/postQueries';
-import {supabase} from '../../../../src/supabase';
+import {fetchDeletePost} from '../../../../src/apis/postQueries';
 import {toggleLike} from '../../../../src/apis/likeQueries';
 import ParsedText from 'react-native-parsed-text';
 import ImageCarousel from '../../../../src/components/uis/ImageCarousel';
@@ -43,36 +39,34 @@ export default function PostDetails(): JSX.Element {
   const {theme, snackbar} = useDooboo();
   const {bottom} = useSafeAreaInsets();
   const [{authId}] = useRecoilState(authRecoilState);
+  const [posts, setPosts] = useRecoilState(postsRecoilState);
   const repliesRef = useRef<FlashList<ReplyWithJoins> | null>(null);
   const {handlePeerContentAction, handleUserContentAction} = useAppLogic();
   const {back, push} = useRouter();
   const [postLikes, setPostLikes] = useState<number>(0);
-  const [hasLiked, setHasLiked] = useState<boolean>(false ?? false);
+  const [hasLiked, setHasLiked] = useState<boolean>(false);
 
-  const {
-    data: post,
-    error,
-    isValidating,
-    mutate,
-  } = useSWR(id ? `post-${id}` : null, () => fetchPostById(id || ''), {
-    onSuccess: (data) => {
-      setPostLikes(data?.likes?.length || 0);
+  const post = posts.find((p) => p.id === id);
+
+  useEffect(() => {
+    if (post) {
+      setPostLikes(post.likes?.length || 0);
       setHasLiked(
-        data?.likes?.some((like) => like.user_id === authId && like.liked) ||
+        post.likes?.some((like) => like.user_id === authId && like.liked) ||
           false,
       );
-    },
-  });
+    }
+  }, [post, authId]);
 
   const handleDeletePost = useCallback(async () => {
     if (!post) return;
 
-    const result = await fetchDeletePost({id: post?.id});
+    const result = await fetchDeletePost({id: post.id});
 
     if (result) {
       snackbar.open({text: t('common.deleteSuccess')});
+      setPosts((prevPosts) => prevPosts.filter((p) => p.id !== post.id));
       back();
-
       return;
     }
 
@@ -80,7 +74,7 @@ export default function PostDetails(): JSX.Element {
       color: 'danger',
       text: t('common.unhandledError'),
     });
-  }, [back, post, snackbar]);
+  }, [back, post, snackbar, setPosts]);
 
   const handlePressMore = useCallback(() => {
     if (authId === post?.user_id) {
@@ -115,34 +109,6 @@ export default function PostDetails(): JSX.Element {
     push,
   ]);
 
-  useEffect(() => {
-    if (!id) return;
-
-    const channel = supabase
-      .channel('schema-db-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'posts',
-          filter: `id=eq.${id}`,
-        },
-        async (payload) => {
-          const updatedPost = await fetchPostById(id);
-
-          if (updatedPost) {
-            mutate(updatedPost, false);
-          }
-        },
-      )
-      .subscribe();
-
-    return () => {
-      channel.unsubscribe();
-    };
-  }, [id, mutate]);
-
   const handleToggleLike = async () => {
     if (!authId || !post) return;
 
@@ -161,15 +127,31 @@ export default function PostDetails(): JSX.Element {
       postId: post.id,
     });
 
-    mutate();
+    setPosts((prevPosts) =>
+      prevPosts.map((p) =>
+        p.id === post.id
+          ? {
+              ...p,
+              likes: hasLiked
+                ? p.likes.filter((like) => like.user_id !== authId)
+                : [
+                    ...p.likes,
+                    {
+                      id: '',
+                      liked: true,
+                      post_id: null,
+                      reply_id: null,
+                      user_id: authId,
+                    },
+                  ],
+            }
+          : p,
+      ),
+    );
   };
 
   const content = (() => {
     switch (true) {
-      case isValidating && !authId:
-        return <CustomLoadingIndicator />;
-      case error:
-        return <ErrorFallback />;
       case !post:
         return <NotFound />;
       case !!post:

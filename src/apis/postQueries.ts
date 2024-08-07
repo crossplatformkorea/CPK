@@ -104,16 +104,27 @@ export const fetchUpdatePost = async ({
   url: string | null;
   images: ImageInsertArgs[];
   imageUrlsToDelete: string[];
-}): Promise<number> => {
+}): Promise<PostWithJoins> => {
   const {
     data: post,
     error: updateError,
-    count,
   } = await supabase
     .from('posts')
     .update({title, content, url})
     .eq('id', postId)
-    .select()
+    .select(
+      `
+      *,
+      user:user_id (
+        *
+      ),
+      images (*),
+      replies (
+        id
+      ),
+      likes (*)
+    `,
+    )
     .single();
 
   if (updateError) {
@@ -138,7 +149,7 @@ export const fetchUpdatePost = async ({
     await Promise.all(imageInsertPromises);
   }
 
-  return count || 0;
+  return post as unknown as PostWithJoins;
 };
 
 export const fetchDeletePost = async ({
@@ -193,7 +204,19 @@ export const fetchCreatePost = async (
       url: post.url,
       user_id: post.user_id,
     })
-    .select()
+    .select(
+      `
+      *,
+      user:user_id (
+        *
+      ),
+      images (*),
+      replies (
+        id
+      ),
+      likes (*)
+    `,
+    )
     .single();
 
   if (error) {
@@ -211,5 +234,5 @@ export const fetchCreatePost = async (
     await Promise.all(imageInsertPromises);
   }
 
-  return data;
+  return data as unknown as PostWithJoins;
 };

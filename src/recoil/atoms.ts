@@ -1,7 +1,7 @@
 import {atom} from 'recoil';
 
-import type {User} from '../types';
-import { ReportModalProps } from '../components/modals/ReportModal';
+import type {PostWithJoins, User} from '../types';
+import {ReportModalProps} from '../components/modals/ReportModal';
 
 export type UserInfo = {
   authId: string | null;
@@ -18,17 +18,25 @@ export const authRecoilState = atom<UserInfo>({
     user: null,
     pushToken: null,
     tags: [],
-    blockedUserIds: []
+    blockedUserIds: [],
   },
 });
 
 /*
-* ReportModal State
-*/
+ * ReportModal State
+ */
 export const reportModalRecoilState = atom<ReportModalProps>({
- key: 'reportModalState',
- default: {
-   visible: false,
-   setVisible: () => {},
- },
+  key: 'reportModalState',
+  default: {
+    visible: false,
+    setVisible: () => {},
+  },
+});
+
+/*
+ * All Posts
+ */
+export const postsRecoilState = atom<PostWithJoins[]>({
+  key: 'postsState',
+  default: [],
 });

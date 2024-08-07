@@ -12,8 +12,8 @@ import {
   Pressable,
   View,
 } from 'react-native';
-import {useRecoilValue} from 'recoil';
-import {authRecoilState} from '../../../src/recoil/atoms';
+import {useRecoilValue, useSetRecoilState} from 'recoil';
+import {authRecoilState, postsRecoilState} from '../../../src/recoil/atoms';
 import {fetchCreatePost} from '../../../src/apis/postQueries';
 import MultiUploadImageInput from '../../../src/components/uis/MultiUploadImageInput';
 import {useState} from 'react';
@@ -29,7 +29,6 @@ const Container = styled.SafeAreaView`
 
 const Content = styled.View`
   flex: 1;
-
   gap: 16px;
 `;
 
@@ -45,6 +44,7 @@ export default function PostWrite(): JSX.Element {
   const {back} = useRouter();
   const {theme, snackbar} = useDooboo();
   const {authId} = useRecoilValue(authRecoilState);
+  const setPosts = useSetRecoilState(postsRecoilState);
   const [assets, setAssets] = useState<ImagePickerAsset[]>([]);
   const [isCreatePostInFlight, setIsCreatePostInFlight] = useState(false);
 
@@ -76,7 +76,7 @@ export default function PostWrite(): JSX.Element {
 
       const images = await Promise.all(imageUploadPromises);
 
-      await fetchCreatePost({
+      const newPost = await fetchCreatePost({
         title: data.title,
         content: data.content,
         user_id: authId,
@@ -87,6 +87,8 @@ export default function PostWrite(): JSX.Element {
             image_url: el?.image_url || undefined,
           })),
       });
+
+      setPosts((prevPosts) => [newPost, ...prevPosts]);
 
       snackbar.open({
         text: t('post.write.writeSuccess'),

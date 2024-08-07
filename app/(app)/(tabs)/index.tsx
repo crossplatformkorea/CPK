@@ -5,17 +5,13 @@ import {FlashList} from '@shopify/flash-list';
 import {useRouter} from 'expo-router';
 import {PostWithJoins} from '../../../src/types';
 import PostListItem from '../../../src/components/uis/PostListItem';
-import {useCallback, useEffect, useState} from 'react';
-import {supabase} from '../../../src/supabase';
-import {
-  fetchPostById,
-  fetchPostPagination,
-} from '../../../src/apis/postQueries';
+import {useCallback, useState} from 'react';
+import {fetchPostPagination} from '../../../src/apis/postQueries';
 import useSWR from 'swr';
 import FallbackComponent from '../../../src/components/uis/FallbackComponent';
 import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
-import {useRecoilValue} from 'recoil';
-import {authRecoilState} from '../../../src/recoil/atoms';
+import {useRecoilState, useRecoilValue} from 'recoil';
+import {authRecoilState, postsRecoilState} from '../../../src/recoil/atoms';
 import ListEmptyItem from '../../../src/components/uis/ListEmptyItem';
 
 const Container = styled.View`
@@ -28,7 +24,8 @@ export default function Posts(): JSX.Element {
   const {push} = useRouter();
   const {authId, blockedUserIds} = useRecoilValue(authRecoilState);
   const [cursor, setCursor] = useState<string | undefined>(undefined);
-  const [allPosts, setAllPosts] = useState<PostWithJoins[]>([]);
+  const [allPosts, setAllPosts] =
+    useRecoilState<PostWithJoins[]>(postsRecoilState);
   const [loadingMore, setLoadingMore] = useState(false);
 
   const fetcher = useCallback(
@@ -57,54 +54,6 @@ export default function Posts(): JSX.Element {
       },
     },
   );
-
-  useEffect(() => {
-    const channel = supabase
-      .channel('schema-db-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: 'INSERT',
-          schema: 'public',
-          table: 'posts',
-        },
-        async (payload) => {
-          const newPost = await fetchPostById(payload.new.id);
-          if (newPost) {
-            setAllPosts((prevPosts) => [newPost, ...prevPosts]);
-          }
-        },
-      )
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'posts',
-        },
-        async (payload) => {
-          const updatedPost = await fetchPostById(payload.new.id);
-          if (updatedPost) {
-            if (updatedPost.deleted_at) {
-              setAllPosts((currentPosts) =>
-                currentPosts.filter((post) => post.id !== updatedPost.id),
-              );
-            } else {
-              setAllPosts((currentPosts) =>
-                currentPosts.map((post) =>
-                  post.id === updatedPost.id ? updatedPost : post,
-                ),
-              );
-            }
-          }
-        },
-      )
-      .subscribe();
-
-    return () => {
-      channel.unsubscribe();
-    };
-  }, []);
 
   const loadMore = () => {
     if (!loadingMore) {

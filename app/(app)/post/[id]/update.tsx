@@ -12,9 +12,9 @@ import {
   View,
 } from 'react-native';
 import ErrorFallback from '../../../../src/components/uis/FallbackComponent';
-import {useRecoilValue} from 'recoil';
+import {useRecoilValue, useSetRecoilState} from 'recoil';
 import {uploadFileToSupabase} from '../../../../src/supabase';
-import {authRecoilState} from '../../../../src/recoil/atoms';
+import {authRecoilState, postsRecoilState} from '../../../../src/recoil/atoms';
 import {t} from '../../../../src/STRINGS';
 import useSWR from 'swr';
 import {fetchPostById, fetchUpdatePost} from '../../../../src/apis/postQueries';
@@ -34,7 +34,6 @@ const Container = styled.SafeAreaView`
 
 const Content = styled.View`
   flex: 1;
-
   gap: 16px;
 `;
 
@@ -51,6 +50,7 @@ export default function PostUpdate(): JSX.Element {
   const {back} = useRouter();
   const {theme, snackbar} = useDooboo();
   const {authId} = useRecoilValue(authRecoilState);
+  const setPosts = useSetRecoilState(postsRecoilState);
   const [assets, setAssets] = useState<ImagePickerAsset[]>([]);
 
   const {
@@ -115,7 +115,7 @@ export default function PostUpdate(): JSX.Element {
         (element) => !imageUris.includes(element) && element.startsWith('http'),
       );
 
-      await fetchUpdatePost({
+      const updatedPost = await fetchUpdatePost({
         postId: id,
         title: data.title,
         content: data.content,
@@ -128,6 +128,12 @@ export default function PostUpdate(): JSX.Element {
           })),
         imageUrlsToDelete: deleteImageUrls,
       });
+
+      setPosts((prevPosts) =>
+        prevPosts.map((post) =>
+          post.id === id ? {...post, ...updatedPost} : post,
+        ),
+      );
 
       snackbar.open({
         text: t('post.update.updateSuccess'),
