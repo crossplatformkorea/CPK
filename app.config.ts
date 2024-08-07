@@ -36,6 +36,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
   icon: './assets/icon.png',
   backgroundColor: '#343434',
   plugins: [
+    'react-native-google-mobile-ads',
     [
       'expo-build-properties',
       {
