@@ -85,3 +85,8 @@ expo-env.d.ts
 
 google-services.json
 GoogleService-Info.plist
+
+# Build
+*.ipa
+*.apk
+*.aab
