@@ -260,6 +260,7 @@ model Like {
   postId String? @map("post_id") @db.Uuid
 
   @@unique([userId, postId])
+  @@unique([userId, replyId])
   @@map("likes")
 }
 
