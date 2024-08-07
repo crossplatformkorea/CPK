@@ -42,6 +42,7 @@
     "picture": "Picture",
     "post": "Post",
     "profile": "Profile",
+    "pushNotifications": "Push Notifications",
     "report": "Report",
     "reportHint": "Please enter the information you wish to report.",
     "reportSubject": "Report {{subject}}",
@@ -63,9 +64,12 @@
   },
   "error": {
     "default": "Error occurred!",
-    "displayNameExists": "The nickname already exists",
-    "displayNameInvalid": "Nickname must be between 2 and 20 characters",
-    "displayNameIsEmpty": "Please enter a nickname",
+    "displayNameExists": "The display name already exists",
+    "displayNameInvalid": "Display name must be between 2 and 20 characters",
+    "displayNameIsEmpty": "Please enter a display name",
+    "failedToGetPushToken": "Failed to get push token for push notification!",
+    "mustUsePhysicalDeviceForSubject": "Must use physical device for {{subject}}",
+    "projectIdNotFound": "Project ID not found",
     "unableToOpenEmailClient": "Unable to open email client"
   },
   "loginInfo": {
@@ -140,7 +144,7 @@
   },
   "signIn": {
     "continueWithProvider": "Continue with {{provider}}",
-    "description": "A place where Korean developers and developers around the world communicate!",
+    "description": "A place where developers from around the world meet Korean developers!",
     "googleIdNotAvailable": "Google ID is not available",
     "playServiceNotAvailable": "Google Play Service is not available",
     "policyAgreement": "By signing in, you agree to our {{termsOfService}} and {{privacyPolicy}}.",

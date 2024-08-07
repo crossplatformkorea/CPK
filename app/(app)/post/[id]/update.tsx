@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
+  View,
 } from 'react-native';
 import ErrorFallback from '../../../../src/components/uis/FallbackComponent';
 import {useRecoilValue} from 'recoil';
@@ -156,7 +157,7 @@ export default function PostUpdate(): JSX.Element {
         return (
           <KeyboardAvoidingView
             behavior={Platform.select({ios: 'padding', default: undefined})}
-            keyboardVerticalOffset={Platform.select({ios: 116, default: 88})}
+            keyboardVerticalOffset={Platform.select({ios: 56})}
             style={css`
               background-color: ${theme.bg.basic};
             `}
@@ -260,6 +261,11 @@ export default function PostUpdate(): JSX.Element {
                       opacity: ${isSubmitting ? '0.5' : '1'};
                     `,
                   }}
+                />
+                <View
+                  style={css`
+                    height: 48px;
+                  `}
                 />
               </Content>
             </CustomScrollView>

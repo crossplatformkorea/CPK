@@ -1,10 +1,12 @@
 import {Pressable, View} from 'react-native';
 import {Icon, useDooboo} from 'dooboo-ui';
 import {Link, Redirect, Tabs, useRouter} from 'expo-router';
-import {useRecoilValue} from 'recoil';
+import {useRecoilState} from 'recoil';
 
 import {authRecoilState} from '../../../src/recoil/atoms';
 import {t} from '../../../src/STRINGS';
+import {useEffect, useRef} from 'react';
+import * as Notifications from 'expo-notifications';
 
 function SettingsMenu(): JSX.Element {
   const {theme} = useDooboo();
@@ -12,7 +14,7 @@ function SettingsMenu(): JSX.Element {
 
   return (
     <Link asChild href="/settings">
-      <Pressable onPress={() => push('settings')}>
+      <Pressable onPress={() => push('/settings')}>
         {({pressed}) => (
           <Icon
             color={theme.text.basic}
@@ -28,7 +30,23 @@ function SettingsMenu(): JSX.Element {
 
 export default function TabLayout(): JSX.Element {
   const {theme} = useDooboo();
-  const {authId, user} = useRecoilValue(authRecoilState);
+  const [{authId, user}, setAuth] = useRecoilState(authRecoilState);
+  const notificationResponseListener = useRef<Notifications.Subscription>();
+
+  useEffect(() => {
+    if (!authId) return;
+    notificationResponseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(JSON.stringify(response.notification.request));
+      });
+
+    return () => {
+      notificationResponseListener.current &&
+        Notifications.removeNotificationSubscription(
+          notificationResponseListener.current,
+        );
+    };
+  }, [authId, setAuth]);
 
   if (!authId) {
     return <Redirect href="/sign-in" />;

@@ -42,6 +42,7 @@
     "picture": "사진",
     "post": "게시판",
     "profile": "프로필",
+    "pushNotifications": "푸시 알림",
     "report": "신고",
     "reportHint": "신고할 내용을 입력해주세요.",
     "reportSubject": "{{subject}} 신고",
@@ -66,6 +67,9 @@
     "displayNameExists": "이미 존재하는 닉네임입니다",
     "displayNameInvalid": "닉네임은 2자 이상 20자 이하여야 합니다",
     "displayNameIsEmpty": "닉네임을 입력해주세요",
+    "failedToGetPushToken": "푸시 토큰을 가져오는 데 실패했습니다",
+    "mustUsePhysicalDeviceForSubject": "{{subject}}을(를) 위해 실제 기기를 사용해야 합니다",
+    "projectIdNotFound": "프로젝트 ID를 찾을 수 없습니다",
     "unableToOpenEmailClient": "이메일 클라이언트를 열 수 없습니다"
   },
   "loginInfo": {
@@ -140,10 +144,10 @@
   },
   "signIn": {
     "continueWithProvider": "{{provider}} 계정으로 시작하기",
-    "description": "한국의 개발자들과 전세계 개발자들이 소통하는 곳!",
+    "description": "전 세계 개발자들이 한국 개발자들과 만나는 곳!",
     "googleIdNotAvailable": "존재하지 않는 Google ID입니다",
     "playServiceNotAvailable": "Google Play 서비스를 사용할 수 없습니다",
-    "policyAgreement": "{{termsOfService}} 및 {{privacyPolicy}}에 동의하면 로그인합니다.",
+    "policyAgreement": "다음 단계로 진행함과 동시에 {{termsOfService}} 및 {{privacyPolicy}}에 동의하는 것으로 간주합니다.",
     "privacyPolicy": "개인정보 처리방침",
     "termsOfService": "서비스 약관",
     "title": "로그인"

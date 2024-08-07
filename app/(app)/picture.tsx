@@ -17,7 +17,14 @@ export default function Picture(): JSX.Element {
   const [loading, setLoading] = useState(true);
 
   if (!imageUrl || typeof imageUrl !== 'string') {
-    return <CustomLoadingIndicator />;
+    return (
+      <>
+        <Stack.Screen
+          options={{headerShown: false, title: t('common.picture')}}
+        />
+        <CustomLoadingIndicator />
+      </>
+    );
   }
 
   return (

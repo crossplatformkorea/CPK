@@ -4,6 +4,7 @@ import {Platform, useColorScheme} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {dark, light} from '@dooboo-ui/theme';
 import styled, {css} from '@emotion/native';
+import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Icon, useDooboo} from 'dooboo-ui';
 import CustomPressable from 'dooboo-ui/uis/CustomPressable';
@@ -28,6 +29,8 @@ import {fetchBlockUserIds} from '../src/apis/blockQueries';
 import {AuthChangeEvent} from '@supabase/supabase-js';
 import CustomLoadingIndicator from '../src/components/uis/CustomLoadingIndicator';
 import {fetchUserProfile} from '../src/apis/profileQueries';
+import {registerForPushNotificationsAsync} from '../src/utils/notifications';
+import {fetchAddPushToken} from '../src/apis/pushTokenQueries';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -44,6 +47,14 @@ const Content = styled.View`
   max-width: ${COMPONENT_WIDTH + 'px'};
   background-color: ${({theme}) => theme.brand};
 `;
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 function App(): JSX.Element | null {
   const {assetLoaded, snackbar, theme} = useDooboo();
@@ -120,6 +131,28 @@ function App(): JSX.Element | null {
             blockedUserIds,
             tags: userTags,
           });
+
+          registerForPushNotificationsAsync()
+            .then((token) => {
+              if (token) {
+                setAuth((prev) => ({
+                  ...prev,
+                  pushToken: token,
+                }));
+
+                fetchAddPushToken({
+                  authId: session.user.id,
+                  expoPushToken: token,
+                });
+              }
+
+              return;
+            })
+            .catch((err) => {
+              if (__DEV__) {
+                console.error(err);
+              }
+            });
         }
 
         return;
@@ -129,6 +162,7 @@ function App(): JSX.Element | null {
         authId: null,
         user: null,
         blockedUserIds: [],
+        pushToken: null,
         tags: [],
       });
     });

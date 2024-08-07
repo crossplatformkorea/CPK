@@ -14,6 +14,7 @@ import type {User} from '../../../src/types';
 import {showConfirm} from '../../../src/utils/alert';
 import {AsyncStorageKey} from '../../../src/utils/constants';
 import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
+import { fetchDeletePushToken } from '../../../src/apis/pushTokenQueries';
 
 const Content = styled.View`
   flex: 1;
@@ -93,10 +94,16 @@ export default function LoginInfo(): JSX.Element {
   const {back, replace} = useRouter();
   const {theme, alertDialog} = useDooboo();
   const {bottom} = useSafeAreaInsets();
-  const auth = useRecoilValue(authRecoilState);
+  const {authId, user, pushToken} = useRecoilValue(authRecoilState);
 
   const handleSignOut = async (): Promise<void> => {
-    // RNOnesignal?.logout();
+    if (pushToken && authId) {
+      await fetchDeletePushToken({
+        authId,
+        expoPushToken: pushToken,
+      })
+    }
+
     await AsyncStorage.removeItem(AsyncStorageKey.Token);
     supabase.auth.signOut();
     back();
@@ -104,7 +111,7 @@ export default function LoginInfo(): JSX.Element {
   };
 
   const handleWithdrawUser = async (): Promise<void> => {
-    if (!auth) {
+    if (!user || !authId) {
       return;
     }
 
@@ -120,13 +127,13 @@ export default function LoginInfo(): JSX.Element {
     await supabase
       .from('users')
       .update({deleted_at: new Date().toISOString()})
-      .eq('id', auth);
+      .eq('id', authId);
 
     supabase.auth.signOut();
     replace('/');
   };
 
-  if (!auth.user) {
+  if (!user) {
     return (
       <>
         <Stack.Screen options={{title: t('loginInfo.title')}} />
@@ -148,8 +155,8 @@ export default function LoginInfo(): JSX.Element {
             {t('loginInfo.loginMethod')}
           </Typography.Heading5>
           <SocialProvider
-            email={auth.user?.email ?? ''}
-            provider={auth.user?.provider ?? 'email'}
+            email={user?.email ?? ''}
+            provider={user?.provider ?? 'email'}
           />
           <Button
             color="warning"

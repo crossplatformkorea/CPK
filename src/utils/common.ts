@@ -2,6 +2,9 @@ import {Linking, Platform} from 'react-native';
 import * as VideoThumbnails from 'expo-video-thumbnails';
 import {ImagePickerAsset} from 'expo-image-picker';
 import {getDeviceTypeSync} from 'react-native-device-info';
+import {EMAIL_ADDRESS} from './constants';
+import {t} from '../STRINGS';
+import { showAlert } from './alert';
 
 export const openURL = async (url: string): Promise<void> => {
   const supported = await Linking.canOpenURL(url);
@@ -20,6 +23,28 @@ export const validateEmail = (email: string): boolean => {
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
   return re.test(email);
+};
+
+export const openEmail = () => {
+  const email = EMAIL_ADDRESS;
+  const url = `mailto:${email}`;
+
+  Linking.canOpenURL(url)
+    .then((supported) => {
+      if (!supported) {
+        showAlert(t('error.unableToOpenEmailClient'));
+      } else {
+        return Linking.openURL(url);
+      }
+    })
+    .catch((err) => {
+      if (__DEV__) {
+        // eslint-disable-next-line no-console
+        console.error('An error occurred', err);
+      }
+
+      showAlert(t('error.unableToOpenEmailClient'));
+    });
 };
 
 export const goToAppStore = (): void => {
