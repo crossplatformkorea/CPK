@@ -105,10 +105,7 @@ export const fetchUpdatePost = async ({
   images: ImageInsertArgs[];
   imageUrlsToDelete: string[];
 }): Promise<PostWithJoins> => {
-  const {
-    data: post,
-    error: updateError,
-  } = await supabase
+  const {data: post, error: updateError} = await supabase
     .from('posts')
     .update({title, content, url})
     .eq('id', postId)
@@ -235,4 +232,25 @@ export const fetchCreatePost = async (
   }
 
   return data as unknown as PostWithJoins;
+};
+
+/*
+CREATE OR REPLACE FUNCTION increment_view_count(post_id uuid)
+RETURNS void LANGUAGE plpgsql AS $$
+BEGIN
+  UPDATE posts SET view_count = view_count + 1 WHERE id = post_id;
+END;
+*/
+export const incrementViewCount = async (postId: string) => {
+  //@ts-ignore
+  const {data, error} = await supabase.rpc('increment_view_count', {
+    post_id: postId,
+  });
+
+  if (error) {
+    console.error('Error incrementing view count:', error);
+    return null;
+  }
+
+  return data;
 };

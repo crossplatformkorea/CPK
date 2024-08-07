@@ -18,7 +18,10 @@ import {delayPressIn} from '../../../../src/utils/constants';
 import {useRecoilState} from 'recoil';
 import {authRecoilState, postsRecoilState} from '../../../../src/recoil/atoms';
 import {useAppLogic} from '../../../../src/providers/AppLogicProvider';
-import {fetchDeletePost} from '../../../../src/apis/postQueries';
+import {
+  fetchDeletePost,
+  incrementViewCount,
+} from '../../../../src/apis/postQueries';
 import {toggleLike} from '../../../../src/apis/likeQueries';
 import ParsedText from 'react-native-parsed-text';
 import ImageCarousel from '../../../../src/components/uis/ImageCarousel';
@@ -47,6 +50,18 @@ export default function PostDetails(): JSX.Element {
   const [hasLiked, setHasLiked] = useState<boolean>(false);
 
   const post = posts.find((p) => p.id === id);
+
+  useEffect(() => {
+    if (id) {
+      incrementViewCount(id);
+
+      setPosts((prevPosts) =>
+        prevPosts.map((p) =>
+          p.id === id ? {...p, view_count: (p.view_count || 0) + 1} : p,
+        ),
+      );
+    }
+  }, [id, setPosts]);
 
   useEffect(() => {
     if (post) {
