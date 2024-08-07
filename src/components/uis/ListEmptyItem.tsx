@@ -7,7 +7,7 @@ const Container = styled.View`
   justify-content: center;
 `;
 
-function Component({style}: {style?: ViewStyle}): JSX.Element {
+export default function ListEmptyItem({style}: {style?: ViewStyle}): JSX.Element {
   const {theme} = useDooboo();
 
   return (
@@ -24,4 +24,3 @@ function Component({style}: {style?: ViewStyle}): JSX.Element {
   );
 }
 
-export default Component;

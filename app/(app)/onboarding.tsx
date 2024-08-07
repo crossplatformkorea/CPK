@@ -229,7 +229,7 @@ export default function Onboarding(): JSX.Element {
         <CustomScrollView bounces={false}>
           <View>
             <SectionHeaderGradient
-              colors={[theme.brandContrast, theme.brand]}
+              colors={[theme.brand, theme.bg.basic]}
               style={css`
                 padding: 24px 24px 36px 24px;
                 text-align: center;
@@ -240,7 +240,7 @@ export default function Onboarding(): JSX.Element {
                 style={css`
                   font-size: 20px;
                   font-family: Pretendard-Bold;
-                  color: ${theme.text.contrast};
+                  color: ${theme.text.basic};
                   padding-bottom: 4px;
                 `}
               >
@@ -250,7 +250,7 @@ export default function Onboarding(): JSX.Element {
                 style={css`
                   font-size: 16px;
                   font-family: Pretendard-Bold;
-                  color: ${theme.text.contrast};
+                  color: ${theme.text.label};
                   opacity: 0.8;
                   padding-bottom: 4px;
                   text-align: center;

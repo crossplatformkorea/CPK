@@ -7,8 +7,8 @@ export const colors = {
 };
 
 export const light = {
-  brand: '#33333370',
-  brandContrast: '#1E1E1E',
+  brand: '#33333390',
+  brandContrast: '#666',
   text: {
     placeholderContrast: '#909090',
   },
@@ -17,8 +17,8 @@ export const light = {
 export type CustomAppTheme = typeof light & DoobooThemeParams;
 
 export const dark: typeof light = {
-  brand: '#1E1E1E',
-  brandContrast: '#33333370',
+  brand: '#666',
+  brandContrast: '#33333390',
   text: {
     placeholderContrast: '#787878',
   },

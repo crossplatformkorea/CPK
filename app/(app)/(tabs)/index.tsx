@@ -16,6 +16,7 @@ import FallbackComponent from '../../../src/components/uis/FallbackComponent';
 import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
 import {useRecoilValue} from 'recoil';
 import {authRecoilState} from '../../../src/recoil/atoms';
+import ListEmptyItem from '../../../src/components/uis/ListEmptyItem';
 
 const Container = styled.View`
   flex: 1;
@@ -150,6 +151,7 @@ export default function Posts(): JSX.Element {
                 }}
               />
             )}
+            ListEmptyComponent={<ListEmptyItem />}
             estimatedItemSize={208}
             onEndReached={loadMore}
             onEndReachedThreshold={0.5}
