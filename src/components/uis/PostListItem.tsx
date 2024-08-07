@@ -7,8 +7,8 @@ import UserListItem from './UserListItem';
 import {View} from 'react-native';
 import ControlItem, {ControlItemProps} from './ControlItem';
 import {Image as ExpoImage} from 'expo-image';
-import { useRecoilValue } from 'recoil';
-import { authRecoilState } from '../../recoil/atoms';
+import {useRecoilValue} from 'recoil';
+import {authRecoilState} from '../../recoil/atoms';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -47,11 +47,13 @@ export default function PostListItem({
             style={css`
               flex-direction: row;
               justify-content: space-between;
+              align-items: center;
               gap: 8px;
             `}
           >
             <View
               style={css`
+                flex: 1;
                 gap: 8px;
               `}
             >
