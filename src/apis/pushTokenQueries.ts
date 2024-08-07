@@ -58,3 +58,19 @@ export async function fetchDeletePushToken({
 
   return deletedToken;
 }
+
+export async function fetchPushTokens(userId: string) {
+  const {data: tokens, error} = await supabase
+    .from('push_tokens')
+    .select('*')
+    .eq('user_id', userId);
+
+  if (error) {
+    if (__DEV__) {
+      console.error(error);
+    }
+    return [];
+  }
+
+  return tokens;
+}
