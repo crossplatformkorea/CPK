@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "tags" ALTER COLUMN "tag" SET DATA TYPE TEXT;

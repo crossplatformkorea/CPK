@@ -1,32 +1,74 @@
-/*
-  Warnings:
+-- CreateEnum
+CREATE TYPE "Gender" AS ENUM ('male', 'female', 'intersex');
 
-  - The primary key for the `tags` table will be changed. If it partially fails, the table could be left without primary key constraint.
-  - The `id` column on the `tags` table would be dropped and recreated. This will lead to data loss if there is data in the column.
-  - Changed the type of `B` on the `_DeveloperToTag` table. No cast exists, the column would be dropped and recreated, which cannot be done if there is data, since the column is required.
-  - Changed the type of `tag` on the `tags` table. No cast exists, the column would be dropped and recreated, which cannot be done if there is data, since the column is required.
+-- CreateEnum
+CREATE TYPE "AuthType" AS ENUM ('email', 'google', 'apple');
 
-*/
+-- CreateEnum
+CREATE TYPE "Nationality" AS ENUM ('SouthKorea', 'UnitedStates', 'Unknown');
+
 -- CreateEnum
 CREATE TYPE "activity_type" AS ENUM ('Like', 'UserFollowYou', 'FollowingFollowUser', 'FollowingCreatePost', 'NewReplyInComment', 'NewCommentInPost');
 
 -- CreateEnum
 CREATE TYPE "FileType" AS ENUM ('Audio', 'Video', 'Document', 'Image');
 
--- DropForeignKey
-ALTER TABLE "_DeveloperToTag" DROP CONSTRAINT "_DeveloperToTag_B_fkey";
+-- CreateTable
+CREATE TABLE "users" (
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "email" TEXT,
+    "full_name" TEXT,
+    "name" TEXT,
+    "display_name" TEXT,
+    "avatar_url" TEXT,
+    "phone_verified" BOOLEAN DEFAULT false,
+    "provider_id" TEXT,
+    "sub" TEXT,
+    "provider" "AuthType" NOT NULL DEFAULT 'email',
+    "birthday" TIMESTAMP(3),
+    "gender" "Gender",
+    "phone" TEXT,
+    "locale" TEXT,
+    "confirmed_at" TIMESTAMP(3),
+    "email_confirmed_at" TIMESTAMP(3),
+    "last_sign_in_at" TIMESTAMP(3),
+    "nationality" TEXT DEFAULT 'Unknown',
+    "affiliation" TEXT,
+    "meetup_id" TEXT,
+    "github_id" TEXT,
+    "other_sns_ids" TEXT,
+    "introduction" TEXT,
+    "desired_connection" TEXT,
+    "motivation_for_event_participation" TEXT,
+    "future_expectations" TEXT,
+    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3),
+    "deleted_at" TIMESTAMP(3),
 
--- AlterTable
-ALTER TABLE "_DeveloperToTag" DROP COLUMN "B",
-ADD COLUMN     "B" UUID NOT NULL;
+    CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+);
 
--- AlterTable
-ALTER TABLE "tags" DROP CONSTRAINT "tags_pkey",
-DROP COLUMN "id",
-ADD COLUMN     "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-DROP COLUMN "tag",
-ADD COLUMN     "tag" UUID NOT NULL,
-ADD CONSTRAINT "tags_pkey" PRIMARY KEY ("id");
+-- CreateTable
+CREATE TABLE "push_tokens" (
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "token" TEXT NOT NULL,
+    "platform" TEXT,
+    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "user_id" UUID NOT NULL,
+
+    CONSTRAINT "push_tokens_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "follows" (
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "user_id" UUID NOT NULL,
+    "following_id" UUID,
+
+    CONSTRAINT "follows_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "posts" (
@@ -34,8 +76,9 @@ CREATE TABLE "posts" (
     "title" TEXT NOT NULL,
     "content" TEXT NOT NULL,
     "url" TEXT,
-    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP(3) NOT NULL,
+    "view_count" INTEGER DEFAULT 0,
+    "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3),
     "deleted_at" TIMESTAMP(3),
     "user_id" UUID NOT NULL,
 
@@ -72,6 +115,8 @@ CREATE TABLE "images" (
     "encoding" TEXT,
     "type" "FileType" DEFAULT 'Image',
     "created_at" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3),
+    "deleted_at" TIMESTAMP(3),
     "post_id" UUID,
     "reply_id" UUID,
 
@@ -118,10 +163,43 @@ CREATE TABLE "likes" (
 );
 
 -- CreateTable
+CREATE TABLE "tags" (
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "tag" TEXT NOT NULL,
+
+    CONSTRAINT "tags_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "blocks" (
+    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "created_at" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    "user_id" UUID NOT NULL,
+    "block_user_id" UUID NOT NULL,
+
+    CONSTRAINT "blocks_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "_PostToTag" (
     "A" UUID NOT NULL,
     "B" UUID NOT NULL
 );
+
+-- CreateTable
+CREATE TABLE "_TagToUser" (
+    "A" UUID NOT NULL,
+    "B" UUID NOT NULL
+);
+
+-- CreateIndex
+CREATE UNIQUE INDEX "users_email_key" ON "users"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "push_tokens_token_user_id_key" ON "push_tokens"("token", "user_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "follows_user_id_following_id_key" ON "follows"("user_id", "following_id");
 
 -- CreateIndex
 CREATE INDEX "notifications_src_user_id_user_id_type_idx" ON "notifications"("src_user_id", "user_id", "type");
@@ -142,22 +220,34 @@ CREATE INDEX "images_reply_id_idx" ON "images"("reply_id");
 CREATE UNIQUE INDEX "likes_user_id_post_id_key" ON "likes"("user_id", "post_id");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "tags_tag_key" ON "tags"("tag");
+
+-- CreateIndex
+CREATE INDEX "tags_tag_idx" ON "tags"("tag");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "blocks_user_id_block_user_id_key" ON "blocks"("user_id", "block_user_id");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "_PostToTag_AB_unique" ON "_PostToTag"("A", "B");
 
 -- CreateIndex
 CREATE INDEX "_PostToTag_B_index" ON "_PostToTag"("B");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "_DeveloperToTag_AB_unique" ON "_DeveloperToTag"("A", "B");
+CREATE UNIQUE INDEX "_TagToUser_AB_unique" ON "_TagToUser"("A", "B");
 
 -- CreateIndex
-CREATE INDEX "_DeveloperToTag_B_index" ON "_DeveloperToTag"("B");
+CREATE INDEX "_TagToUser_B_index" ON "_TagToUser"("B");
 
--- CreateIndex
-CREATE UNIQUE INDEX "tags_tag_key" ON "tags"("tag");
+-- AddForeignKey
+ALTER TABLE "push_tokens" ADD CONSTRAINT "push_tokens_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
--- CreateIndex
-CREATE INDEX "tags_tag_idx" ON "tags"("tag");
+-- AddForeignKey
+ALTER TABLE "follows" ADD CONSTRAINT "follows_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "follows" ADD CONSTRAINT "follows_following_id_fkey" FOREIGN KEY ("following_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "posts" ADD CONSTRAINT "posts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -211,10 +301,19 @@ ALTER TABLE "likes" ADD CONSTRAINT "likes_reply_id_fkey" FOREIGN KEY ("reply_id"
 ALTER TABLE "likes" ADD CONSTRAINT "likes_post_id_fkey" FOREIGN KEY ("post_id") REFERENCES "posts"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_DeveloperToTag" ADD CONSTRAINT "_DeveloperToTag_B_fkey" FOREIGN KEY ("B") REFERENCES "tags"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "blocks" ADD CONSTRAINT "blocks_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "blocks" ADD CONSTRAINT "blocks_block_user_id_fkey" FOREIGN KEY ("block_user_id") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_PostToTag" ADD CONSTRAINT "_PostToTag_A_fkey" FOREIGN KEY ("A") REFERENCES "posts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_PostToTag" ADD CONSTRAINT "_PostToTag_B_fkey" FOREIGN KEY ("B") REFERENCES "tags"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_TagToUser" ADD CONSTRAINT "_TagToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "tags"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_TagToUser" ADD CONSTRAINT "_TagToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
