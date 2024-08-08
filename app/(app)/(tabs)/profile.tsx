@@ -9,6 +9,10 @@ import {css} from '@emotion/native';
 import {Pressable} from 'react-native';
 import {IC_ICON} from '../../../src/icons';
 import {openURL} from '../../../src/utils/common';
+import {useEffect, useState} from 'react';
+import {updateDoobooGithub} from '../../../src/apis/githubStatsQueries';
+import Scouter from '../../../src/components/uis/Scouter';
+import {DoobooGithubStats} from '../../../src/types/github-stats';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -96,7 +100,24 @@ const TagText = styled.Text`
 
 export default function Profile(): JSX.Element {
   const {user, tags} = useRecoilValue(authRecoilState);
+  const [doobooStats, setDoobooStats] = useState<DoobooGithubStats | null>(
+    null,
+  );
   const {theme} = useDooboo();
+
+  useEffect(() => {
+    const fetchGithubStats = async () => {
+      const result = await updateDoobooGithub(user!.github_id!);
+
+      if (!!result?.stats) {
+        setDoobooStats(result.stats);
+      }
+    };
+
+    if (!!user?.github_id) {
+      fetchGithubStats();
+    }
+  }, [user, user?.github_id]);
 
   return (
     <Container>
@@ -134,11 +155,19 @@ export default function Profile(): JSX.Element {
                 <Icon name="GithubLogo" size={16} color={theme.role.link} />
                 <InfoValue>{user?.github_id || ''}</InfoValue>
               </Pressable>
+              {doobooStats ? (
+                <Scouter
+                  doobooStats={doobooStats}
+                  githubLogin={user?.github_id}
+                />
+              ) : null}
             </InfoItem>
-            <InfoItem>
-              <InfoLabel>{t('onboarding.affiliation')}</InfoLabel>
-              <InfoValue>{user?.affiliation || ''}</InfoValue>
-            </InfoItem>
+            {user?.affiliation ? (
+              <InfoItem>
+                <InfoLabel>{t('onboarding.affiliation')}</InfoLabel>
+                <InfoValue>{user.affiliation}</InfoValue>
+              </InfoItem>
+            ) : null}
           </InfoCard>
 
           {user?.desired_connection || user?.future_expectations ? (
