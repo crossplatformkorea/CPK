@@ -1,5 +1,5 @@
 import styled, {css} from '@emotion/native';
-import {Hr, Typography, useDooboo} from 'dooboo-ui';
+import {Hr, Icon, Typography, useDooboo} from 'dooboo-ui';
 import type {Image, Post, User} from '../../types';
 import {formatDateTime} from '../../utils/date';
 import {TouchableOpacity} from 'react-native-gesture-handler';
@@ -9,6 +9,7 @@ import ControlItem, {ControlItemProps} from './ControlItem';
 import {Image as ExpoImage} from 'expo-image';
 import {useRecoilValue} from 'recoil';
 import {authRecoilState} from '../../recoil/atoms';
+import {isYoutubeURL} from '../../utils/urlParser';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -57,13 +58,24 @@ export default function PostListItem({
                 gap: 8px;
               `}
             >
-              <Typography.Body2
+              <View
                 style={css`
-                  font-family: Pretendard-Bold;
+                  flex-direction: row;
+                  align-items: center;
+                  justify-content: space-between;
                 `}
               >
-                {post.title}
-              </Typography.Body2>
+                <Typography.Body2
+                  style={css`
+                    font-family: Pretendard-Bold;
+                  `}
+                >
+                  {post.title}
+                </Typography.Body2>
+                {post?.url && isYoutubeURL(post.url) ? (
+                  <Icon name="YoutubeLogo" size={22} />
+                ) : null}
+              </View>
               <Typography.Body3 numberOfLines={4}>
                 {post.content}
               </Typography.Body3>

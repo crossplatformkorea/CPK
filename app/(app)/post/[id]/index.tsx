@@ -16,6 +16,7 @@ import {FlashList} from '@shopify/flash-list';
 import CustomPressable from 'dooboo-ui/uis/CustomPressable';
 import {delayPressIn} from '../../../../src/utils/constants';
 import {useRecoilState} from 'recoil';
+import YoutubePlayer from '@dooboo/react-native-youtube-iframe';
 import {authRecoilState, postsRecoilState} from '../../../../src/recoil/atoms';
 import {useAppLogic} from '../../../../src/providers/AppLogicProvider';
 import {
@@ -25,6 +26,10 @@ import {
 import {toggleLike} from '../../../../src/apis/likeQueries';
 import ParsedText from 'react-native-parsed-text';
 import ImageCarousel from '../../../../src/components/uis/ImageCarousel';
+import {
+  getYoutubeIdFromURL,
+  isYoutubeURL,
+} from '../../../../src/utils/urlParser';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -221,6 +226,26 @@ export default function PostDetails(): JSX.Element {
                   </View>
                 </Pressable>
               ) : null}
+
+              {post?.url && isYoutubeURL(post.url) ? (
+                <YoutubePlayer
+                  height={240}
+                  play={false}
+                  pointerEvents="box-none"
+                  quality="hd720"
+                  videoId={getYoutubeIdFromURL(post.url)}
+                  webViewProps={{
+                    injectedJavaScript: `
+                            var element = document.getElementsByClassName('container')[0];
+                            element.style.position = 'unset';
+                            true;
+                          `,
+                  }}
+                  // @ts-ignore
+                  width="100%"
+                />
+              ) : null}
+
               <ParsedText
                 parse={[
                   {
