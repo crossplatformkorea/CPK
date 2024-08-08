@@ -11,7 +11,11 @@ import useSWR from 'swr';
 import FallbackComponent from '../../../src/components/uis/FallbackComponent';
 import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
 import {useRecoilState, useRecoilValue} from 'recoil';
-import {authRecoilState, postsRecoilState} from '../../../src/recoil/atoms';
+import {
+  addPostsIfNotExists,
+  authRecoilState,
+  postsRecoilState,
+} from '../../../src/recoil/atoms';
 import ListEmptyItem from '../../../src/components/uis/ListEmptyItem';
 
 const Container = styled.View`
@@ -42,14 +46,17 @@ export default function Posts(): JSX.Element {
       revalidateIfStale: false,
       revalidateOnReconnect: false,
       onSuccess: (data) => {
+        let newPosts = allPosts;
         if (!cursor) {
-          setAllPosts(data);
+          newPosts = addPostsIfNotExists(allPosts, data);
         } else {
-          setAllPosts((prevPosts) => [...prevPosts, ...data]);
+          newPosts = addPostsIfNotExists(allPosts, data);
         }
+
+        setAllPosts(newPosts);
         setLoadingMore(false);
-        if (data.length > 0) {
-          setCursor(data[data.length - 1].created_at || undefined);
+        if (newPosts.length > 0) {
+          setCursor(newPosts[newPosts.length - 1].created_at || undefined);
         }
       },
     },
@@ -59,7 +66,7 @@ export default function Posts(): JSX.Element {
     if (!loadingMore) {
       setLoadingMore(true);
       fetcher(cursor).then((newPosts) => {
-        setAllPosts((prevPosts) => [...prevPosts, ...newPosts]);
+        setAllPosts(addPostsIfNotExists(allPosts, newPosts));
         setLoadingMore(false);
       });
     }

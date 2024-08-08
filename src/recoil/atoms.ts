@@ -36,6 +36,19 @@ export const reportModalRecoilState = atom<ReportModalProps>({
 /*
  * All Posts
  */
+export const addPostsIfNotExists = (
+  posts: PostWithJoins[],
+  newPosts: PostWithJoins[],
+) => {
+  const existingPostIds = posts.map((post) => post.id);
+
+  const uniqueNewPosts = newPosts.filter(
+    (newPost) => !existingPostIds.includes(newPost.id),
+  );
+
+  return [...uniqueNewPosts, ...posts];
+};
+
 export const postsRecoilState = atom<PostWithJoins[]>({
   key: 'postsState',
   default: [],
