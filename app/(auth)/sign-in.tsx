@@ -11,7 +11,7 @@ import {Redirect, Stack, useRouter} from 'expo-router';
 import {useRecoilValue} from 'recoil';
 
 import {googleClientIdIOS, googleClientIdWeb} from '../../config';
-import {IC_CROSSPLATFORMS, IC_GOOGLE, IC_ICON} from '../../src/icons';
+import {IMG_CROSSPLATFORMS, IC_GOOGLE, IC_ICON} from '../../src/icons';
 import {authRecoilState} from '../../src/recoil/atoms';
 import {t} from '../../src/STRINGS';
 import {supabase} from '../../src/supabase';
@@ -162,7 +162,7 @@ export default function SignIn(): JSX.Element {
             {t('signIn.description')}
           </Typography.Heading5>
           <Image
-            source={IC_CROSSPLATFORMS}
+            source={IMG_CROSSPLATFORMS}
             style={css`
               height: 240px;
             `}

@@ -60,7 +60,9 @@
     "viewsWithCount": {
       "one": "Views %{count}",
       "other": "Views %{count}"
-    }
+    },
+    "bio": "Bio",
+    "score": "Score"
   },
   "error": {
     "default": "Error occurred!",
@@ -70,7 +72,8 @@
     "failedToGetPushToken": "Failed to get push token for push notification!",
     "mustUsePhysicalDeviceForSubject": "Must use physical device for {{subject}}",
     "projectIdNotFound": "Project ID not found",
-    "unableToOpenEmailClient": "Unable to open email client"
+    "unableToOpenEmailClient": "Unable to open email client",
+    "failedToFetchData": "Failed to fetch data"
   },
   "loginInfo": {
     "cancel": "Cancel",

@@ -9,6 +9,7 @@ import {css} from '@emotion/native';
 import {Pressable} from 'react-native';
 import {IC_ICON} from '../../../src/icons';
 import {openURL} from '../../../src/utils/common';
+import DoobooStats from '../../../src/components/fragments/DoobooStats';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -42,9 +43,16 @@ const UserName = styled(Typography.Heading5)`
   margin-bottom: 8px;
 `;
 
-const UserBio = styled.Text`
+const UserAffiliation = styled.Text`
   font-size: 16px;
   color: ${({theme}) => theme.role.secondary};
+  text-align: center;
+  margin-bottom: 16px;
+`;
+
+const UserBio = styled.Text`
+  font-size: 16px;
+  color: ${({theme}) => theme.text.label};
   text-align: center;
   margin-bottom: 16px;
 `;
@@ -72,9 +80,7 @@ const InfoLabel = styled(Typography.Body2)`
   font-family: Pretendard-Bold;
 `;
 
-const InfoValue = styled(Typography.Body2)`
-  flex: 1;
-`;
+const InfoValue = styled(Typography.Body2)``;
 
 const TagContainer = styled.View`
   flex-direction: row;
@@ -114,6 +120,9 @@ export default function Profile(): JSX.Element {
             source={user?.avatar_url ? {uri: user?.avatar_url} : IC_ICON}
           />
           <UserName>{user?.display_name || ''}</UserName>
+          {user?.affiliation ? (
+            <UserAffiliation>{user?.affiliation}</UserAffiliation>
+          ) : null}
           {user?.introduction ? <UserBio>{user?.introduction}</UserBio> : null}
         </ProfileHeader>
         <Content>
@@ -134,10 +143,7 @@ export default function Profile(): JSX.Element {
                 <Icon name="GithubLogo" size={16} color={theme.role.link} />
                 <InfoValue>{user?.github_id || ''}</InfoValue>
               </Pressable>
-            </InfoItem>
-            <InfoItem>
-              <InfoLabel>{t('onboarding.affiliation')}</InfoLabel>
-              <InfoValue>{user?.affiliation || ''}</InfoValue>
+              <DoobooStats user={user} />
             </InfoItem>
           </InfoCard>
 

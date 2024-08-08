@@ -97,8 +97,6 @@ export default function Replies({
           })),
       });
 
-      console.log('newReply', newReply);
-
       if (newReply) {
         setReplies((prevReplies) => [newReply, ...prevReplies]);
       }
