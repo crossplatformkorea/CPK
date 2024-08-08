@@ -20,7 +20,7 @@ export const initStats: Stats = {
   name: '',
   description: '',
   score: 0.0,
-  statsElements: [],
+  statElements: [],
   icon: '',
   id: '',
 };

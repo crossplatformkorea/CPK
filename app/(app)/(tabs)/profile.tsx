@@ -9,10 +9,7 @@ import {css} from '@emotion/native';
 import {Pressable} from 'react-native';
 import {IC_ICON} from '../../../src/icons';
 import {openURL} from '../../../src/utils/common';
-import {useEffect, useState} from 'react';
-import {updateDoobooGithub} from '../../../src/apis/githubStatsQueries';
-import Scouter from '../../../src/components/uis/Scouter';
-import {DoobooGithubStats} from '../../../src/types/github-stats';
+import DoobooStats from '../../../src/components/fragments/DoobooStats';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -46,9 +43,16 @@ const UserName = styled(Typography.Heading5)`
   margin-bottom: 8px;
 `;
 
-const UserBio = styled.Text`
+const UserAffiliation = styled.Text`
   font-size: 16px;
   color: ${({theme}) => theme.role.secondary};
+  text-align: center;
+  margin-bottom: 16px;
+`;
+
+const UserBio = styled.Text`
+  font-size: 16px;
+  color: ${({theme}) => theme.text.label};
   text-align: center;
   margin-bottom: 16px;
 `;
@@ -76,9 +80,7 @@ const InfoLabel = styled(Typography.Body2)`
   font-family: Pretendard-Bold;
 `;
 
-const InfoValue = styled(Typography.Body2)`
-  flex: 1;
-`;
+const InfoValue = styled(Typography.Body2)``;
 
 const TagContainer = styled.View`
   flex-direction: row;
@@ -100,24 +102,7 @@ const TagText = styled.Text`
 
 export default function Profile(): JSX.Element {
   const {user, tags} = useRecoilValue(authRecoilState);
-  const [doobooStats, setDoobooStats] = useState<DoobooGithubStats | null>(
-    null,
-  );
   const {theme} = useDooboo();
-
-  useEffect(() => {
-    const fetchGithubStats = async () => {
-      const result = await updateDoobooGithub(user!.github_id!);
-
-      if (!!result?.stats) {
-        setDoobooStats(result.stats);
-      }
-    };
-
-    if (!!user?.github_id) {
-      fetchGithubStats();
-    }
-  }, [user, user?.github_id]);
 
   return (
     <Container>
@@ -135,6 +120,9 @@ export default function Profile(): JSX.Element {
             source={user?.avatar_url ? {uri: user?.avatar_url} : IC_ICON}
           />
           <UserName>{user?.display_name || ''}</UserName>
+          {user?.affiliation ? (
+            <UserAffiliation>{user?.affiliation}</UserAffiliation>
+          ) : null}
           {user?.introduction ? <UserBio>{user?.introduction}</UserBio> : null}
         </ProfileHeader>
         <Content>
@@ -155,19 +143,8 @@ export default function Profile(): JSX.Element {
                 <Icon name="GithubLogo" size={16} color={theme.role.link} />
                 <InfoValue>{user?.github_id || ''}</InfoValue>
               </Pressable>
-              {doobooStats ? (
-                <Scouter
-                  doobooStats={doobooStats}
-                  githubLogin={user?.github_id}
-                />
-              ) : null}
+              <DoobooStats user={user} />
             </InfoItem>
-            {user?.affiliation ? (
-              <InfoItem>
-                <InfoLabel>{t('onboarding.affiliation')}</InfoLabel>
-                <InfoValue>{user.affiliation}</InfoValue>
-              </InfoItem>
-            ) : null}
           </InfoCard>
 
           {user?.desired_connection || user?.future_expectations ? (

@@ -92,60 +92,98 @@ const StatIcons = ({
         onPress={() => onPressStat(null)}
         style={[style, {padding: 2}]}
       >
-        <SvgStatsDooboo />
+        <SvgStatsDooboo
+          color={!selectedStats ? theme.text.basic : theme.text.placeholder}
+        />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => onPressStat('tree')}
         style={[style, {padding: 2}]}
       >
-        <SvgStatsTree />
+        <SvgStatsTree
+          color={
+            selectedStats === 'tree' ? theme.text.basic : theme.text.placeholder
+          }
+        />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => onPressStat('fire')}
         style={[style, {padding: 2}]}
       >
-        <SvgStatsFire />
+        <SvgStatsFire
+          color={
+            selectedStats === 'fire' ? theme.text.basic : theme.text.placeholder
+          }
+        />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => onPressStat('earth')}
         style={[style, {padding: 2}]}
       >
-        <SvgStatsEarth />
+        <SvgStatsEarth
+          color={
+            selectedStats === 'earth'
+              ? theme.text.basic
+              : theme.text.placeholder
+          }
+        />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => onPressStat('gold')}
         style={[style, {padding: 2}]}
       >
-        <SvgStatsGold />
+        <SvgStatsGold
+          color={
+            selectedStats === 'gold' ? theme.text.basic : theme.text.placeholder
+          }
+        />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => onPressStat('water')}
         style={[style, {padding: 2}]}
       >
-        <SvgStatsWater />
+        <SvgStatsWater
+          color={
+            selectedStats === 'water'
+              ? theme.text.basic
+              : theme.text.placeholder
+          }
+        />
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => onPressStat('people')}
         style={[style, {padding: 2}]}
       >
-        <SvgStatsPerson />
+        <SvgStatsPerson
+          color={
+            selectedStats === 'people'
+              ? theme.text.basic
+              : theme.text.placeholder
+          }
+        />
       </TouchableOpacity>
     </View>
   );
 };
 
-function ContentStatsDetails({
-  statsElement,
-  details,
-}: {
-  statsElement: StatsElement;
-  details: StatsDetail[];
-}): ReactElement {
+const ContentDetailDescription = ({
+  json,
+  stats,
+  selectedStats,
+}: ContentDetailDescProps): ReactElement | null => {
   const {theme} = useDooboo();
 
+  if (!stats) {
+    return null;
+  }
+
+  const {name, description, statElements, score} = stats;
+
   const renderCommonDetail = ({
+    statsElement,
     statsDetails,
   }: {
+    statsElement: StatsElement;
     statsDetails?: ReactElement;
   }): ReactElement => {
     return (
@@ -154,7 +192,6 @@ function ContentStatsDetails({
           style={{
             marginBottom: 8,
             alignSelf: 'stretch',
-
             flexDirection: 'row',
             justifyContent: 'space-between',
           }}
@@ -164,8 +201,7 @@ function ContentStatsDetails({
               key={statsElement.name}
               style={{minHeight: 24, fontWeight: 'bold'}}
             >
-              {statsElement.key}
-              {/* {getString(statsElement.key as any)} */}
+              {statsElement.name}
             </Typography.Body1>
           </View>
           <View>
@@ -173,7 +209,7 @@ function ContentStatsDetails({
               style={{
                 minHeight: 24,
                 marginBottom: 12,
-                color: theme.role.accent,
+                color: theme.role.info,
               }}
             >
               {statsElement.totalCount?.toLocaleString() || ''}
@@ -185,12 +221,16 @@ function ContentStatsDetails({
     );
   };
 
-  return (() => {
+  const renderDetails = (
+    details: StatsDetail[],
+    statsElement: StatsElement,
+  ) => {
     switch (details.length) {
       case 0:
-        return renderCommonDetail({});
+        return renderCommonDetail({statsElement});
       case 1:
         return renderCommonDetail({
+          statsElement,
           statsDetails: (
             <View
               style={{
@@ -203,6 +243,7 @@ function ContentStatsDetails({
                   case 'repository':
                     return (
                       <View
+                        key={`repository-${detail.name}-${i}`}
                         style={{
                           marginRight: 8,
                           flexDirection: 'row',
@@ -210,7 +251,7 @@ function ContentStatsDetails({
                         }}
                       >
                         <Text
-                          style={{color: theme.role.accent}}
+                          style={{color: theme.role.info}}
                           onPress={() => Linking.openURL(detail.url)}
                         >
                           {detail.name}
@@ -221,10 +262,10 @@ function ContentStatsDetails({
                   case 'commit':
                     return (
                       <View
+                        key={`commit-${detail.name}-${i}`}
                         style={{
                           marginRight: 8,
                           marginBottom: 8,
-
                           flexDirection: 'row',
                           justifyContent: 'space-between',
                         }}
@@ -243,7 +284,7 @@ function ContentStatsDetails({
                         </View>
                         <View>
                           <Text
-                            style={{color: theme.role.accent}}
+                            style={{color: theme.role.info}}
                             onPress={() =>
                               Linking.openURL(
                                 `https://github.com/${detail.name}/commit/${detail.sha}`,
@@ -258,10 +299,10 @@ function ContentStatsDetails({
                   case 'language':
                     return (
                       <View
+                        key={`language-${detail.name}-${i}`}
                         style={{
                           marginRight: 8,
                           marginBottom: 5,
-
                           flexDirection: 'row',
                           justifyContent: 'space-between',
                         }}
@@ -285,8 +326,10 @@ function ContentStatsDetails({
         });
       default: // Multiple details in one attr
         return renderCommonDetail({
+          statsElement,
           statsDetails: (
             <View
+              key={statsElement.name}
               style={{
                 marginTop: 4,
                 marginBottom: 40,
@@ -297,6 +340,7 @@ function ContentStatsDetails({
                   case 'repository':
                     return (
                       <View
+                        key={`repository-${detail.name}-${i}`}
                         style={{
                           marginRight: 8,
                           flexDirection: 'row',
@@ -304,7 +348,7 @@ function ContentStatsDetails({
                         }}
                       >
                         <Text
-                          style={{color: theme.role.accent}}
+                          style={{color: theme.role.link}}
                           onPress={() => Linking.openURL(detail.url)}
                         >
                           {detail.name}
@@ -315,10 +359,10 @@ function ContentStatsDetails({
                   case 'commit':
                     return (
                       <View
+                        key={`commit-${detail.name}-${i}`}
                         style={{
                           marginRight: 8,
                           marginBottom: 8,
-
                           flexDirection: 'row',
                           justifyContent: 'space-between',
                         }}
@@ -335,7 +379,7 @@ function ContentStatsDetails({
                             {detail.name}
                           </Text>
                           <Text
-                            style={{color: theme.role.accent, marginTop: 8}}
+                            style={{color: theme.role.link, marginTop: 8}}
                             onPress={() =>
                               Linking.openURL(
                                 `https://github.com/${detail.name}/commit/${detail.sha}`,
@@ -350,10 +394,10 @@ function ContentStatsDetails({
                   case 'language':
                     return (
                       <View
+                        key={`language-${detail.name}-${i}`}
                         style={{
                           marginRight: 8,
                           marginBottom: 5,
-
                           flexDirection: 'row',
                           justifyContent: 'space-between',
                         }}
@@ -376,21 +420,7 @@ function ContentStatsDetails({
           ),
         });
     }
-  })();
-}
-
-const ContentDetailDescription = ({
-  json,
-  stats,
-  selectedStats,
-}: ContentDetailDescProps): ReactElement | null => {
-  const {theme} = useDooboo();
-
-  if (!stats) {
-    return null;
-  }
-
-  const {name, description, statsElements, score} = stats;
+  };
 
   if (!selectedStats) {
     return (
@@ -429,7 +459,7 @@ const ContentDetailDescription = ({
         </Typography.Body2>
       ) : null}
       <DetailBody>
-        {statsElements?.map((el: StatsElement) => {
+        {statElements?.map((el: StatsElement) => {
           if (!el.name) {
             return null;
           }
@@ -438,10 +468,7 @@ const ContentDetailDescription = ({
             ? JSON.parse(el.details)
             : [];
 
-          return ContentStatsDetails({
-            details,
-            statsElement: el,
-          });
+          return <View key={el.key}>{renderDetails(details, el)}</View>;
         })}
       </DetailBody>
     </View>

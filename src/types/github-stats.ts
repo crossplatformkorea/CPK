@@ -34,7 +34,7 @@ export type Stats = {
   id: string;
   name: string;
   score: number;
-  statsElements: StatsElement[];
+  statElements: StatsElement[];
 };
 
 export type Plugin = {

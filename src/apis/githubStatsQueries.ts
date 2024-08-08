@@ -14,8 +14,7 @@ export const updateDoobooGithub = async (
     });
 
     if (!response.ok) {
-      if (__DEV__) console.error('HTTP error! status:', response.status);
-      return;
+      throw new Error('HTTP error! status:' + response.status);
     }
 
     return await response.json();

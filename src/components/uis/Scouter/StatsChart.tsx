@@ -116,11 +116,9 @@ const convertPosition = (
 
 const StatUnits = ({
   centerPosition,
-  selectedStat,
   onPressStat,
 }: {
   centerPosition: Axis;
-  selectedStat?: StatType | null;
   onPressStat: (type: StatType) => void;
 }): ReactElement => {
   return (
@@ -232,11 +230,7 @@ const StatsChart = ({
 
   return (
     <Container style={{width: width + 72}}>
-      <StatUnits
-        selectedStat={selectedStat}
-        centerPosition={centerPosition}
-        onPressStat={onPressStat}
-      />
+      <StatUnits centerPosition={centerPosition} onPressStat={onPressStat} />
       <StatsContainer>
         <ImageBackground
           source={
