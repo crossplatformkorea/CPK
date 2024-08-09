@@ -13,8 +13,6 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Replies from './replies';
 import {useCallback, useRef, useEffect, useState} from 'react';
 import {FlashList} from '@shopify/flash-list';
-import CustomPressable from 'dooboo-ui/uis/CustomPressable';
-import {delayPressIn} from '../../../../src/utils/constants';
 import {useRecoilState} from 'recoil';
 import YoutubePlayer from '@dooboo/react-native-youtube-iframe';
 import {authRecoilState, postsRecoilState} from '../../../../src/recoil/atoms';
@@ -30,6 +28,7 @@ import {
   getYoutubeIdFromURL,
   isYoutubeURL,
 } from '../../../../src/utils/urlParser';
+import {RectButton} from 'react-native-gesture-handler';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -323,8 +322,7 @@ export default function PostDetails(): JSX.Element {
                   gap: 4px;
                 `}
               >
-                <CustomPressable
-                  delayHoverIn={delayPressIn}
+                <RectButton
                   hitSlop={{top: 20, left: 20, right: 20, bottom: 20}}
                   onPress={handlePressMore}
                   style={css`
@@ -334,7 +332,7 @@ export default function PostDetails(): JSX.Element {
                   `}
                 >
                   <Icon name="DotsThreeOutlineVertical" size={18} />
-                </CustomPressable>
+                </RectButton>
               </View>
             ) : null,
         }}

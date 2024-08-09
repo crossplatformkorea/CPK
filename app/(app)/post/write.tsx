@@ -9,7 +9,6 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   View,
 } from 'react-native';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
@@ -21,6 +20,7 @@ import {ImagePickerAsset} from 'expo-image-picker';
 import {MAX_IMAGES_UPLOAD_LENGTH} from '../../../src/utils/constants';
 import CustomScrollView from '../../../src/components/uis/CustomScrollView';
 import {uploadFileToSupabase} from '../../../src/supabase';
+import { RectButton } from 'react-native-gesture-handler';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -114,8 +114,8 @@ export default function PostWrite(): JSX.Element {
         options={{
           title: t('post.write.write'),
           headerRight: () => (
-            <Pressable
-              onPress={handleSubmit(handleWritePost)}
+            <RectButton
+              onPress={() => handleSubmit(handleWritePost)}
               hitSlop={{
                 bottom: 8,
                 left: 8,
@@ -128,7 +128,7 @@ export default function PostWrite(): JSX.Element {
               ) : (
                 <Typography.Body3>{t('post.write.register')}</Typography.Body3>
               )}
-            </Pressable>
+            </RectButton>
           ),
         }}
       />

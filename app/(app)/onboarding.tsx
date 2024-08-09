@@ -8,7 +8,6 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   Text,
   View,
 } from 'react-native';
@@ -30,6 +29,7 @@ import {authRecoilState} from '../../src/recoil/atoms';
 import {ImageInsertArgs} from '../../src/types';
 import FallbackComponent from '../../src/components/uis/FallbackComponent';
 import {showAlert} from '../../src/utils/alert';
+import {RectButton} from 'react-native-gesture-handler';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -196,8 +196,8 @@ export default function Onboarding(): JSX.Element {
         options={{
           title: t('onboarding.title'),
           headerRight: () => (
-            <Pressable
-              onPress={handleSubmit(handleFinishOnboarding)}
+            <RectButton
+              onPress={() => handleSubmit(handleFinishOnboarding)}
               hitSlop={{
                 bottom: 8,
                 left: 8,
@@ -210,7 +210,7 @@ export default function Onboarding(): JSX.Element {
               ) : (
                 <Typography.Body3>{t('common.done')}</Typography.Body3>
               )}
-            </Pressable>
+            </RectButton>
           ),
         }}
       />
