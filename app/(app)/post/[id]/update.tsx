@@ -298,6 +298,13 @@ export default function PostUpdate(): JSX.Element {
                 right: 8,
                 top: 8,
               }}
+              style={css`
+                align-items: center;
+                justify-content: center;
+                padding: 6px;
+                margin-right: -4px;
+                border-radius: 99px;
+              `}
             >
               {isSubmitting ? (
                 <ActivityIndicator size="small" color={theme.text.label} />

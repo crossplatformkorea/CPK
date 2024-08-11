@@ -8,18 +8,27 @@ import {t} from '../../../src/STRINGS';
 import {useEffect, useRef} from 'react';
 import * as Notifications from 'expo-notifications';
 import {RectButton} from 'react-native-gesture-handler';
+import {css} from '@emotion/native';
 
 function SettingsMenu(): JSX.Element {
   const {theme} = useDooboo();
   const {push} = useRouter();
 
   return (
-    <RectButton onPress={() => push('/settings')}>
+    <RectButton
+      onPress={() => push('/settings')}
+      style={css`
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        border-radius: 99px;
+        margin-right: 4px;
+      `}
+    >
       <Icon
         color={theme.text.basic}
         name="List"
         size={22}
-        style={{marginRight: 15}}
       />
     </RectButton>
   );

@@ -20,7 +20,7 @@ import {ImagePickerAsset} from 'expo-image-picker';
 import {MAX_IMAGES_UPLOAD_LENGTH} from '../../../src/utils/constants';
 import CustomScrollView from '../../../src/components/uis/CustomScrollView';
 import {uploadFileToSupabase} from '../../../src/supabase';
-import { RectButton } from 'react-native-gesture-handler';
+import {RectButton} from 'react-native-gesture-handler';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -116,6 +116,13 @@ export default function PostWrite(): JSX.Element {
           headerRight: () => (
             <RectButton
               onPress={() => handleSubmit(handleWritePost)}
+              style={css`
+                align-items: center;
+                justify-content: center;
+                padding: 6px;
+                margin-right: -4px;
+                border-radius: 99px;
+              `}
               hitSlop={{
                 bottom: 8,
                 left: 8,
