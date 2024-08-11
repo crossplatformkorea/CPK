@@ -24,6 +24,7 @@ import useSWR from 'swr';
 import {ReplyWithJoins} from '../../../../src/types';
 import FallbackComponent from '../../../../src/components/uis/FallbackComponent';
 import {toggleLike} from '../../../../src/apis/likeQueries';
+import ErrorBoundary from 'react-native-error-boundary';
 
 export default function Replies({
   flashListRef,
@@ -228,35 +229,37 @@ export default function Replies({
   })();
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.select({ios: 'padding', default: undefined})}
-      keyboardVerticalOffset={HEADER_HEIGHT + bottom + 24}
-      style={css`
-        flex: 1;
-      `}
-    >
-      {content}
-      {authId ? (
-        <ReplyInput
-          assets={assets}
-          createReply={handleCreateReply}
-          message={reply}
-          setAssets={setAssets}
-          setMessage={setReply}
-          style={css`
-            padding: 0;
-          `}
-          loading={isCreateReplyInFlight}
-          styles={{
-            container: css`
-              border-radius: 0;
-              border-width: 0px;
-              border-top-width: 0.3px;
-              padding-bottom: 2px;
-            `,
-          }}
-        />
-      ) : null}
-    </KeyboardAvoidingView>
+    <ErrorBoundary FallbackComponent={FallbackComponent}>
+      <KeyboardAvoidingView
+        behavior={Platform.select({ios: 'padding', default: undefined})}
+        keyboardVerticalOffset={HEADER_HEIGHT + bottom + 24}
+        style={css`
+          flex: 1;
+        `}
+      >
+        {content}
+        {authId ? (
+          <ReplyInput
+            assets={assets}
+            createReply={handleCreateReply}
+            message={reply}
+            setAssets={setAssets}
+            setMessage={setReply}
+            style={css`
+              padding: 0;
+            `}
+            loading={isCreateReplyInFlight}
+            styles={{
+              container: css`
+                border-radius: 0;
+                border-width: 0px;
+                border-top-width: 0.3px;
+                padding-bottom: 2px;
+              `,
+            }}
+          />
+        ) : null}
+      </KeyboardAvoidingView>
+    </ErrorBoundary>
   );
 }

@@ -9,6 +9,8 @@ import Wrapper from '../../src/components/uis/Wrapper';
 import ImageZoomView from '../../src/components/uis/ImageZoomView';
 import {isDesktopDevice} from '../../src/utils/common';
 import {t} from '../../src/STRINGS';
+import ErrorBoundary from 'react-native-error-boundary';
+import FallbackComponent from '../../src/components/uis/FallbackComponent';
 
 export default function Picture(): JSX.Element {
   const {imageUrl} = useLocalSearchParams();
@@ -28,52 +30,54 @@ export default function Picture(): JSX.Element {
   }
 
   return (
-    <Wrapper>
+    <ErrorBoundary FallbackComponent={FallbackComponent}>
       <Stack.Screen
         options={{headerShown: false, title: t('common.picture')}}
       />
-      <View
-        style={css`
-          flex: 1;
-        `}
-      >
-        <>
-          {loading ? (
-            <ActivityIndicator
-              size="large"
-              style={{
-                position: 'absolute',
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
+      <Wrapper>
+        <View
+          style={css`
+            flex: 1;
+          `}
+        >
+          <>
+            {loading ? (
+              <ActivityIndicator
+                size="large"
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                }}
+              />
+            ) : null}
+            <ImageZoomView
+              onLoadEnd={() => {
+                setLoading(false);
               }}
+              style={css`
+                opacity: ${loading ? 0 : 1};
+              `}
+              uri={decodeURIComponent(imageUrl)}
             />
-          ) : null}
-          <ImageZoomView
-            onLoadEnd={() => {
-              setLoading(false);
+          </>
+          <IconButton
+            color="light"
+            icon="X"
+            onPress={() => {
+              back();
             }}
             style={css`
-              opacity: ${loading ? 0 : 1};
+              position: absolute;
+              right: ${right + 6 + 'px'};
+              top: ${isDesktopDevice() ? '12px' : top + 'px'};
             `}
-            uri={decodeURIComponent(imageUrl)}
+            type="text"
           />
-        </>
-        <IconButton
-          color="light"
-          icon="X"
-          onPress={() => {
-            back();
-          }}
-          style={css`
-            position: absolute;
-            right: ${right + 6 + 'px'};
-            top: ${isDesktopDevice() ? '12px' : top + 'px'};
-          `}
-          type="text"
-        />
-      </View>
-    </Wrapper>
+        </View>
+      </Wrapper>
+    </ErrorBoundary>
   );
 }

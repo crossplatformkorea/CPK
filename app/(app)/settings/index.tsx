@@ -17,7 +17,9 @@ import {t} from '../../../src/STRINGS';
 import {AsyncStorageKey} from '../../../src/utils/constants';
 import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
 import useAppState from '../../../src/hooks/useAppState';
-import { openEmail } from '../../../src/utils/common';
+import {openEmail} from '../../../src/utils/common';
+import ErrorBoundary from 'react-native-error-boundary';
+import FallbackComponent from '../../../src/components/uis/FallbackComponent';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -41,7 +43,7 @@ const Divider = styled.View`
 
 export default function Settings(): JSX.Element {
   const {push} = useRouter();
-  const {theme,changeThemeType, themeType} = useDooboo();
+  const {theme, changeThemeType, themeType} = useDooboo();
   const authId = useRecoilValue(authRecoilState);
   const {bottom} = useSafeAreaInsets();
 
@@ -240,82 +242,84 @@ export default function Settings(): JSX.Element {
   }
 
   return (
-    <Container>
+    <ErrorBoundary FallbackComponent={FallbackComponent}>
       <Stack.Screen options={{title: t('settings.title'), headerShown: true}} />
-      <ScrollView
-        bounces={false}
-        showsVerticalScrollIndicator={Platform.OS === 'web'}
-      >
-        <SettingButton
-          onPress={openEmail}
-          style={css`
-            background-color: ${theme.role.primary};
-          `}
+      <Container>
+        <ScrollView
+          bounces={false}
+          showsVerticalScrollIndicator={Platform.OS === 'web'}
         >
-          <>
-            <Icon
-              color={theme.button.primary.text}
-              name="AutoAwesome"
-              size={24}
-              style={css`
-                margin-right: 16px;
-              `}
-            />
-            <Typography.Body2
-              style={css`
-                font-family: Pretendard-Bold;
-                color: ${theme.button.primary.text};
-              `}
-            >
-              {t('common.contactUs')}
-            </Typography.Body2>
-            <Icon
-              color={theme.button.primary.text}
-              name="OpenInNew"
-              size={16}
-              style={css`
-                margin-left: auto;
-              `}
-            />
-          </>
-        </SettingButton>
-        {menus.map((menu) => (
-          <Fragment key={menu.title}>
-            {!menu.onPress ? (
-              <View
+          <SettingButton
+            onPress={openEmail}
+            style={css`
+              background-color: ${theme.role.primary};
+            `}
+          >
+            <>
+              <Icon
+                color={theme.button.primary.text}
+                name="AutoAwesome"
+                size={24}
                 style={css`
-                  padding: 24px 16px;
-
-                  flex-direction: row;
-                  align-items: center;
+                  margin-right: 16px;
+                `}
+              />
+              <Typography.Body2
+                style={css`
+                  font-family: Pretendard-Bold;
+                  color: ${theme.button.primary.text};
                 `}
               >
-                {menu.startElement}
-                <Typography.Body2>{menu.title}</Typography.Body2>
-                {menu.endElement}
-              </View>
-            ) : (
-              <SettingButton
-                disabled={!menu.onPress}
-                onPress={menu.onPress}
-                unstable_pressDelay={100}
-              >
-                <>
+                {t('common.contactUs')}
+              </Typography.Body2>
+              <Icon
+                color={theme.button.primary.text}
+                name="OpenInNew"
+                size={16}
+                style={css`
+                  margin-left: auto;
+                `}
+              />
+            </>
+          </SettingButton>
+          {menus.map((menu) => (
+            <Fragment key={menu.title}>
+              {!menu.onPress ? (
+                <View
+                  style={css`
+                    padding: 24px 16px;
+
+                    flex-direction: row;
+                    align-items: center;
+                  `}
+                >
                   {menu.startElement}
                   <Typography.Body2>{menu.title}</Typography.Body2>
                   {menu.endElement}
-                </>
-              </SettingButton>
-            )}
-            <Divider />
-          </Fragment>
-        ))}
-        <View
-          style={css`
-            height: ${bottom + 'px'};
-          `}
-        />
-      </ScrollView>
-    </Container>
+                </View>
+              ) : (
+                <SettingButton
+                  disabled={!menu.onPress}
+                  onPress={menu.onPress}
+                  unstable_pressDelay={100}
+                >
+                  <>
+                    {menu.startElement}
+                    <Typography.Body2>{menu.title}</Typography.Body2>
+                    {menu.endElement}
+                  </>
+                </SettingButton>
+              )}
+              <Divider />
+            </Fragment>
+          ))}
+          <View
+            style={css`
+              height: ${bottom + 'px'};
+            `}
+          />
+        </ScrollView>
+      </Container>
+    </ErrorBoundary>
   );
 }

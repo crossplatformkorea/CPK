@@ -10,6 +10,8 @@ import {Pressable} from 'react-native';
 import {IC_ICON} from '../../../src/icons';
 import {openURL} from '../../../src/utils/common';
 import DoobooStats from '../../../src/components/fragments/DoobooStats';
+import ErrorBoundary from 'react-native-error-boundary';
+import FallbackComponent from '../../../src/components/uis/FallbackComponent';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -105,79 +107,79 @@ export default function Profile(): JSX.Element {
   const {theme} = useDooboo();
 
   return (
-    <Container>
-      <Stack.Screen
-        options={{
-          title: t('profile.title'),
-        }}
-      />
-      <CustomScrollView bounces={false}>
-        <ProfileHeader>
-          <UserAvatar
-            style={css`
-              opacity: ${user?.avatar_url ? '1' : '0.7'};
-            `}
-            source={user?.avatar_url ? {uri: user?.avatar_url} : IC_ICON}
-          />
-          <UserName>{user?.display_name || ''}</UserName>
-          {user?.affiliation ? (
-            <UserAffiliation>{user?.affiliation}</UserAffiliation>
-          ) : null}
-          {user?.introduction ? <UserBio>{user?.introduction}</UserBio> : null}
-        </ProfileHeader>
-        <Content>
-          <InfoCard>
-            <InfoItem>
-              <InfoLabel>{t('onboarding.githubId')}</InfoLabel>
-              <Pressable
-                onPress={() =>
-                  user?.github_id &&
-                  openURL(`https://github.com/${user.github_id}`)
-                }
-                style={css`
-                  flex-direction: row;
-                  align-items: center;
-                  gap: 4px;
-                `}
-              >
-                <Icon name="GithubLogo" size={16} color={theme.role.link} />
-                <InfoValue>{user?.github_id || ''}</InfoValue>
-              </Pressable>
-              <DoobooStats user={user} />
-            </InfoItem>
-          </InfoCard>
-
-          {user?.desired_connection || user?.future_expectations ? (
+    <ErrorBoundary FallbackComponent={FallbackComponent}>
+      <Stack.Screen options={{title: t('profile.title')}} />
+      <Container>
+        <CustomScrollView bounces={false}>
+          <ProfileHeader>
+            <UserAvatar
+              style={css`
+                opacity: ${user?.avatar_url ? '1' : '0.7'};
+              `}
+              source={user?.avatar_url ? {uri: user?.avatar_url} : IC_ICON}
+            />
+            <UserName>{user?.display_name || ''}</UserName>
+            {user?.affiliation ? (
+              <UserAffiliation>{user?.affiliation}</UserAffiliation>
+            ) : null}
+            {user?.introduction ? (
+              <UserBio>{user?.introduction}</UserBio>
+            ) : null}
+          </ProfileHeader>
+          <Content>
             <InfoCard>
-              {user?.desired_connection ? (
-                <InfoItem>
-                  <InfoLabel>{t('onboarding.desiredConnection')}</InfoLabel>
-                  <InfoValue>{user?.desired_connection || ''}</InfoValue>
-                </InfoItem>
-              ) : null}
-              {user?.future_expectations ? (
-                <InfoItem>
-                  <InfoLabel>{t('onboarding.futureExpectations')}</InfoLabel>
-                  <InfoValue>{user?.future_expectations || ''}</InfoValue>
-                </InfoItem>
-              ) : null}
+              <InfoItem>
+                <InfoLabel>{t('onboarding.githubId')}</InfoLabel>
+                <Pressable
+                  onPress={() =>
+                    user?.github_id &&
+                    openURL(`https://github.com/${user.github_id}`)
+                  }
+                  style={css`
+                    flex-direction: row;
+                    align-items: center;
+                    gap: 4px;
+                  `}
+                >
+                  <Icon name="GithubLogo" size={16} color={theme.role.link} />
+                  <InfoValue>{user?.github_id || ''}</InfoValue>
+                </Pressable>
+                <DoobooStats user={user} />
+              </InfoItem>
             </InfoCard>
-          ) : null}
 
-          {tags?.length ? (
-            <InfoCard>
-              <InfoLabel>{t('onboarding.userTags')}</InfoLabel>
-              <TagContainer>
-                {tags.map((tag, index) => (
-                  <Tag key={index}>
-                    <TagText>{tag}</TagText>
-                  </Tag>
-                ))}
-              </TagContainer>
-            </InfoCard>
-          ) : null}
-        </Content>
-      </CustomScrollView>
-    </Container>
+            {user?.desired_connection || user?.future_expectations ? (
+              <InfoCard>
+                {user?.desired_connection ? (
+                  <InfoItem>
+                    <InfoLabel>{t('onboarding.desiredConnection')}</InfoLabel>
+                    <InfoValue>{user?.desired_connection || ''}</InfoValue>
+                  </InfoItem>
+                ) : null}
+                {user?.future_expectations ? (
+                  <InfoItem>
+                    <InfoLabel>{t('onboarding.futureExpectations')}</InfoLabel>
+                    <InfoValue>{user?.future_expectations || ''}</InfoValue>
+                  </InfoItem>
+                ) : null}
+              </InfoCard>
+            ) : null}
+
+            {tags?.length ? (
+              <InfoCard>
+                <InfoLabel>{t('onboarding.userTags')}</InfoLabel>
+                <TagContainer>
+                  {tags.map((tag, index) => (
+                    <Tag key={index}>
+                      <TagText>{tag}</TagText>
+                    </Tag>
+                  ))}
+                </TagContainer>
+              </InfoCard>
+            ) : null}
+          </Content>
+        </CustomScrollView>
+      </Container>
+    </ErrorBoundary>
   );
 }

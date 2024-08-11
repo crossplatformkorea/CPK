@@ -17,6 +17,7 @@ import {
   postsRecoilState,
 } from '../../../src/recoil/atoms';
 import ListEmptyItem from '../../../src/components/uis/ListEmptyItem';
+import ErrorBoundary from 'react-native-error-boundary';
 
 const Container = styled.View`
   flex: 1;
@@ -126,19 +127,21 @@ export default function Posts(): JSX.Element {
   })();
 
   return (
-    <Container>
-      <StatusBarBrightness />
-      {content}
-      <Fab
-        animationDuration={300}
-        fabIcon="Plus"
-        onPressFab={() => {
-          push('/post/write');
-        }}
-        style={css`
-          bottom: 16px;
-        `}
-      />
-    </Container>
+    <ErrorBoundary FallbackComponent={FallbackComponent}>
+      <Container>
+        <StatusBarBrightness />
+        {content}
+        <Fab
+          animationDuration={300}
+          fabIcon="Plus"
+          onPressFab={() => {
+            push('/post/write');
+          }}
+          style={css`
+            bottom: 16px;
+          `}
+        />
+      </Container>
+    </ErrorBoundary>
   );
 }

@@ -16,6 +16,8 @@ import {
   fetchUnblockUser,
 } from '../../../src/apis/blockQueries';
 import {User} from '../../../src/types';
+import ErrorBoundary from 'react-native-error-boundary';
+import FallbackComponent from '../../../src/components/uis/FallbackComponent';
 
 const Profile = styled.View`
   padding: 16px 16px 8px 16px;
@@ -168,25 +170,27 @@ export default function BlockUser(): JSX.Element {
   };
 
   return (
-    <Container>
+    <ErrorBoundary FallbackComponent={FallbackComponent}>
       <Stack.Screen options={{title: t('blockUsers.title')}} />
-      <FlashList
-        ListEmptyComponent={<NotFound />}
-        data={blockUsers}
-        estimatedItemSize={50}
-        onEndReached={() => loadBlockedUsers(true)}
-        onEndReachedThreshold={0.1}
-        onRefresh={() => loadBlockedUsers()}
-        refreshing={refreshing}
-        renderItem={({item}) => (
-          <BlockUserItem
-            displayName={item?.name || t('common.unknown')}
-            imageUrl={item?.avatar_url}
-            onPress={() => handleUnblock(item?.id)}
-          />
-        )}
-        showsVerticalScrollIndicator={Platform.OS === 'web'}
-      />
-    </Container>
+      <Container>
+        <FlashList
+          ListEmptyComponent={<NotFound />}
+          data={blockUsers}
+          estimatedItemSize={50}
+          onEndReached={() => loadBlockedUsers(true)}
+          onEndReachedThreshold={0.1}
+          onRefresh={() => loadBlockedUsers()}
+          refreshing={refreshing}
+          renderItem={({item}) => (
+            <BlockUserItem
+              displayName={item?.name || t('common.unknown')}
+              imageUrl={item?.avatar_url}
+              onPress={() => handleUnblock(item?.id)}
+            />
+          )}
+          showsVerticalScrollIndicator={Platform.OS === 'web'}
+        />
+      </Container>
+    </ErrorBoundary>
   );
 }

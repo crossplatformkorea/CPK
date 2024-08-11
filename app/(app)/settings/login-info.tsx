@@ -14,9 +14,11 @@ import type {User} from '../../../src/types';
 import {showConfirm} from '../../../src/utils/alert';
 import {AsyncStorageKey} from '../../../src/utils/constants';
 import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
-import { fetchDeletePushToken } from '../../../src/apis/pushTokenQueries';
+import {fetchDeletePushToken} from '../../../src/apis/pushTokenQueries';
+import ErrorBoundary from 'react-native-error-boundary';
+import FallbackComponent from '../../../src/components/uis/FallbackComponent';
 
-const Content = styled.View`
+const Container = styled.View`
   flex: 1;
   padding: 24px 24px 12px 24px;
   background-color: ${({theme}) => theme.bg.basic};
@@ -101,7 +103,7 @@ export default function LoginInfo(): JSX.Element {
       await fetchDeletePushToken({
         authId,
         expoPushToken: pushToken,
-      })
+      });
     }
 
     await AsyncStorage.removeItem(AsyncStorageKey.Token);
@@ -143,93 +145,95 @@ export default function LoginInfo(): JSX.Element {
   }
 
   return (
-    <Content>
+    <ErrorBoundary FallbackComponent={FallbackComponent}>
       <Stack.Screen options={{title: t('loginInfo.title')}} />
-      <ScrollView bounces={false}>
-        <View
-          style={css`
-            gap: 12px;
-          `}
-        >
-          <Typography.Heading5>
-            {t('loginInfo.loginMethod')}
-          </Typography.Heading5>
-          <SocialProvider
-            email={user?.email ?? ''}
-            provider={user?.provider ?? 'email'}
-          />
-          <Button
-            color="warning"
-            onPress={handleSignOut}
-            styles={{
-              container: css`
-                height: 48px;
-              `,
-              text: css`
-                font-size: 16px;
-                font-family: Pretendard-Bold;
-              `,
-            }}
-            text={t('loginInfo.logout')}
-            touchableHighlightProps={{
-              underlayColor: theme.text.contrast,
-            }}
-          />
-        </View>
-      </ScrollView>
+      <Container>
+        <ScrollView bounces={false}>
+          <View
+            style={css`
+              gap: 12px;
+            `}
+          >
+            <Typography.Heading5>
+              {t('loginInfo.loginMethod')}
+            </Typography.Heading5>
+            <SocialProvider
+              email={user?.email ?? ''}
+              provider={user?.provider ?? 'email'}
+            />
+            <Button
+              color="warning"
+              onPress={handleSignOut}
+              styles={{
+                container: css`
+                  height: 48px;
+                `,
+                text: css`
+                  font-size: 16px;
+                  font-family: Pretendard-Bold;
+                `,
+              }}
+              text={t('loginInfo.logout')}
+              touchableHighlightProps={{
+                underlayColor: theme.text.contrast,
+              }}
+            />
+          </View>
+        </ScrollView>
 
-      <Button
-        color="danger"
-        onPress={() => {
-          alertDialog.open({
-            title: t('loginInfo.cancelAccount'),
-            body: t('loginInfo.cancelAccountDescription'),
-            closeOnTouchOutside: false,
-            actions: [
-              <Button
-                color="light"
-                key="button-light"
-                onPress={() => alertDialog.close()}
-                styles={{
-                  container: css`
-                    height: 48px;
-                  `,
-                }}
-                text={t('common.cancel')}
-              />,
-              <Button
-                color="danger"
-                key="button-danger"
-                // loading={isWithdrawUserInFlight}
-                onPress={handleWithdrawUser}
-                styles={{
-                  container: css`
-                    height: 48px;
-                  `,
-                }}
-                text={t('common.confirm')}
-              />,
-            ],
-          });
-        }}
-        style={css`
-          margin-bottom: ${bottom + 'px'};
-        `}
-        styles={{
-          container: css`
-            height: 48px;
-          `,
-          text: css`
-            font-family: Pretendard-Bold;
-            font-size: 16px;
-          `,
-        }}
-        text={t('loginInfo.cancelAccount')}
-        touchableHighlightProps={{
-          underlayColor: theme.text.contrast,
-        }}
-        type="outlined"
-      />
-    </Content>
+        <Button
+          color="danger"
+          onPress={() => {
+            alertDialog.open({
+              title: t('loginInfo.cancelAccount'),
+              body: t('loginInfo.cancelAccountDescription'),
+              closeOnTouchOutside: false,
+              actions: [
+                <Button
+                  color="light"
+                  key="button-light"
+                  onPress={() => alertDialog.close()}
+                  styles={{
+                    container: css`
+                      height: 48px;
+                    `,
+                  }}
+                  text={t('common.cancel')}
+                />,
+                <Button
+                  color="danger"
+                  key="button-danger"
+                  // loading={isWithdrawUserInFlight}
+                  onPress={handleWithdrawUser}
+                  styles={{
+                    container: css`
+                      height: 48px;
+                    `,
+                  }}
+                  text={t('common.confirm')}
+                />,
+              ],
+            });
+          }}
+          style={css`
+            margin-bottom: ${bottom + 'px'};
+          `}
+          styles={{
+            container: css`
+              height: 48px;
+            `,
+            text: css`
+              font-family: Pretendard-Bold;
+              font-size: 16px;
+            `,
+          }}
+          text={t('loginInfo.cancelAccount')}
+          touchableHighlightProps={{
+            underlayColor: theme.text.contrast,
+          }}
+          type="outlined"
+        />
+      </Container>
+    </ErrorBoundary>
   );
 }

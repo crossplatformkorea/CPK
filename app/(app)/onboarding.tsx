@@ -30,6 +30,7 @@ import {ImageInsertArgs} from '../../src/types';
 import FallbackComponent from '../../src/components/uis/FallbackComponent';
 import {showAlert} from '../../src/utils/alert';
 import {RectButton} from 'react-native-gesture-handler';
+import ErrorBoundary from 'react-native-error-boundary';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -191,7 +192,7 @@ export default function Onboarding(): JSX.Element {
   }
 
   return (
-    <Container>
+    <ErrorBoundary FallbackComponent={FallbackComponent}>
       <Stack.Screen
         options={{
           title: t('onboarding.title'),
@@ -214,395 +215,354 @@ export default function Onboarding(): JSX.Element {
           ),
         }}
       />
-
-      <KeyboardAvoidingView
-        behavior={Platform.select({ios: 'padding', default: undefined})}
-        keyboardVerticalOffset={80}
-        style={[
-          css`
-            background-color: ${theme.bg.basic};
-            flex: 1;
-            align-self: stretch;
-          `,
-        ]}
-      >
-        <CustomScrollView bounces={false}>
-          <View>
-            <SectionHeaderGradient
-              colors={[theme.brand, theme.bg.basic]}
-              style={css`
-                padding: 24px 24px 36px 24px;
-                text-align: center;
-                gap: 6px;
-              `}
-            >
-              <Text
+      <Container>
+        <KeyboardAvoidingView
+          behavior={Platform.select({ios: 'padding', default: undefined})}
+          keyboardVerticalOffset={80}
+          style={[
+            css`
+              background-color: ${theme.bg.basic};
+              flex: 1;
+              align-self: stretch;
+            `,
+          ]}
+        >
+          <CustomScrollView bounces={false}>
+            <View>
+              <SectionHeaderGradient
+                colors={[theme.brand, theme.bg.basic]}
                 style={css`
-                  font-size: 20px;
-                  font-family: Pretendard-Bold;
-                  color: ${theme.text.basic};
-                  padding-bottom: 4px;
-                `}
-              >
-                {t('onboarding.sectionTitle')}
-              </Text>
-              <Text
-                style={css`
-                  font-size: 16px;
-                  font-family: Pretendard-Bold;
-                  color: ${theme.text.label};
-                  opacity: 0.8;
-                  padding-bottom: 4px;
+                  padding: 24px 24px 36px 24px;
                   text-align: center;
+                  gap: 6px;
                 `}
               >
-                {t('onboarding.sectionDescription')}
-              </Text>
-            </SectionHeaderGradient>
-            <UserImageView>
-              <ProfileImageInput
-                imageUri={profileImg}
-                onChangeImageUri={setProfileImg}
-                onDeleteImageUri={() => setProfileImg(undefined)}
-                style={css`
-                  margin-bottom: 12px;
-                `}
+                <Text
+                  style={css`
+                    font-size: 20px;
+                    font-family: Pretendard-Bold;
+                    color: ${theme.text.basic};
+                    padding-bottom: 4px;
+                  `}
+                >
+                  {t('onboarding.sectionTitle')}
+                </Text>
+                <Text
+                  style={css`
+                    font-size: 16px;
+                    font-family: Pretendard-Bold;
+                    color: ${theme.text.label};
+                    opacity: 0.8;
+                    padding-bottom: 4px;
+                    text-align: center;
+                  `}
+                >
+                  {t('onboarding.sectionDescription')}
+                </Text>
+              </SectionHeaderGradient>
+              <UserImageView>
+                <ProfileImageInput
+                  imageUri={profileImg}
+                  onChangeImageUri={setProfileImg}
+                  onDeleteImageUri={() => setProfileImg(undefined)}
+                  style={css`
+                    margin-bottom: 12px;
+                  `}
+                />
+              </UserImageView>
+            </View>
+            <Content>
+              <Controller
+                control={control}
+                name="display_name"
+                render={({field: {onChange, value}}) => (
+                  <EditText
+                    required
+                    styles={{
+                      label: css`
+                        font-size: 14px;
+                      `,
+                      labelContainer: css`
+                        margin-bottom: 8px;
+                      `,
+                    }}
+                    colors={{focused: theme.role.primary}}
+                    label={t('onboarding.displayName')}
+                    onChangeText={onChange}
+                    placeholder={t('onboarding.displayNamePlaceholder')}
+                    value={value}
+                    decoration="boxed"
+                    error={
+                      displayNameError
+                        ? displayNameError
+                        : errors.display_name
+                          ? t('error.displayNameInvalid')
+                          : ''
+                    }
+                  />
+                )}
+                rules={{required: true, validate: (value) => !!value}}
               />
-            </UserImageView>
-          </View>
-          <Content>
-            <Controller
-              control={control}
-              name="display_name"
-              render={({field: {onChange, value}}) => (
-                <EditText
-                  required
-                  styles={{
-                    label: css`
-                      font-size: 14px;
-                    `,
-                    labelContainer: css`
-                      margin-bottom: 8px;
-                    `,
-                  }}
-                  colors={{focused: theme.role.primary}}
-                  label={t('onboarding.displayName')}
-                  onChangeText={onChange}
-                  placeholder={t('onboarding.displayNamePlaceholder')}
-                  value={value}
-                  decoration="boxed"
-                  error={
-                    displayNameError
-                      ? displayNameError
-                      : errors.display_name
-                        ? t('error.displayNameInvalid')
+              <Controller
+                control={control}
+                name="github_id"
+                render={({field: {onChange, value}}) => (
+                  <EditText
+                    required
+                    styles={{
+                      label: css`
+                        font-size: 14px;
+                      `,
+                      labelContainer: css`
+                        margin-bottom: 8px;
+                      `,
+                    }}
+                    colors={{focused: theme.role.primary}}
+                    label={t('onboarding.githubId')}
+                    onChangeText={onChange}
+                    placeholder={t('onboarding.githubIdPlaceholder')}
+                    value={value}
+                    decoration="boxed"
+                    error={errors.github_id ? errors.github_id.message : ''}
+                  />
+                )}
+                rules={{validate: (value) => !!value}}
+              />
+              <Controller
+                control={control}
+                name="affiliation"
+                render={({field: {onChange, value}}) => (
+                  <EditText
+                    required
+                    styles={{
+                      label: css`
+                        font-size: 14px;
+                      `,
+                      labelContainer: css`
+                        margin-bottom: 8px;
+                      `,
+                    }}
+                    colors={{focused: theme.role.primary}}
+                    label={t('onboarding.affiliation')}
+                    onChangeText={onChange}
+                    placeholder={t('onboarding.affiliationPlaceholder')}
+                    value={value}
+                    decoration="boxed"
+                    error={errors.affiliation ? errors.affiliation.message : ''}
+                  />
+                )}
+                rules={{validate: (value) => !!value}}
+              />
+              <Controller
+                control={control}
+                name="meetup_id"
+                render={({field: {onChange, value}}) => (
+                  <EditText
+                    styles={{
+                      label: css`
+                        font-size: 14px;
+                      `,
+                      labelContainer: css`
+                        margin-bottom: 8px;
+                      `,
+                    }}
+                    colors={{focused: theme.role.primary}}
+                    label={t('onboarding.meetupId')}
+                    onChangeText={onChange}
+                    placeholder={t('onboarding.meetupIdPlaceholder')}
+                    value={value}
+                    decoration="boxed"
+                    error={errors.meetup_id ? errors.meetup_id.message : ''}
+                  />
+                )}
+                rules={{validate: (value) => !!value}}
+              />
+              <Controller
+                control={control}
+                name="introduction"
+                render={({field: {onChange, value}}) => (
+                  <EditText
+                    styles={{
+                      label: css`
+                        font-size: 14px;
+                      `,
+                      labelContainer: css`
+                        margin-bottom: 8px;
+                      `,
+                      input: css`
+                        min-height: 120px;
+                      `,
+                    }}
+                    multiline
+                    colors={{focused: theme.role.primary}}
+                    label={t('onboarding.introduction')}
+                    onChangeText={onChange}
+                    placeholder={t('onboarding.introductionPlaceholder')}
+                    value={value}
+                    decoration="boxed"
+                    error={
+                      errors.introduction ? errors.introduction.message : ''
+                    }
+                  />
+                )}
+                rules={{validate: (value) => !!value}}
+              />
+              <Controller
+                control={control}
+                name="desired_connection"
+                render={({field: {onChange, value}}) => (
+                  <EditText
+                    styles={{
+                      label: css`
+                        font-size: 14px;
+                      `,
+                      labelContainer: css`
+                        margin-bottom: 8px;
+                      `,
+                      input: css`
+                        min-height: 120px;
+                      `,
+                    }}
+                    multiline
+                    colors={{focused: theme.role.primary}}
+                    label={t('onboarding.desiredConnection')}
+                    onChangeText={onChange}
+                    placeholder={t('onboarding.desiredConnectionPlaceholder')}
+                    value={value}
+                    decoration="boxed"
+                    error={
+                      errors.desired_connection
+                        ? errors.desired_connection.message
                         : ''
-                  }
-                />
-              )}
-              rules={{required: true, validate: (value) => !!value}}
-            />
-            <Controller
-              control={control}
-              name="github_id"
-              render={({field: {onChange, value}}) => (
-                <EditText
-                  required
-                  styles={{
-                    label: css`
-                      font-size: 14px;
-                    `,
-                    labelContainer: css`
-                      margin-bottom: 8px;
-                    `,
-                  }}
-                  colors={{focused: theme.role.primary}}
-                  label={t('onboarding.githubId')}
-                  onChangeText={onChange}
-                  placeholder={t('onboarding.githubIdPlaceholder')}
-                  value={value}
-                  decoration="boxed"
-                  error={errors.github_id ? errors.github_id.message : ''}
-                />
-              )}
-              rules={{validate: (value) => !!value}}
-            />
-            <Controller
-              control={control}
-              name="affiliation"
-              render={({field: {onChange, value}}) => (
-                <EditText
-                  required
-                  styles={{
-                    label: css`
-                      font-size: 14px;
-                    `,
-                    labelContainer: css`
-                      margin-bottom: 8px;
-                    `,
-                  }}
-                  colors={{focused: theme.role.primary}}
-                  label={t('onboarding.affiliation')}
-                  onChangeText={onChange}
-                  placeholder={t('onboarding.affiliationPlaceholder')}
-                  value={value}
-                  decoration="boxed"
-                  error={errors.affiliation ? errors.affiliation.message : ''}
-                />
-              )}
-              rules={{validate: (value) => !!value}}
-            />
-            <Controller
-              control={control}
-              name="meetup_id"
-              render={({field: {onChange, value}}) => (
-                <EditText
-                  styles={{
-                    label: css`
-                      font-size: 14px;
-                    `,
-                    labelContainer: css`
-                      margin-bottom: 8px;
-                    `,
-                  }}
-                  colors={{focused: theme.role.primary}}
-                  label={t('onboarding.meetupId')}
-                  onChangeText={onChange}
-                  placeholder={t('onboarding.meetupIdPlaceholder')}
-                  value={value}
-                  decoration="boxed"
-                  error={errors.meetup_id ? errors.meetup_id.message : ''}
-                />
-              )}
-              rules={{validate: (value) => !!value}}
-            />
-            <Controller
-              control={control}
-              name="introduction"
-              render={({field: {onChange, value}}) => (
-                <EditText
-                  styles={{
-                    label: css`
-                      font-size: 14px;
-                    `,
-                    labelContainer: css`
-                      margin-bottom: 8px;
-                    `,
-                    input: css`
-                      min-height: 120px;
-                    `,
-                  }}
-                  multiline
-                  colors={{focused: theme.role.primary}}
-                  label={t('onboarding.introduction')}
-                  onChangeText={onChange}
-                  placeholder={t('onboarding.introductionPlaceholder')}
-                  value={value}
-                  decoration="boxed"
-                  error={errors.introduction ? errors.introduction.message : ''}
-                />
-              )}
-              rules={{validate: (value) => !!value}}
-            />
-            <Controller
-              control={control}
-              name="desired_connection"
-              render={({field: {onChange, value}}) => (
-                <EditText
-                  styles={{
-                    label: css`
-                      font-size: 14px;
-                    `,
-                    labelContainer: css`
-                      margin-bottom: 8px;
-                    `,
-                    input: css`
-                      min-height: 120px;
-                    `,
-                  }}
-                  multiline
-                  colors={{focused: theme.role.primary}}
-                  label={t('onboarding.desiredConnection')}
-                  onChangeText={onChange}
-                  placeholder={t('onboarding.desiredConnectionPlaceholder')}
-                  value={value}
-                  decoration="boxed"
-                  error={
-                    errors.desired_connection
-                      ? errors.desired_connection.message
-                      : ''
-                  }
-                />
-              )}
-              rules={{validate: (value) => !!value}}
-            />
-            <Controller
-              control={control}
-              name="motivation_for_event_participation"
-              render={({field: {onChange, value}}) => (
-                <EditText
-                  styles={{
-                    label: css`
-                      font-size: 14px;
-                    `,
-                    labelContainer: css`
-                      margin-bottom: 8px;
-                    `,
-                    input: css`
-                      min-height: 120px;
-                    `,
-                  }}
-                  multiline
-                  colors={{focused: theme.role.primary}}
-                  label={t('onboarding.motivationForEventParticipation')}
-                  onChangeText={onChange}
-                  placeholder={t(
-                    'onboarding.motivationForEventParticipationPlaceholder',
-                  )}
-                  value={value}
-                  decoration="boxed"
-                  error={
-                    errors.motivation_for_event_participation
-                      ? errors.motivation_for_event_participation.message
-                      : ''
-                  }
-                />
-              )}
-              rules={{validate: (value) => !!value}}
-            />
-            <Controller
-              control={control}
-              name="future_expectations"
-              render={({field: {onChange, value}}) => (
-                <EditText
-                  styles={{
-                    label: css`
-                      font-size: 14px;
-                    `,
-                    labelContainer: css`
-                      margin-bottom: 8px;
-                    `,
-                    input: css`
-                      min-height: 120px;
-                    `,
-                  }}
-                  multiline
-                  colors={{focused: theme.role.primary}}
-                  label={t('onboarding.futureExpectations')}
-                  onChangeText={onChange}
-                  placeholder={t('onboarding.futureExpectationsPlaceholder')}
-                  value={value}
-                  decoration="boxed"
-                  error={
-                    errors.future_expectations
-                      ? errors.future_expectations.message
-                      : ''
-                  }
-                />
-              )}
-              rules={{validate: (value) => !!value}}
-            />
+                    }
+                  />
+                )}
+                rules={{validate: (value) => !!value}}
+              />
+              <Controller
+                control={control}
+                name="motivation_for_event_participation"
+                render={({field: {onChange, value}}) => (
+                  <EditText
+                    styles={{
+                      label: css`
+                        font-size: 14px;
+                      `,
+                      labelContainer: css`
+                        margin-bottom: 8px;
+                      `,
+                      input: css`
+                        min-height: 120px;
+                      `,
+                    }}
+                    multiline
+                    colors={{focused: theme.role.primary}}
+                    label={t('onboarding.motivationForEventParticipation')}
+                    onChangeText={onChange}
+                    placeholder={t(
+                      'onboarding.motivationForEventParticipationPlaceholder',
+                    )}
+                    value={value}
+                    decoration="boxed"
+                    error={
+                      errors.motivation_for_event_participation
+                        ? errors.motivation_for_event_participation.message
+                        : ''
+                    }
+                  />
+                )}
+                rules={{validate: (value) => !!value}}
+              />
+              <Controller
+                control={control}
+                name="future_expectations"
+                render={({field: {onChange, value}}) => (
+                  <EditText
+                    styles={{
+                      label: css`
+                        font-size: 14px;
+                      `,
+                      labelContainer: css`
+                        margin-bottom: 8px;
+                      `,
+                      input: css`
+                        min-height: 120px;
+                      `,
+                    }}
+                    multiline
+                    colors={{focused: theme.role.primary}}
+                    label={t('onboarding.futureExpectations')}
+                    onChangeText={onChange}
+                    placeholder={t('onboarding.futureExpectationsPlaceholder')}
+                    value={value}
+                    decoration="boxed"
+                    error={
+                      errors.future_expectations
+                        ? errors.future_expectations.message
+                        : ''
+                    }
+                  />
+                )}
+                rules={{validate: (value) => !!value}}
+              />
 
-            {/* Tags */}
-            <Controller
-              control={control}
-              name="tags"
-              render={() => (
-                <>
-                  <View
-                    style={css`
-                      flex-direction: row;
-                    `}
-                  >
-                    <EditText
-                      decoration="boxed"
-                      editable={!isSubmitting}
-                      label={t('onboarding.yourTags')}
-                      onChangeText={(text) => {
-                        setTag(
-                          text.length > 12
-                            ? text.trim().slice(0, 20)
-                            : text.trim(),
-                        );
-                      }}
-                      onSubmitEditing={handleAddTag}
-                      placeholder={t('onboarding.yourTagsPlaceholder')}
-                      style={css`
-                        flex: 1;
-                      `}
-                      styles={{
-                        container: css`
-                          border-radius: 4px;
-                        `,
-                      }}
-                      textInputProps={{
-                        returnKeyLabel: t('common.add'),
-                        returnKeyType: 'done',
-                      }}
-                      value={tag}
-                    />
+              {/* Tags */}
+              <Controller
+                control={control}
+                name="tags"
+                render={() => (
+                  <>
                     <View
                       style={css`
                         flex-direction: row;
-                        justify-content: center;
-                        align-items: center;
                       `}
                     >
-                      <CustomPressable
-                        delayHoverIn={delayPressIn}
-                        disabled={isSubmitting}
-                        onPress={handleAddTag}
+                      <EditText
+                        decoration="boxed"
+                        editable={!isSubmitting}
+                        label={t('onboarding.yourTags')}
+                        onChangeText={(text) => {
+                          setTag(
+                            text.length > 12
+                              ? text.trim().slice(0, 20)
+                              : text.trim(),
+                          );
+                        }}
+                        onSubmitEditing={handleAddTag}
+                        placeholder={t('onboarding.yourTagsPlaceholder')}
                         style={css`
-                          margin-top: 32px;
-                          margin-left: 12px;
-                          border-radius: 48px;
+                          flex: 1;
                         `}
-                      >
-                        <Icon
-                          name="PlusCircle"
-                          size={20}
-                          style={css`
-                            color: ${theme.text.placeholder};
-                          `}
-                        />
-                      </CustomPressable>
-                    </View>
-                  </View>
-                  <View
-                    style={css`
-                      flex-direction: row;
-                      flex-wrap: wrap;
-                      gap: 8px;
-                      margin-bottom: 16px;
-                    `}
-                  >
-                    {tags.map((tag, index) => (
+                        styles={{
+                          container: css`
+                            border-radius: 4px;
+                          `,
+                        }}
+                        textInputProps={{
+                          returnKeyLabel: t('common.add'),
+                          returnKeyType: 'done',
+                        }}
+                        value={tag}
+                      />
                       <View
-                        key={index}
                         style={css`
-                          background-color: ${theme.bg.paper};
-                          padding: 8px;
-                          border-radius: 4px;
                           flex-direction: row;
+                          justify-content: center;
                           align-items: center;
                         `}
                       >
-                        <Text
-                          style={css`
-                            color: ${theme.text.basic};
-                          `}
-                        >
-                          {tag}
-                        </Text>
                         <CustomPressable
                           delayHoverIn={delayPressIn}
-                          onPress={() => setTags(tags.filter((t) => t !== tag))}
+                          disabled={isSubmitting}
+                          onPress={handleAddTag}
                           style={css`
-                            margin-left: 8px;
+                            margin-top: 32px;
+                            margin-left: 12px;
+                            border-radius: 48px;
                           `}
                         >
                           <Icon
-                            name="XCircle"
+                            name="PlusCircle"
                             size={20}
                             style={css`
                               color: ${theme.text.placeholder};
@@ -610,14 +570,60 @@ export default function Onboarding(): JSX.Element {
                           />
                         </CustomPressable>
                       </View>
-                    ))}
-                  </View>
-                </>
-              )}
-            />
-          </Content>
-        </CustomScrollView>
-      </KeyboardAvoidingView>
-    </Container>
+                    </View>
+                    <View
+                      style={css`
+                        flex-direction: row;
+                        flex-wrap: wrap;
+                        gap: 8px;
+                        margin-bottom: 16px;
+                      `}
+                    >
+                      {tags.map((tag, index) => (
+                        <View
+                          key={index}
+                          style={css`
+                            background-color: ${theme.bg.paper};
+                            padding: 8px;
+                            border-radius: 4px;
+                            flex-direction: row;
+                            align-items: center;
+                          `}
+                        >
+                          <Text
+                            style={css`
+                              color: ${theme.text.basic};
+                            `}
+                          >
+                            {tag}
+                          </Text>
+                          <CustomPressable
+                            delayHoverIn={delayPressIn}
+                            onPress={() =>
+                              setTags(tags.filter((t) => t !== tag))
+                            }
+                            style={css`
+                              margin-left: 8px;
+                            `}
+                          >
+                            <Icon
+                              name="XCircle"
+                              size={20}
+                              style={css`
+                                color: ${theme.text.placeholder};
+                              `}
+                            />
+                          </CustomPressable>
+                        </View>
+                      ))}
+                    </View>
+                  </>
+                )}
+              />
+            </Content>
+          </CustomScrollView>
+        </KeyboardAvoidingView>
+      </Container>
+    </ErrorBoundary>
   );
 }

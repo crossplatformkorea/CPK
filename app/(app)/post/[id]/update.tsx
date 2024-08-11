@@ -26,6 +26,8 @@ import {MAX_IMAGES_UPLOAD_LENGTH} from '../../../../src/utils/constants';
 import CustomScrollView from '../../../../src/components/uis/CustomScrollView';
 import {filterUploadableAssets} from '../../../../src/utils/common';
 import {RectButton} from 'react-native-gesture-handler';
+import ErrorBoundary from 'react-native-error-boundary';
+import FallbackComponent from '../../../../src/components/uis/FallbackComponent';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -283,7 +285,7 @@ export default function PostUpdate(): JSX.Element {
   })();
 
   return (
-    <Container>
+    <ErrorBoundary FallbackComponent={FallbackComponent}>
       <Stack.Screen
         options={{
           title: post?.title || t('common.post'),
@@ -306,7 +308,7 @@ export default function PostUpdate(): JSX.Element {
           ),
         }}
       />
-      {content}
-    </Container>
+      <Container>{content}</Container>
+    </ErrorBoundary>
   );
 }

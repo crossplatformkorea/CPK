@@ -29,6 +29,8 @@ import {
   isYoutubeURL,
 } from '../../../../src/utils/urlParser';
 import {RectButton} from 'react-native-gesture-handler';
+import ErrorBoundary from 'react-native-error-boundary';
+import FallbackComponent from '../../../../src/components/uis/FallbackComponent';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -309,7 +311,7 @@ export default function PostDetails(): JSX.Element {
   })();
 
   return (
-    <Container>
+    <ErrorBoundary FallbackComponent={FallbackComponent}>
       <Stack.Screen
         options={{
           title: post?.title || t('common.post'),
@@ -337,7 +339,7 @@ export default function PostDetails(): JSX.Element {
             ) : null,
         }}
       />
-      {content}
-    </Container>
+      <Container>{content}</Container>
+    </ErrorBoundary>
   );
 }
