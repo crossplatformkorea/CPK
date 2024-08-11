@@ -8,7 +8,6 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   View,
 } from 'react-native';
 import ErrorFallback from '../../../../src/components/uis/FallbackComponent';
@@ -26,6 +25,7 @@ import MultiUploadImageInput from '../../../../src/components/uis/MultiUploadIma
 import {MAX_IMAGES_UPLOAD_LENGTH} from '../../../../src/utils/constants';
 import CustomScrollView from '../../../../src/components/uis/CustomScrollView';
 import {filterUploadableAssets} from '../../../../src/utils/common';
+import {RectButton} from 'react-native-gesture-handler';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -288,8 +288,8 @@ export default function PostUpdate(): JSX.Element {
         options={{
           title: post?.title || t('common.post'),
           headerRight: () => (
-            <Pressable
-              onPress={handleSubmit(handleUpdatePost)}
+            <RectButton
+              onPress={() => handleSubmit(handleUpdatePost)}
               hitSlop={{
                 bottom: 8,
                 left: 8,
@@ -302,7 +302,7 @@ export default function PostUpdate(): JSX.Element {
               ) : (
                 <Typography.Body3>{t('common.update')}</Typography.Body3>
               )}
-            </Pressable>
+            </RectButton>
           ),
         }}
       />

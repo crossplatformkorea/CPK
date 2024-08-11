@@ -8,7 +8,6 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   Text,
   View,
 } from 'react-native';
@@ -30,6 +29,7 @@ import {
 import FallbackComponent from '../../../src/components/uis/FallbackComponent';
 import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
 import {showAlert} from '../../../src/utils/alert';
+import {RectButton} from 'react-native-gesture-handler';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -193,8 +193,8 @@ export default function ProfileUpdate(): JSX.Element {
         options={{
           title: t('profileUpdate.title'),
           headerRight: () => (
-            <Pressable
-              onPress={handleSubmit(handleProfileUpdate)}
+            <RectButton
+              onPress={() => handleSubmit(handleProfileUpdate)}
               hitSlop={{
                 bottom: 8,
                 left: 8,
@@ -207,7 +207,7 @@ export default function ProfileUpdate(): JSX.Element {
               ) : (
                 <Typography.Body3>{t('common.done')}</Typography.Body3>
               )}
-            </Pressable>
+            </RectButton>
           ),
         }}
       />

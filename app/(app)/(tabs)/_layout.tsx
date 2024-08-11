@@ -1,30 +1,27 @@
-import {Pressable, View} from 'react-native';
+import {View} from 'react-native';
 import {Icon, useDooboo} from 'dooboo-ui';
-import {Link, Redirect, Tabs, useRouter} from 'expo-router';
+import {Redirect, Tabs, useRouter} from 'expo-router';
 import {useRecoilState} from 'recoil';
 
 import {authRecoilState} from '../../../src/recoil/atoms';
 import {t} from '../../../src/STRINGS';
 import {useEffect, useRef} from 'react';
 import * as Notifications from 'expo-notifications';
+import {RectButton} from 'react-native-gesture-handler';
 
 function SettingsMenu(): JSX.Element {
   const {theme} = useDooboo();
   const {push} = useRouter();
 
   return (
-    <Link asChild href="/settings">
-      <Pressable onPress={() => push('/settings')}>
-        {({pressed}) => (
-          <Icon
-            color={theme.text.basic}
-            name="List"
-            size={22}
-            style={{marginRight: 15, opacity: pressed ? 0.5 : 1}}
-          />
-        )}
-      </Pressable>
-    </Link>
+    <RectButton onPress={() => push('/settings')}>
+      <Icon
+        color={theme.text.basic}
+        name="List"
+        size={22}
+        style={{marginRight: 15}}
+      />
+    </RectButton>
   );
 }
 
