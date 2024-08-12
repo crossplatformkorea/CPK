@@ -32,10 +32,17 @@ type NestedKeys<T> = T extends object
     }[keyof T]
   : '';
 
-export const t = (param: NestedKeys<typeof en>, mapObj?: object): string => {
-  if (mapObj) {
-    return i18n.t(param, mapObj);
-  }
+export const t = (
+  param: NestedKeys<typeof en>,
+  mapObj?: object,
+  locale?: string,
+): string => {
+  const currentLocale = i18n.locale;
 
-  return i18n.t(param);
+  if (locale) i18n.locale = locale;
+
+  const translation = i18n.t(param, mapObj);
+  i18n.locale = currentLocale;
+
+  return translation;
 };

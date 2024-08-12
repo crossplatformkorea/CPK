@@ -15,7 +15,7 @@ import {useRecoilState} from 'recoil';
 
 import RootProvider from '../src/providers';
 import {authRecoilState, reportModalRecoilState} from '../src/recoil/atoms';
-import {t} from '../src/STRINGS';
+import {getLocale, t} from '../src/STRINGS';
 import {supabase} from '../src/supabase';
 import {
   AsyncStorageKey,
@@ -84,6 +84,7 @@ function App(): JSX.Element | null {
               id: session.user.id,
               // AuthType
               provider: session.user.app_metadata.provider as any,
+              locale: getLocale(),
               provider_id: session.user.app_metadata.provider_id,
               last_sign_in_at: session.user.app_metadata.last_sign_in_at,
               full_name: session.user.user_metadata.full_name,
