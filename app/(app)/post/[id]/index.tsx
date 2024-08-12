@@ -130,6 +130,15 @@ export default function PostDetails(): JSX.Element {
     push,
   ]);
 
+  const handlePressUser = useCallback(() => {
+    if (post?.user.display_name) {
+      push({
+        pathname: `/[displayName]`,
+        params: {displayName: `@${post.user.display_name}`},
+      });
+    }
+  }, [post?.user.display_name, push]);
+
   const handleToggleLike = async () => {
     if (!authId || !post) return;
 
@@ -198,7 +207,9 @@ export default function PostDetails(): JSX.Element {
                   )}`}
                 </Typography.Body4>
               </View>
-              <UserListItem user={post.user} />
+              <Pressable onPress={handlePressUser}>
+                <UserListItem user={post.user} />
+              </Pressable>
               {post?.url ? (
                 <Pressable onPress={() => openURL(post?.url || '')}>
                   <View

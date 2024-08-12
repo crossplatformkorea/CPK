@@ -4,7 +4,7 @@ import {ImagePickerAsset} from 'expo-image-picker';
 import {getDeviceTypeSync} from 'react-native-device-info';
 import {EMAIL_ADDRESS} from './constants';
 import {t} from '../STRINGS';
-import { showAlert } from './alert';
+import {showAlert} from './alert';
 
 export const openURL = async (url: string): Promise<void> => {
   const supported = await Linking.canOpenURL(url);
@@ -110,3 +110,11 @@ export const isDesktopDevice = (): boolean =>
   Platform.OS === 'web' ||
   Platform.OS === 'macos' ||
   Platform.OS === 'windows';
+
+export function removeLeadingAt(str: string): string {
+  if (str.startsWith('@')) {
+    return str.substring(1);
+  }
+
+  return str;
+}

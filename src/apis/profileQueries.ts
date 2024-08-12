@@ -42,6 +42,51 @@ export const fetchUserProfile = async (authId: string) => {
   return {profile, userTags};
 };
 
+export const fetchUserWithDisplayName = async (displayName: string) => {
+  console.log('fetchUserWithDisplayName', displayName);
+  const {data: profile, error: profileError} = await supabase
+    .from('users')
+    .select('*')
+    .eq('display_name', displayName)
+    .single();
+
+  if (profileError) {
+    if (__DEV__) {
+      console.error(profileError);
+    }
+    throw new Error(t('error.failedToFetchData'));
+  }
+
+  const {data: tagsData, error: tagsError} = await supabase
+    .from('_TagToUser')
+    .select('A')
+    .eq('B', profile.id);
+
+  if (tagsError) {
+    if (__DEV__) {
+      console.error(tagsError);
+    }
+    throw new Error(t('error.failedToFetchData'));
+  }
+
+  const tagIds = tagsData.map((tag) => tag.A);
+
+  const {data: tags, error: tagsFetchError} = await supabase
+    .from('tags')
+    .select('tag')
+    .in('id', tagIds);
+
+  if (tagsFetchError) {
+    if (__DEV__) {
+      console.error(tagsFetchError);
+    }
+  }
+
+  const userTags = tags?.map((tag) => tag.tag) || [];
+
+  return {profile, userTags};
+}
+
 export const fetchUpdateProfile = async ({
   args,
   authId,
