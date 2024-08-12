@@ -1,6 +1,7 @@
 import {supabase} from '../supabase';
 import {ImageInsertArgs, PostInsertArgs, PostWithJoins} from '../types';
 import {PAGE_SIZE} from '../utils/constants';
+import {sendNotificationsToAllUsers} from './notifications';
 
 const filterDeletedImageInPost = (post: PostWithJoins): PostWithJoins => {
   return {
@@ -230,6 +231,11 @@ export const fetchCreatePost = async (
 
     await Promise.all(imageInsertPromises);
   }
+
+  sendNotificationsToAllUsers({
+    title: post.title,
+    body: post.content,
+  });
 
   return data as unknown as PostWithJoins;
 };

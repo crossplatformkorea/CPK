@@ -1,6 +1,8 @@
+import {t} from '../STRINGS';
 import {supabase} from '../supabase';
 import {ImageInsertArgs, ReplyInsertArgs, ReplyWithJoins} from '../types';
 import {PAGE_SIZE} from '../utils/constants';
+import {sendNotificationsToPostUsers} from './notifications';
 
 const filterDeletedImageInReply = (reply: ReplyWithJoins): ReplyWithJoins => {
   return {
@@ -113,6 +115,27 @@ export const fetchCreateReply = async ({
     );
 
     await Promise.all(imageInsertPromises);
+  }
+
+  if (post_id) {
+    const {data: post, error: postError} = await supabase
+      .from('posts')
+      .select('title')
+      .eq('id', post_id)
+      .single();
+
+    if (postError) {
+      if (__DEV__) console.error('Error fetching post:', postError);
+    }
+
+    const title = post?.title || '';
+
+    sendNotificationsToPostUsers({
+      postId: post_id,
+      body: message,
+      title: title && t('common.newReplyOnTitle', {title}),
+      data: {replyId: reply.id, postId: post_id},
+    });
   }
 
   return filterDeletedImageInReply(reply as unknown as ReplyWithJoins);

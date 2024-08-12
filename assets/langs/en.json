@@ -7,6 +7,7 @@
   "common": {
     "add": "Add",
     "appErrorMessage": "Communication is not smooth.\nPlease check your network status.",
+    "bio": "Bio",
     "block": "Block",
     "blockUser": "Block {{user}}",
     "blockUserDesc": "If you block a user, you will not be able to access the user's content. Do you want to block this user?",
@@ -33,6 +34,7 @@
     "invalidUrl": "Invalid URL",
     "latest": "Latest",
     "leaveComment": "Leave a comment",
+    "newReplyOnTitle": "New reply on {{title}}",
     "noComment": "No comments",
     "notFound": "Not found",
     "notFoundData": "Data not found",
@@ -49,6 +51,7 @@
     "reportSuccess": "Thank you for reporting.",
     "requiredField": "Required field",
     "retry": "Retry",
+    "score": "Score",
     "selectFromGallery": "Select from gallery",
     "takeAPhoto": "Take a photo",
     "unblock": "Unblock",
@@ -60,20 +63,18 @@
     "viewsWithCount": {
       "one": "Views %{count}",
       "other": "Views %{count}"
-    },
-    "bio": "Bio",
-    "score": "Score"
+    }
   },
   "error": {
     "default": "Error occurred!",
     "displayNameExists": "The display name already exists",
     "displayNameInvalid": "Display name must be between 2 and 20 characters",
     "displayNameIsEmpty": "Please enter a display name",
+    "failedToFetchData": "Failed to fetch data",
     "failedToGetPushToken": "Failed to get push token for push notification!",
     "mustUsePhysicalDeviceForSubject": "Must use physical device for {{subject}}",
     "projectIdNotFound": "Project ID not found",
-    "unableToOpenEmailClient": "Unable to open email client",
-    "failedToFetchData": "Failed to fetch data"
+    "unableToOpenEmailClient": "Unable to open email client"
   },
   "loginInfo": {
     "cancel": "Cancel",
