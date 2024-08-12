@@ -1,6 +1,5 @@
 import styled, {css} from '@emotion/native';
 import {Fab, LoadingIndicator} from 'dooboo-ui';
-import StatusBarBrightness from 'dooboo-ui/uis/StatusbarBrightness';
 import {FlashList} from '@shopify/flash-list';
 import {useRouter} from 'expo-router';
 import {PostWithJoins} from '../../../src/types';
@@ -129,7 +128,6 @@ export default function Posts(): JSX.Element {
   return (
     <ErrorBoundary FallbackComponent={FallbackComponent}>
       <Container>
-        <StatusBarBrightness />
         {content}
         <Fab
           animationDuration={300}

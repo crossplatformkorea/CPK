@@ -1,7 +1,6 @@
 import {DevSettings, Platform} from 'react-native';
 import styled, {css} from '@emotion/native';
 import {Button, Typography, useDooboo} from 'dooboo-ui';
-import StatusBarBrightness from 'dooboo-ui/uis/StatusbarBrightness';
 import * as Updates from 'expo-updates';
 import {Image} from 'expo-image';
 import {IC_ICON} from '../../icons';
@@ -23,7 +22,6 @@ export default function FallbackComponent(): JSX.Element {
 
   return (
     <Container>
-      <StatusBarBrightness />
       <Image
         source={IC_ICON}
         style={css`

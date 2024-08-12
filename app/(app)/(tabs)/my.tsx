@@ -102,13 +102,13 @@ const TagText = styled.Text`
   font-size: 14px;
 `;
 
-export default function Profile(): JSX.Element {
+export default function My(): JSX.Element {
   const {user, tags} = useRecoilValue(authRecoilState);
   const {theme} = useDooboo();
 
   return (
     <ErrorBoundary FallbackComponent={FallbackComponent}>
-      <Stack.Screen options={{title: t('profile.title')}} />
+      <Stack.Screen options={{title: t('common.my')}} />
       <Container>
         <CustomScrollView bounces={false}>
           <ProfileHeader>

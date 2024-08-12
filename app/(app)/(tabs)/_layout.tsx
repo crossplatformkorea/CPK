@@ -9,6 +9,8 @@ import {useEffect, useRef} from 'react';
 import * as Notifications from 'expo-notifications';
 import {RectButton} from 'react-native-gesture-handler';
 import {css} from '@emotion/native';
+import {Image} from 'expo-image';
+import {IC_ICON} from '../../../src/icons';
 
 function SettingsMenu(): JSX.Element {
   const {theme} = useDooboo();
@@ -25,11 +27,7 @@ function SettingsMenu(): JSX.Element {
         margin-right: 4px;
       `}
     >
-      <Icon
-        color={theme.text.basic}
-        name="List"
-        size={22}
-      />
+      <Icon color={theme.text.basic} name="List" size={22} />
     </RectButton>
   );
 }
@@ -82,10 +80,29 @@ export default function TabLayout(): JSX.Element {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="my"
         options={{
-          title: t('common.profile'),
-          tabBarIcon: ({color}) => <Icon color={color} name="User" size={24} />,
+          title: t('common.my'),
+          tabBarIcon: ({focused}) => (
+            <View
+              style={css`
+                width: 24px;
+                height: 24px;
+                border-radius: 12px;
+                background-color: ${theme.bg.paper};
+                overflow: hidden;
+              `}
+            >
+              <Image
+                source={user?.avatar_url ? {uri: user.avatar_url} : IC_ICON}
+                style={css`
+                  width: 24px;
+                  height: 24px;
+                  opacity: ${focused ? '1' : '0.5'};
+                `}
+              />
+            </View>
+          ),
           headerRight: () => <View>{SettingsMenu()}</View>,
         }}
       />
