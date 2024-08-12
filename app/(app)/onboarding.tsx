@@ -198,13 +198,21 @@ export default function Onboarding(): JSX.Element {
           title: t('onboarding.title'),
           headerRight: () => (
             <RectButton
-              onPress={() => handleSubmit(handleFinishOnboarding)}
+              // @ts-ignore
+              onPress={handleSubmit(handleFinishOnboarding)}
               hitSlop={{
                 bottom: 8,
                 left: 8,
                 right: 8,
                 top: 8,
               }}
+              style={css`
+                align-items: center;
+                justify-content: center;
+                padding: 6px;
+                margin-right: -4px;
+                border-radius: 99px;
+              `}
             >
               {isSubmitting ? (
                 <ActivityIndicator size="small" color={theme.text.label} />

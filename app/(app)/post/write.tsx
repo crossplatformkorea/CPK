@@ -115,7 +115,8 @@ export default function PostWrite(): JSX.Element {
           title: t('post.write.write'),
           headerRight: () => (
             <RectButton
-              onPress={() => handleSubmit(handleWritePost)}
+              // @ts-ignore
+              onPress={handleSubmit(handleWritePost)}
               style={css`
                 align-items: center;
                 justify-content: center;

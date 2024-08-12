@@ -546,7 +546,8 @@ export default function ProfileUpdate(): JSX.Element {
           title: t('profileUpdate.title'),
           headerRight: () => (
             <RectButton
-              onPress={() => handleSubmit(handleProfileUpdate)}
+              // @ts-ignore
+              onPress={handleSubmit(handleProfileUpdate)}
               hitSlop={{bottom: 8, left: 8, right: 8, top: 8}}
               style={css`
                 align-items: center;

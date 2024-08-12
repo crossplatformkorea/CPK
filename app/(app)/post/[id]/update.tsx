@@ -291,7 +291,8 @@ export default function PostUpdate(): JSX.Element {
           title: post?.title || t('common.post'),
           headerRight: () => (
             <RectButton
-              onPress={() => handleSubmit(handleUpdatePost)}
+              // @ts-ignore
+              onPress={handleSubmit(handleUpdatePost)}
               hitSlop={{
                 bottom: 8,
                 left: 8,
