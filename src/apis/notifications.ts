@@ -93,7 +93,7 @@ export const sendNotificationsToPostUsers = async ({
   data?: Record<string, unknown>;
 }) => {
   // Function to fetch push tokens of the post author, likers, and commenters
-  async function getPostRelatedPushTokens() {
+  async function getPostRelatedUserIdsAndPushTokens() {
     // Fetch user_ids related to the post (author, likers, and commenters)
     const postDetails = await supabase
       .from('posts')
@@ -105,7 +105,7 @@ export const sendNotificationsToPostUsers = async ({
       if (__DEV__) {
         console.error('Error fetching post details:', postDetails.error);
       }
-      return [];
+      return {userIds: [], tokens: []};
     }
 
     // Collect user_ids of the post author, likers, and commenters
@@ -140,15 +140,18 @@ export const sendNotificationsToPostUsers = async ({
       if (__DEV__) {
         console.error('Error fetching push tokens:', error);
       }
-      return [];
+      return {userIds: Array.from(userIds), tokens: []};
     }
 
-    // Return an array of push tokens
-    return data.map((tokenRecord) => tokenRecord.token);
+    // Return both userIds and tokens
+    return {
+      userIds: Array.from(userIds),
+      tokens: data.map((tokenRecord) => tokenRecord.token),
+    };
   }
 
-  // Fetch push tokens related to the post
-  const tokens = await getPostRelatedPushTokens();
+  // Fetch userIds and push tokens related to the post
+  const {userIds, tokens} = await getPostRelatedUserIdsAndPushTokens();
 
   // If there are any tokens, send notifications
   if (tokens.length > 0) {
@@ -158,4 +161,7 @@ export const sendNotificationsToPostUsers = async ({
       data,
     });
   }
+
+  // Return the userIds
+  return userIds;
 };

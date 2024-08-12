@@ -1,6 +1,12 @@
 import {t} from '../STRINGS';
 import {supabase} from '../supabase';
-import {ImageInsertArgs, ReplyInsertArgs, ReplyWithJoins} from '../types';
+import {
+  ImageInsertArgs,
+  NotificationInsertArgs,
+  NotificationType,
+  ReplyInsertArgs,
+  ReplyWithJoins,
+} from '../types';
 import {PAGE_SIZE} from '../utils/constants';
 import {sendNotificationsToPostUsers} from './notifications';
 
@@ -106,6 +112,7 @@ export const fetchCreateReply = async ({
     throw new Error(replyError.message);
   }
 
+  // If images are provided, insert them
   if (imagesArg && imagesArg.length > 0) {
     const imageInsertPromises = imagesArg.map((image) =>
       supabase.from('images').insert({
@@ -117,10 +124,11 @@ export const fetchCreateReply = async ({
     await Promise.all(imageInsertPromises);
   }
 
+  // If post_id exists, fetch the post information and send notifications
   if (post_id) {
     const {data: post, error: postError} = await supabase
       .from('posts')
-      .select('title')
+      .select('title, user_id') // Fetch the title and post owner ID
       .eq('id', post_id)
       .single();
 
@@ -130,12 +138,36 @@ export const fetchCreateReply = async ({
 
     const title = post?.title || '';
 
-    sendNotificationsToPostUsers({
+    // Send notifications to other users following the post
+    const userIds = await sendNotificationsToPostUsers({
       postId: post_id,
       body: message,
       title: title && t('common.newReplyOnTitle', {title}),
       data: {replyId: reply.id, postId: post_id},
     });
+
+    if (userIds && userIds.length > 0) {
+      // Prepare the data for batch insert
+      const notificationsData = userIds
+        .filter((userId) => userId !== user_id) // Exclude the user who created the reply
+        .map(
+          (userId) =>
+            ({
+              src_user_id: user_id, // ID of the user who created the reply
+              user_id: userId, // ID of the user who will receive the notification
+              type: 'NewCommentInPost' as NotificationType,
+              post_id: post_id,
+              link: `/posts/${post_id}`,
+            }) as NotificationInsertArgs,
+        );
+
+      // Perform the batch insert
+      try {
+        await supabase.from('notifications').insert(notificationsData);
+      } catch (e) {
+        if (__DEV__) console.error('Error inserting notifications:', e);
+      }
+    }
   }
 
   return filterDeletedImageInReply(reply as unknown as ReplyWithJoins);

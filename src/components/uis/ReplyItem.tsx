@@ -15,6 +15,7 @@ import {useAppLogic} from '../../providers/AppLogicProvider';
 
 const Container = styled.View`
   padding: 14px 24px;
+  min-height: 128px;
 
   flex-direction: row;
   gap: 16px;

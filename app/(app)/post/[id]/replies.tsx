@@ -207,7 +207,7 @@ export default function Replies({
             }
             ListHeaderComponent={header}
             data={replies}
-            estimatedItemSize={400}
+            estimatedItemSize={128}
             // https://github.com/Shopify/flash-list/issues/730#issuecomment-1741385659
             keyExtractor={keyExtractor}
             onEndReached={loadMoreReplies}
