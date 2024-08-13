@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import styled from '@emotion/native';
 import {Stack, useLocalSearchParams} from 'expo-router';
-import {Icon, Typography, useDooboo} from 'dooboo-ui';
+import {Button, Icon, Typography, useDooboo} from 'dooboo-ui';
 import {css} from '@emotion/native';
 import {Pressable} from 'react-native';
 import ErrorBoundary from 'react-native-error-boundary';
@@ -13,6 +13,13 @@ import DoobooStats from '../src/components/fragments/DoobooStats';
 import {t} from '../src/STRINGS';
 import {fetchUserWithDisplayName} from '../src/apis/profileQueries';
 import CustomLoadingIndicator from '../src/components/uis/CustomLoadingIndicator';
+import {useRecoilValue} from 'recoil';
+import {authRecoilState} from '../src/recoil/atoms';
+import {
+  fetchFollowCounts,
+  fetchFollowUser,
+  fetchIsAFollowing,
+} from '../src/apis/followQueries';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -108,10 +115,34 @@ export default function DisplayName(): JSX.Element {
     displayName: string;
   }>();
   const {theme} = useDooboo();
+  const {authId} = useRecoilValue(authRecoilState);
   const [user, setUser] = useState<any>(null);
   const [tags, setTags] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const displayName = removeLeadingAt(displayNameWithLeading);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followingCount, setFollowingCount] = useState(0);
+
+  const followUser = async () => {
+    try {
+      if (!authId || !user?.id) return;
+
+      const result = await fetchFollowUser({
+        authId,
+        followingId: user.id,
+        follow: !isFollowing,
+      });
+
+      if (result) {
+        setIsFollowing((prev) => !prev);
+        setFollowingCount(
+          isFollowing ? followingCount - 1 : followingCount + 1,
+        );
+      }
+    } catch (err: any) {
+      if (__DEV__) console.error(err.message);
+    }
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -119,6 +150,21 @@ export default function DisplayName(): JSX.Element {
         const {profile, userTags} = await fetchUserWithDisplayName(displayName);
         setUser(profile);
         setTags(userTags);
+
+        // Check if the current user is following this profile
+        if (authId) {
+          if (profile.id !== authId) {
+            const isUserFollowing = await fetchIsAFollowing({
+              authId,
+              followingId: profile.id,
+            });
+
+            setIsFollowing(isUserFollowing);
+          }
+
+          const followingsData = await fetchFollowCounts(authId); // 팔로우 수를 가져오는 API
+          setFollowingCount(followingsData.followingCount);
+        }
       } catch (err: any) {
         throw new Error(err.message);
       } finally {
@@ -127,7 +173,7 @@ export default function DisplayName(): JSX.Element {
     }
 
     fetchData();
-  }, [displayName]);
+  }, [authId, displayName]);
 
   if (loading) {
     return (
@@ -156,6 +202,22 @@ export default function DisplayName(): JSX.Element {
             ) : null}
             {user?.introduction ? (
               <UserBio>{user?.introduction}</UserBio>
+            ) : null}
+            {authId && user?.id !== authId ? (
+              <Button
+                size="small"
+                borderRadius={30}
+                onPress={followUser}
+                color="secondary"
+                text={
+                  isFollowing
+                    ? `${followingCount} ${t('common.followings', {
+                        count: followingCount,
+                      })}`
+                    : `${t('common.follow')}`
+                }
+                type={isFollowing ? 'outlined' : 'solid'}
+              />
             ) : null}
           </ProfileHeader>
           <Content>
