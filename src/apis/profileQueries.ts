@@ -43,7 +43,6 @@ export const fetchUserProfile = async (authId: string) => {
 };
 
 export const fetchUserWithDisplayName = async (displayName: string) => {
-  console.log('fetchUserWithDisplayName', displayName);
   const {data: profile, error: profileError} = await supabase
     .from('users')
     .select('*')
