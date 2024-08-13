@@ -15,7 +15,11 @@ import {fetchUserWithDisplayName} from '../src/apis/profileQueries';
 import CustomLoadingIndicator from '../src/components/uis/CustomLoadingIndicator';
 import {useRecoilValue} from 'recoil';
 import {authRecoilState} from '../src/recoil/atoms';
-import {fetchFollowUser, fetchIsAFollowing} from '../src/apis/followQueries';
+import {
+  fetchFollowCounts,
+  fetchFollowUser,
+  fetchIsAFollowing,
+} from '../src/apis/followQueries';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -116,7 +120,8 @@ export default function DisplayName(): JSX.Element {
   const [tags, setTags] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const displayName = removeLeadingAt(displayNameWithLeading);
-  const [isFollowing, setIsFollowing] = useState<boolean>(false);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followingCount, setFollowingCount] = useState(0);
 
   const followUser = async () => {
     try {
@@ -130,6 +135,9 @@ export default function DisplayName(): JSX.Element {
 
       if (result) {
         setIsFollowing((prev) => !prev);
+        setFollowingCount(
+          isFollowing ? followingCount - 1 : followingCount + 1,
+        );
       }
     } catch (err: any) {
       if (__DEV__) console.error(err.message);
@@ -144,13 +152,18 @@ export default function DisplayName(): JSX.Element {
         setTags(userTags);
 
         // Check if the current user is following this profile
-        if (authId && profile.id !== authId) {
-          const isUserFollowing = await fetchIsAFollowing({
-            authId,
-            followingId: profile.id,
-          });
+        if (authId) {
+          if (profile.id !== authId) {
+            const isUserFollowing = await fetchIsAFollowing({
+              authId,
+              followingId: profile.id,
+            });
 
-          setIsFollowing(isUserFollowing);
+            setIsFollowing(isUserFollowing);
+          }
+
+          const followingsData = await fetchFollowCounts(authId); // 팔로우 수를 가져오는 API
+          setFollowingCount(followingsData.followingCount);
         }
       } catch (err: any) {
         throw new Error(err.message);
@@ -198,10 +211,10 @@ export default function DisplayName(): JSX.Element {
                 color="secondary"
                 text={
                   isFollowing
-                    ? t('common.followings', {
-                        count: 1,
-                      })
-                    : t('common.follow')
+                    ? `${followingCount} ${t('common.followings', {
+                        count: followingCount,
+                      })}`
+                    : `${t('common.follow')}`
                 }
                 type={isFollowing ? 'outlined' : 'solid'}
               />

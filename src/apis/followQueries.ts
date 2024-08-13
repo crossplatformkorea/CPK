@@ -240,3 +240,52 @@ export async function fetchFollowings({
     return false;
   }
 }
+
+export async function fetchFollowCounts(
+  userId: string,
+): Promise<{followingCount: number; followerCount: number}> {
+  if (!userId) {
+    throw new Error('ERR_NOT_AUTHORIZED');
+  }
+
+  try {
+    // Following count (user is following others)
+    const {count: followingCount, error: followingError} = await supabase
+      .from('follows')
+      .select('id', {count: 'exact'})
+      .eq('user_id', userId);
+
+    if (followingError) {
+      if (__DEV__) {
+        console.error(followingError.message);
+      }
+      throw new Error(followingError.message);
+    }
+
+    // Follower count (others are following user)
+    const {count: followerCount, error: followerError} = await supabase
+      .from('follows')
+      .select('id', {count: 'exact'})
+      .eq('following_id', userId);
+
+    if (followerError) {
+      if (__DEV__) {
+        console.error(followerError.message);
+      }
+      throw new Error(followerError.message);
+    }
+
+    return {
+      followingCount: followingCount || 0,
+      followerCount: followerCount || 0,
+    };
+  } catch (err: any) {
+    if (__DEV__) {
+      console.error(err);
+    }
+    return {
+      followingCount: 0,
+      followerCount: 0,
+    };
+  }
+}
