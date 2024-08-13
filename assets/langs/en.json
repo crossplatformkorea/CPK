@@ -7,6 +7,7 @@
   "common": {
     "add": "Add",
     "appErrorMessage": "Communication is not smooth.\nPlease check your network status.",
+    "appName": "Cross-Platform Korea",
     "bio": "Bio",
     "block": "Block",
     "blockUser": "Block {{user}}",

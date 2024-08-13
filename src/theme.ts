@@ -7,7 +7,7 @@ export const colors = {
 };
 
 export const light = {
-  brand: '#33333390',
+  brand: '#33333370',
   brandContrast: '#666',
   text: {
     placeholderContrast: '#909090',

@@ -7,6 +7,7 @@
   "common": {
     "add": "추가",
     "appErrorMessage": "통신이 원활하지 않습니다.\n네트워크 상태를 확인해주세요.",
+    "appName": "크로스플랫폼 코리아",
     "bio": "바이오",
     "block": "차단",
     "blockUser": "{{user}} 차단",

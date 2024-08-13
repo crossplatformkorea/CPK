@@ -1,5 +1,11 @@
 import {useCallback} from 'react';
-import {Image, InteractionManager, Platform, ScrollView} from 'react-native';
+import {
+  Image,
+  InteractionManager,
+  Platform,
+  ScrollView,
+  View,
+} from 'react-native';
 import styled, {css} from '@emotion/native';
 import {
   GoogleSignin,
@@ -29,18 +35,18 @@ const Container = styled.View`
 `;
 
 const Content = styled.View`
-  align-self: center;
-  gap: 20px;
-  justify-content: center;
-  align-items: center;
+  flex: 1;
+  align-self: stretch;
 `;
 
 const Buttons = styled.View`
-  align-self: stretch;
+  align-self: center;
   margin-top: 8px;
-  margin-bottom: 20px;
   padding: 20px;
   gap: 12px;
+
+  position: absolute;
+  bottom: 20px;
 `;
 
 export default function SignIn(): JSX.Element {
@@ -133,122 +139,141 @@ export default function SignIn(): JSX.Element {
   return (
     <Container>
       <Stack.Screen options={{headerShown: false}} />
-      <ScrollView>
-        <Content
-          style={css`
+      <Content style={css``}>
+        <ScrollView
+          contentContainerStyle={css`
             padding-top: ${top + 48 + 'px'};
             padding-bottom: ${bottom + 'px'};
             padding-left: ${left + 'px'};
             padding-right: ${right + 'px'};
+            align-items: center;
+            gap: 12px;
           `}
         >
           <Image
             source={IC_ICON}
             style={css`
               align-self: center;
-              width: 60px;
-              height: 60px;
+              width: 80px;
+              height: 80px;
             `}
           />
 
-          <Typography.Heading5
+          <Typography.Heading3
             style={css`
+              margin-top: 8px;
+              padding: 0 16px;
               color: ${theme.text.basic};
-              font-size: 16px;
-              padding: 2px 20px 12px;
               text-align: center;
             `}
           >
+            {t('common.appName')}
+          </Typography.Heading3>
+          <Typography.Body2
+            style={css`
+              padding: 0 16px;
+              margin-top: -4px;
+              color: ${theme.text.label};
+              font-size: 16px;
+              text-align: center;
+              line-height: 22px;
+            `}
+          >
             {t('signIn.description')}
-          </Typography.Heading5>
+          </Typography.Body2>
           <Image
             source={IMG_CROSSPLATFORMS}
             style={css`
-              height: 240px;
+              margin-top: 32px;
             `}
           />
-          <Buttons>
+          <View
+            style={css`
+              height: 200px;
+            `}
+          />
+        </ScrollView>
+        <Buttons>
+          <SocialSignInButton
+            imageSource={IC_GOOGLE}
+            onPress={googleSignIn}
+            style={css`
+              background-color: #f5f5f5;
+              border-radius: 3px;
+            `}
+            styles={{
+              text: css`
+                color: #696969;
+                font-family: Pretendard-Bold;
+                font-size: 14px;
+              `,
+              image: css`
+                width: 16px;
+                height: 16px;
+              `,
+            }}
+            text={t('signIn.continueWithProvider', {provider: 'Google'})}
+          />
+
+          {Platform.OS === 'ios' ? (
             <SocialSignInButton
-              imageSource={IC_GOOGLE}
-              onPress={googleSignIn}
+              leftElement={
+                <Icon color="white" name="AppleLogoFill" size={16} />
+              }
+              onPress={appleSignIn}
               style={css`
-                background-color: #f5f5f5;
+                background-color: black;
                 border-radius: 3px;
               `}
               styles={{
                 text: css`
-                  color: #696969;
+                  color: white;
                   font-family: Pretendard-Bold;
                   font-size: 14px;
                 `,
-                image: css`
-                  width: 16px;
-                  height: 16px;
-                `,
               }}
-              text={t('signIn.continueWithProvider', {provider: 'Google'})}
+              text={t('signIn.continueWithProvider', {provider: 'Apple'})}
             />
+          ) : null}
+          <Typography.Body4
+            style={css`
+              margin-top: 4px;
+              text-align: center;
+              line-height: 20px;
+              color: ${theme.text.label};
+            `}
+          >
+            {t('signIn.policyAgreement', {
+              termsOfService: `**${t('signIn.termsOfService')}**`,
+              privacyPolicy: `**${t('signIn.privacyPolicy')}**`,
+            })
+              .split('**')
+              .map((str, i) =>
+                i % 2 === 0 ? (
+                  str
+                ) : (
+                  <Typography.Body4
+                    key={str}
+                    onPress={() => {
+                      if (str === t('signIn.privacyPolicy')) {
+                        return push('/privacyandpolicy');
+                      }
 
-            {Platform.OS === 'ios' ? (
-              <SocialSignInButton
-                leftElement={
-                  <Icon color="white" name="AppleLogoFill" size={16} />
-                }
-                onPress={appleSignIn}
-                style={css`
-                  background-color: black;
-                  border-radius: 3px;
-                `}
-                styles={{
-                  text: css`
-                    color: white;
-                    font-family: Pretendard-Bold;
-                    font-size: 14px;
-                  `,
-                }}
-                text={t('signIn.continueWithProvider', {provider: 'Apple'})}
-              />
-            ) : null}
-            <Typography.Body4
-              style={css`
-                margin-top: 4px;
-                text-align: center;
-                line-height: 20px;
-                color: ${theme.text.label};
-              `}
-            >
-              {t('signIn.policyAgreement', {
-                termsOfService: `**${t('signIn.termsOfService')}**`,
-                privacyPolicy: `**${t('signIn.privacyPolicy')}**`,
-              })
-                .split('**')
-                .map((str, i) =>
-                  i % 2 === 0 ? (
-                    str
-                  ) : (
-                    <Typography.Body4
-                      key={str}
-                      onPress={() => {
-                        if (str === t('signIn.privacyPolicy')) {
-                          return push('/privacyandpolicy');
-                        }
-
-                        push('/termsofservice');
-                      }}
-                      style={css`
-                        text-decoration-line: underline;
-                        color: ${theme.text.basic};
-                        text-decoration-line: underline;
-                      `}
-                    >
-                      {str}
-                    </Typography.Body4>
-                  ),
-                )}
-            </Typography.Body4>
-          </Buttons>
-        </Content>
-      </ScrollView>
+                      push('/termsofservice');
+                    }}
+                    style={css`
+                      text-decoration-line: underline;
+                      color: ${theme.text.basic};
+                      text-decoration-line: underline;
+                    `}
+                  >
+                    {str}
+                  </Typography.Body4>
+                ),
+              )}
+          </Typography.Body4>
+        </Buttons>
+      </Content>
     </Container>
   );
 }
