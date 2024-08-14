@@ -90,3 +90,7 @@ GoogleService-Info.plist
 *.ipa
 *.apk
 *.aab
+.firebase
+dist/*
+!dist/index.html
+!dist/apple-app-site-association

@@ -1,8 +1,10 @@
-name: Deploy Web on Release
-on:
-  workflow_dispatch:
-  release:
-    types: [created]
+name: Deploy Web on PR
+'on': pull_request
+
+permissions:
+  checks: write
+  contents: read
+  pull-requests: write
 
 jobs:
   build_and_deploy:
@@ -52,3 +54,4 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_CROSSPLATFORMKOREA2024 }}'
           channelId: live
           projectId: crossplatformkorea2024
+          target: cpk-staging

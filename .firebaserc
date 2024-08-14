@@ -1,5 +1,18 @@
 {
   "projects": {
-    "default": ""
-  }
+    "default": "crossplatformkorea2024"
+  },
+  "targets": {
+    "crossplatformkorea2024": {
+      "hosting": {
+        "staging": [
+          "cpk-staging"
+        ],
+        "app": [
+          "crossplatformkorea2024"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }
