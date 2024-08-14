@@ -23,6 +23,9 @@
       }
     },
     "production": {
+      "env": {
+        "ENVIRONMENT": "production"
+      },
       "channel": "production",
       "cache": {
         "disabled": true
