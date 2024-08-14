@@ -17,13 +17,14 @@ import {Redirect, Stack, useRouter} from 'expo-router';
 import {useRecoilValue} from 'recoil';
 
 import {googleClientIdIOS, googleClientIdWeb} from '../../config';
-import {IMG_CROSSPLATFORMS, IC_GOOGLE, IC_ICON} from '../../src/icons';
+import {IMG_CROSSPLATFORMS, IC_ICON} from '../../src/icons';
 import {authRecoilState} from '../../src/recoil/atoms';
 import {t} from '../../src/STRINGS';
 import {supabase} from '../../src/supabase';
-import SocialSignInButton from '../../src/components/uis/SocialSignInButton';
+import SocialSignInButton from '../../src/components/uis/ButtonGoogleSignIn/SocialSignInButton';
 import {showAlert} from '../../src/utils/alert';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {ButtonGoogleSignIn} from '../../src/components/uis/ButtonGoogleSignIn';
 
 const Container = styled.View`
   flex: 1;
@@ -61,20 +62,21 @@ export default function SignIn(): JSX.Element {
     iosClientId: googleClientIdIOS,
   });
 
-  const googleSignIn = useCallback(async () => {
+  const onReceiveGoogleIdToken = useCallback(async (idToken: string) => {
     try {
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-
       InteractionManager.runAfterInteractions(async () => {
-        if (userInfo.idToken) {
-          const {error} = await supabase.auth.signInWithIdToken({
+        if (idToken) {
+          const {error, data} = await supabase.auth.signInWithIdToken({
             provider: 'google',
-            token: userInfo.idToken,
+            token: idToken,
           });
 
+          // https://github.com/orgs/supabase/discussions/4047#discussioncomment-1699468
           supabase.auth.updateUser({
-            data: {avatar_url: userInfo.user.photo},
+            data: {
+              avatar_url:
+                data.session?.user.identities?.[0].identity_data?.avatar_url,
+            },
           });
 
           if (error && __DEV__) {
@@ -194,26 +196,7 @@ export default function SignIn(): JSX.Element {
           />
         </ScrollView>
         <Buttons>
-          <SocialSignInButton
-            imageSource={IC_GOOGLE}
-            onPress={googleSignIn}
-            style={css`
-              background-color: #f5f5f5;
-              border-radius: 3px;
-            `}
-            styles={{
-              text: css`
-                color: #696969;
-                font-family: Pretendard-Bold;
-                font-size: 14px;
-              `,
-              image: css`
-                width: 16px;
-                height: 16px;
-              `,
-            }}
-            text={t('signIn.continueWithProvider', {provider: 'Google'})}
-          />
+          <ButtonGoogleSignIn onReceiveIdToken={onReceiveGoogleIdToken} />
 
           {Platform.OS === 'ios' ? (
             <SocialSignInButton

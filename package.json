@@ -52,6 +52,7 @@
     "dooboo-ui": "^0.2.35",
     "expo": "~51.0.26",
     "expo-apple-authentication": "~6.4.2",
+    "expo-auth-session": "^5.5.2",
     "expo-constants": "~16.0.2",
     "expo-device": "~6.0.2",
     "expo-file-system": "^17.0.1",
