@@ -22,7 +22,7 @@ if (process.env.STAGE) {
 }
 
 const DEEP_LINK_URL = '[firebaseAppId].web.app';
-const buildNumber = 5;
+const buildNumber = 6;
 
 export default ({config}: ConfigContext): ExpoConfig => ({
   ...config,
@@ -119,6 +119,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
   android: {
     googleServicesFile: process.env.GOOGLE_SERVICES_ANDROID,
     userInterfaceStyle: 'automatic',
+    versionCode: buildNumber,
     permissions: [
       'RECEIVE_BOOT_COMPLETED',
       'CAMERA',
