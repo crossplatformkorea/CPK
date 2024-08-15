@@ -374,6 +374,50 @@ export type Database = {
           },
         ]
       }
+      purchases: {
+        Row: {
+          created_at: string | null
+          device: string | null
+          id: string
+          points: number | null
+          product_id: string
+          receipt: string
+          refunded: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          device?: string | null
+          id?: string
+          points?: number | null
+          product_id: string
+          receipt: string
+          refunded?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          device?: string | null
+          id?: string
+          points?: number | null
+          product_id?: string
+          receipt?: string
+          refunded?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchases_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       push_tokens: {
         Row: {
           created_at: string | null
@@ -639,7 +683,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      increment_view_count: {
+        Args: {
+          post_id: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       activity_type:
