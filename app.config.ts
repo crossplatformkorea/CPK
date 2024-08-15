@@ -22,7 +22,7 @@ if (process.env.STAGE) {
 }
 
 const DEEP_LINK_URL = '[firebaseAppId].web.app';
-const buildNumber = 6;
+const buildNumber = 1;
 
 export default ({config}: ConfigContext): ExpoConfig => ({
   ...config,
@@ -83,7 +83,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     googleClientIdAndroid: process.env.googleClientIdAndroid,
     googleClientIdIOS: process.env.googleClientIdIOS,
     googleClientIdWeb: process.env.googleClientIdWeb,
-    eas: {projectId: 'bc7483f7-8ec6-409e-91a9-62a0f872c28b'},
+    eas: {projectId: '1a0107b0-1cef-4913-875f-639c38f59101'},
   },
   updates: {
     fallbackToCacheTimeout: 0,
@@ -97,7 +97,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
   },
   ios: {
     buildNumber: buildNumber.toString(),
-    bundleIdentifier: 'com.dooboolab.cpk',
+    bundleIdentifier: 'com.crossplatformkorea.app',
     associatedDomains: [`applinks:${DEEP_LINK_URL}`],
     supportsTablet: true,
     entitlements: {
@@ -134,7 +134,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
       foregroundImage: './assets/adaptive_icon.png',
       backgroundColor: '#343434',
     },
-    package: 'com.dooboolab.cpk',
+    package: 'com.crossplatformkorea.app',
     intentFilters: [
       {
         action: 'VIEW',

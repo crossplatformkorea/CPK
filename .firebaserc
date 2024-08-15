@@ -1,18 +1,19 @@
 {
   "projects": {
-    "default": "crossplatformkorea2024"
+    "default": "cross-platform-korea-5032f"
   },
   "targets": {
-    "crossplatformkorea2024": {
+    "cross-platform-korea-5032f": {
       "hosting": {
         "staging": [
           "cpk-staging"
         ],
         "app": [
-          "crossplatformkorea2024"
+          "cross-platform-korea-5032f"
         ]
       }
     }
   },
-  "etags": {}
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
 }
