@@ -55,6 +55,7 @@
     "retry": "재시도",
     "score": "점수",
     "selectFromGallery": "갤러리에서 선택",
+    "sponsors": "후원사",
     "takeAPhoto": "사진 찍기",
     "unblock": "차단 해제",
     "unhandledError": "처리되지 않은 오류가 발생했습니다.",
@@ -116,6 +117,10 @@
     "yourTags": "나의 태그",
     "yourTagsPlaceholder": "나와 관련된 태그들을 입력하세요"
   },
+  "points": {
+    "title": "포인트",
+    "myPoints": "나의 포인트"
+  },
   "post": {
     "update": {
       "updateFailed": "업데이트에 실패했습니다!",
@@ -145,7 +150,7 @@
     "darkMode": "다크 모드",
     "loginInfo": "로그인 정보",
     "notificationSettings": "알림 설정",
-    "sponsors": "후원사",
+    "points": "포인트",
     "termsOfService": "서비스 약관",
     "title": "설정",
     "updateProfile": "프로필 수정"

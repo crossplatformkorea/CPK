@@ -125,7 +125,7 @@ export default function Settings(): JSX.Element {
       {
         onPress: () => {
           if (Platform.OS !== 'web') {
-            push('/settings/sponsors');
+            push('/settings/points');
             return;
           }
 
@@ -133,7 +133,7 @@ export default function Settings(): JSX.Element {
         },
         startElement: (
           <Icon
-            name="HeartStraight"
+            name="Coins"
             size={24}
             style={css`
               margin-right: 16px;
@@ -149,7 +149,7 @@ export default function Settings(): JSX.Element {
             `}
           />
         ),
-        title: t('settings.sponsors'),
+        title: t('settings.points'),
       },
       {
         onPress: () => push('/settings/block-users'),
