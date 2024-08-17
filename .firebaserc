@@ -6,7 +6,7 @@
     "cross-platform-korea-5032f": {
       "hosting": {
         "staging": [
-          "cpk-preview"
+          "cross-platform-korea-staging"
         ],
         "app": [
           "cross-platform-korea-5032f"
