@@ -2,8 +2,8 @@
   {
     "relation": ["delegate_permission/handle_all_urls"],
     "target": {
-      "namespace": "dooboo",
-      "package_name": "com.dooboolab",
+      "namespace": "cpk",
+      "package_name": "com.crossplatformkorea.app",
       "sha256_cert_fingerprints": [
         ""
       ]

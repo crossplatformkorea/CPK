@@ -51,7 +51,7 @@ export const goToAppStore = (): void => {
   if (Platform.OS === 'ios') {
     Linking.openURL('itms-apps://itunes.apple.com/us/app/apple-store/<cpk-id>');
   } else {
-    Linking.openURL('market://details?id=com.dooboolab.cpk');
+    Linking.openURL('market://details?id=com.crossplatformkorea.app');
   }
 };
 
