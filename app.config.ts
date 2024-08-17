@@ -22,12 +22,12 @@ if (process.env.STAGE) {
 }
 
 const DEEP_LINK_URL = '[firebaseAppId].web.app';
-const buildNumber = 1;
+const buildNumber = 6;
 
 export default ({config}: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'Cross-Platform Korea',
-  scheme: 'CPK',
+  scheme: 'cpk',
   slug: 'cpk',
   privacy: 'public',
   platforms: ['ios', 'android', 'web'],
@@ -68,6 +68,8 @@ export default ({config}: ConfigContext): ExpoConfig => ({
         defaultChannel: 'default',
       },
     ],
+    'expo-localization',
+    '@react-native-google-signin/google-signin',
   ],
   experiments: {
     typedRoutes: true,
@@ -87,8 +89,11 @@ export default ({config}: ConfigContext): ExpoConfig => ({
   },
   updates: {
     fallbackToCacheTimeout: 0,
-    // requestHeaders: {'expo-channel-name': 'production'},
-    // url: '',
+    requestHeaders: {'expo-channel-name': 'production'},
+    url: 'https://u.expo.dev/1a0107b0-1cef-4913-875f-639c38f59101',
+  },
+  runtimeVersion: {
+    policy: 'appVersion',
   },
   assetBundlePatterns: ['**/*'],
   userInterfaceStyle: 'automatic',
@@ -114,6 +119,24 @@ export default ({config}: ConfigContext): ExpoConfig => ({
           ],
         },
       ],
+      NSMicrophoneUsageDescription:
+        // eslint-disable-next-line max-len
+        'We requests access to your microphone to enable audio recording while capturing videos within the app. For example, if you choose to record a video message or a voice note, we will use the microphone to capture your audio, ensuring that your recordings include sound. This allows you to share videos with clear audio. Users can revoke this permission at any time in the settings.',
+      NSCameraUsageDescription:
+        // eslint-disable-next-line max-len
+        'We requests access to your camera to allow you to take photos and record videos to share with others on the platform. For instance, you can capture moments during live events and share them directly through our app. Users can revoke this permission at any time in the settings.',
+      NSPhotoLibraryAddUsageDescription:
+        // eslint-disable-next-line max-len
+        "We requests permission to save photos and videos to your photo gallery. This allows you to store and manage media content created or edited within the app, like saving a photo you've just taken. Users can revoke this permission at any time in the settings.",
+      NSPhotoLibraryUsageDescription:
+        // eslint-disable-next-line max-len
+        'We requests access to your photo gallery to select photos or videos for uploading. For example, you can choose an existing video from your gallery to post on your profile. Users can revoke this permission at any time in the settings.',
+      NSUserTrackingUsageDescription:
+        // eslint-disable-next-line max-len
+        "We requests permission to track your activity across other companies' apps and websites to provide personalized ads. By understanding your interests, we can deliver ads that are more relevant to you. Users can revoke this permission at any time in the settings.",
+      NSLocationWhenInUseUsageDescription:
+        // eslint-disable-next-line max-len
+        'We requests access to your location while using the app to offer localized content and services. For example, we provide event recommendations or user connections based on your current location. Users can revoke this permission at any time in the settings.',
     },
   },
   android: {
@@ -130,10 +153,6 @@ export default ({config}: ConfigContext): ExpoConfig => ({
       'USER_FACING_NOTIFICATIONS',
       'SCHEDULE_EXACT_ALARM',
     ],
-    adaptiveIcon: {
-      foregroundImage: './assets/adaptive_icon.png',
-      backgroundColor: '#343434',
-    },
     package: 'com.crossplatformkorea.app',
     intentFilters: [
       {
