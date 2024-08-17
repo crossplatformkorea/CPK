@@ -93,5 +93,6 @@ dist/*
 !dist/apple-app-site-association
 
 # Below is why we need .easignore
+# https://github.com/expo/eas-cli/issues/1253
 # google-services.json
 # GoogleService-Info.plist

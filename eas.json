@@ -1,20 +1,35 @@
 {
+  "cli": {
+    "version": ">= 3.8.1"
+  },
   "build": {
     "development": {
       "channel": "development",
       "developmentClient": true,
+      "distribution": "internal",
       "android": {
-        "distribution": "internal",
-        "withoutCredentials": true
+        "buildType": "apk"
       },
       "ios": {
         "simulator": true
       }
     },
+    "preview": {
+      "channel": "preview",
+      "extends": "production",
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      }
+    },
     "production": {
-      "env": {
-        "ENVIRONMENT": "production"
+      "channel": "production",
+      "cache": {
+        "disabled": true
       }
     }
+  },
+  "submit": {
+    "production": {}
   }
 }
