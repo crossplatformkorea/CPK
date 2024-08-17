@@ -2,6 +2,12 @@ import {useEffect, useState} from 'react';
 import type {ColorSchemeName} from 'react-native';
 import {Platform, useColorScheme} from 'react-native';
 import {GestureHandlerRootView, RectButton} from 'react-native-gesture-handler';
+import {
+  checkForUpdateAsync,
+  fetchUpdateAsync,
+  reloadAsync,
+  useUpdates,
+} from 'expo-updates';
 import {dark, light} from '@dooboo-ui/theme';
 import styled, {css} from '@emotion/native';
 import * as Notifications from 'expo-notifications';
@@ -29,6 +35,7 @@ import CustomLoadingIndicator from '../src/components/uis/CustomLoadingIndicator
 import {fetchUserProfile} from '../src/apis/profileQueries';
 import {registerForPushNotificationsAsync} from '../src/utils/notifications';
 import {fetchAddPushToken} from '../src/apis/pushTokenQueries';
+import useAppState from '../src/hooks/useAppState';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -59,6 +66,44 @@ function App(): JSX.Element | null {
   const {back, replace} = useRouter();
   const [{authId}, setAuth] = useRecoilState(authRecoilState);
   const [initialRouteName, setInitialRouteName] = useState<string>();
+  const [checkEasUpdate, setCheckEasUpdate] = useState(false);
+  const {isUpdateAvailable, isUpdatePending} = useUpdates();
+
+  useEffect(() => {
+    if (isUpdatePending) {
+      reloadAsync();
+    }
+  }, [isUpdatePending]);
+
+  useAppState((state) => {
+    if (state === 'active') {
+      /* check eas updates */
+      const checkUpdate = async (): Promise<void> => {
+        if (Platform.OS === 'web' || __DEV__) {
+          return;
+        }
+
+        await checkForUpdateAsync();
+
+        try {
+          if (isUpdateAvailable) {
+            setCheckEasUpdate(true);
+            await fetchUpdateAsync();
+          }
+        } catch (e) {
+          if (__DEV__) {
+            console.error(e);
+          }
+        } finally {
+          setCheckEasUpdate(false);
+        }
+      };
+
+      checkUpdate();
+
+      return;
+    }
+  });
 
   useEffect(() => {
     const {data} = supabase.auth.onAuthStateChange(async (evt, session) => {
@@ -185,7 +230,7 @@ function App(): JSX.Element | null {
     }
   }, [assetLoaded, authId]);
 
-  if (!initialRouteName) {
+  if (!initialRouteName || checkEasUpdate) {
     return <CustomLoadingIndicator />;
   }
 
