@@ -55,6 +55,7 @@
     "retry": "Retry",
     "score": "Score",
     "selectFromGallery": "Select from gallery",
+    "sponsors": "Sponsors",
     "takeAPhoto": "Take a photo",
     "unblock": "Unblock",
     "unhandledError": "An unhandled error occurred.",
@@ -75,6 +76,7 @@
     "failedToFetchData": "Failed to fetch data",
     "failedToGetPushToken": "Failed to get push token for push notification!",
     "mustUsePhysicalDeviceForSubject": "Must use physical device for {{subject}}",
+    "notSupportedInWeb": "This feature is not supported in web",
     "projectIdNotFound": "Project ID not found",
     "unableToOpenEmailClient": "Unable to open email client"
   },
@@ -115,6 +117,10 @@
     "yourTags": "Your Tags",
     "yourTagsPlaceholder": "Please enter tags related to you"
   },
+  "points": {
+    "title": "Points",
+    "myPoints": "My Points"
+  },
   "post": {
     "update": {
       "updateFailed": "Update failed!",
@@ -144,6 +150,7 @@
     "darkMode": "Dark Mode",
     "loginInfo": "Login Information",
     "notificationSettings": "Notification Settings",
+    "points": "Points",
     "termsOfService": "Terms of Service",
     "title": "Settings",
     "updateProfile": "Update Profile"
