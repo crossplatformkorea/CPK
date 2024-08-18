@@ -22,7 +22,7 @@ if (process.env.STAGE) {
 }
 
 const DEEP_LINK_URL = '[firebaseAppId].web.app';
-const buildNumber = 6;
+const buildNumber = 7;
 
 export default ({config}: ConfigContext): ExpoConfig => ({
   ...config,
