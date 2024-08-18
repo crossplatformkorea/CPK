@@ -41,7 +41,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
       {
         // https://github.com/software-mansion/react-native-screens/issues/2219
         ios: {newArchEnabled: true},
-        android: {newArchEnabled: true},
+        android: {newArchEnabled: false},
       },
     ],
     // @ts-ignore
