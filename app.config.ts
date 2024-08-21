@@ -131,9 +131,6 @@ export default ({config}: ConfigContext): ExpoConfig => ({
       NSPhotoLibraryUsageDescription:
         // eslint-disable-next-line max-len
         'We requests access to your photo gallery to select photos or videos for uploading. For example, you can choose an existing video from your gallery to post on your profile. Users can revoke this permission at any time in the settings.',
-      NSUserTrackingUsageDescription:
-        // eslint-disable-next-line max-len
-        "We requests permission to track your activity across other companies' apps and websites to provide personalized ads. By understanding your interests, we can deliver ads that are more relevant to you. Users can revoke this permission at any time in the settings.",
       NSLocationWhenInUseUsageDescription:
         // eslint-disable-next-line max-len
         'We requests access to your location while using the app to offer localized content and services. For example, we provide event recommendations or user connections based on your current location. Users can revoke this permission at any time in the settings.',
