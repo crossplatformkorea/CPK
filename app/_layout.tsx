@@ -219,6 +219,7 @@ function App(): JSX.Element | null {
   useEffect(() => {
     if (assetLoaded) {
       // Adhoc: Set a timeout to hide the splash screen
+      // Wait for 2 seconds because supabase takes time to initialize
       const timeout = setTimeout(() => {
         SplashScreen.hideAsync();
         setInitialRouteName(authId ? '/' : 'sign-in');
@@ -226,7 +227,7 @@ function App(): JSX.Element | null {
         if (timeout) {
           clearTimeout(timeout);
         }
-      }, 1000);
+      }, 2000);
     }
   }, [assetLoaded, authId]);
 
