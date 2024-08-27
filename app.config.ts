@@ -21,7 +21,7 @@ if (process.env.STAGE) {
   );
 }
 
-const DEEP_LINK_URL = '[firebaseAppId].web.app';
+const DEEP_LINK_URL = 'app.crossplatformkorea.com';
 const buildNumber = 8;
 
 export default ({config}: ConfigContext): ExpoConfig => ({
