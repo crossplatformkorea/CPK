@@ -11,9 +11,7 @@ import {
   View,
 } from 'react-native';
 import ErrorFallback from '../../../../src/components/uis/FallbackComponent';
-import {useRecoilValue, useSetRecoilState} from 'recoil';
 import {uploadFileToSupabase} from '../../../../src/supabase';
-import {authRecoilState, postsRecoilState} from '../../../../src/recoil/atoms';
 import {t} from '../../../../src/STRINGS';
 import useSWR from 'swr';
 import {fetchPostById, fetchUpdatePost} from '../../../../src/apis/postQueries';
@@ -28,6 +26,8 @@ import {filterUploadableAssets} from '../../../../src/utils/common';
 import {RectButton} from 'react-native-gesture-handler';
 import ErrorBoundary from 'react-native-error-boundary';
 import FallbackComponent from '../../../../src/components/uis/FallbackComponent';
+import {useAuthStore} from '../../../../src/stores/authStore';
+import { usePostsStore } from '../../../../src/stores/postStore';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -51,8 +51,8 @@ export default function PostUpdate(): JSX.Element {
   const {id} = useLocalSearchParams<{id: string}>();
   const {back} = useRouter();
   const {theme, snackbar} = useDooboo();
-  const {authId} = useRecoilValue(authRecoilState);
-  const setPosts = useSetRecoilState(postsRecoilState);
+  const {authId} = useAuthStore();
+  const {setPosts} = usePostsStore();
   const [assets, setAssets] = useState<ImagePickerAsset[]>([]);
 
   const {

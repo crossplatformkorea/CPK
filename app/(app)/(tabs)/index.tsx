@@ -2,21 +2,17 @@ import styled, {css} from '@emotion/native';
 import {Fab, LoadingIndicator} from 'dooboo-ui';
 import {FlashList} from '@shopify/flash-list';
 import {useRouter} from 'expo-router';
-import {PostWithJoins} from '../../../src/types';
 import PostListItem from '../../../src/components/uis/PostListItem';
 import {useCallback, useState} from 'react';
 import {fetchPostPagination} from '../../../src/apis/postQueries';
 import useSWR from 'swr';
 import FallbackComponent from '../../../src/components/uis/FallbackComponent';
 import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
-import {useRecoilState, useRecoilValue} from 'recoil';
-import {
-  addPostsIfNotExists,
-  authRecoilState,
-  postsRecoilState,
-} from '../../../src/recoil/atoms';
+import {addPostsIfNotExists} from '../../../src/recoil/atoms';
 import ListEmptyItem from '../../../src/components/uis/ListEmptyItem';
 import ErrorBoundary from 'react-native-error-boundary';
+import {useAuthStore} from '../../../src/stores/authStore';
+import {usePostsStore} from '../../../src/stores/postStore';
 
 const Container = styled.View`
   flex: 1;
@@ -26,10 +22,9 @@ const Container = styled.View`
 
 export default function Posts(): JSX.Element {
   const {push} = useRouter();
-  const {authId, blockedUserIds} = useRecoilValue(authRecoilState);
+  const {authId, blockedUserIds} = useAuthStore();
   const [cursor, setCursor] = useState<string | undefined>(undefined);
-  const [allPosts, setAllPosts] =
-    useRecoilState<PostWithJoins[]>(postsRecoilState);
+  const {posts, setPosts} = usePostsStore();
   const [loadingMore, setLoadingMore] = useState(false);
 
   const fetcher = useCallback(
@@ -46,14 +41,14 @@ export default function Posts(): JSX.Element {
       revalidateIfStale: false,
       revalidateOnReconnect: false,
       onSuccess: (data) => {
-        let newPosts = allPosts;
+        let newPosts = posts;
         if (!cursor) {
-          newPosts = addPostsIfNotExists(allPosts, data);
+          newPosts = addPostsIfNotExists(posts, data);
         } else {
-          newPosts = addPostsIfNotExists(allPosts, data);
+          newPosts = addPostsIfNotExists(posts, data);
         }
 
-        setAllPosts(newPosts);
+        setPosts(newPosts);
         setLoadingMore(false);
         if (newPosts.length > 0) {
           setCursor(newPosts[newPosts.length - 1].created_at || undefined);
@@ -66,7 +61,7 @@ export default function Posts(): JSX.Element {
     if (!loadingMore) {
       setLoadingMore(true);
       fetcher(cursor).then((newPosts) => {
-        setAllPosts(addPostsIfNotExists(allPosts, newPosts));
+        setPosts(addPostsIfNotExists(posts, newPosts));
         setLoadingMore(false);
       });
     }
@@ -86,7 +81,7 @@ export default function Posts(): JSX.Element {
       default:
         return (
           <FlashList
-            data={allPosts}
+            data={posts}
             onRefresh={handleRefresh}
             refreshing={isValidating && cursor === null}
             renderItem={({item}) => (

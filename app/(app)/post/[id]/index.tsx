@@ -13,9 +13,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Replies from './replies';
 import {useCallback, useRef, useEffect, useState} from 'react';
 import {FlashList} from '@shopify/flash-list';
-import {useRecoilState} from 'recoil';
 import YoutubePlayer from '@dooboo/react-native-youtube-iframe';
-import {authRecoilState, postsRecoilState} from '../../../../src/recoil/atoms';
 import {useAppLogic} from '../../../../src/providers/AppLogicProvider';
 import {
   fetchDeletePost,
@@ -31,6 +29,8 @@ import {
 import {RectButton} from 'react-native-gesture-handler';
 import ErrorBoundary from 'react-native-error-boundary';
 import FallbackComponent from '../../../../src/components/uis/FallbackComponent';
+import {useAuthStore} from '../../../../src/stores/authStore';
+import {usePostsStore} from '../../../../src/stores/postStore';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -47,8 +47,8 @@ export default function PostDetails(): JSX.Element {
   const {id} = useLocalSearchParams<{id: string}>();
   const {theme, snackbar} = useDooboo();
   const {bottom} = useSafeAreaInsets();
-  const [{authId}] = useRecoilState(authRecoilState);
-  const [posts, setPosts] = useRecoilState(postsRecoilState);
+  const {authId} = useAuthStore();
+  const {setPosts, posts} = usePostsStore();
   const repliesRef = useRef<FlashList<ReplyWithJoins> | null>(null);
   const {handlePeerContentAction, handleUserContentAction} = useAppLogic();
   const {back, push} = useRouter();

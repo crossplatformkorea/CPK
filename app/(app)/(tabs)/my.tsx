@@ -2,8 +2,6 @@ import styled from '@emotion/native';
 import {Stack} from 'expo-router';
 import {Icon, Typography, useDooboo} from 'dooboo-ui';
 import {t} from '../../../src/STRINGS';
-import {useRecoilValue} from 'recoil';
-import {authRecoilState} from '../../../src/recoil/atoms';
 import CustomScrollView from '../../../src/components/uis/CustomScrollView';
 import {css} from '@emotion/native';
 import {Pressable} from 'react-native';
@@ -12,6 +10,7 @@ import {openURL} from '../../../src/utils/common';
 import DoobooStats from '../../../src/components/fragments/DoobooStats';
 import ErrorBoundary from 'react-native-error-boundary';
 import FallbackComponent from '../../../src/components/uis/FallbackComponent';
+import { useAuthStore } from '../../../src/stores/authStore';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -103,7 +102,7 @@ const TagText = styled.Text`
 `;
 
 export default function My(): JSX.Element {
-  const {user, tags} = useRecoilValue(authRecoilState);
+  const {user, tags} = useAuthStore();
   const {theme} = useDooboo();
 
   return (

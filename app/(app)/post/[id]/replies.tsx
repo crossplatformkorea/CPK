@@ -18,13 +18,12 @@ import {
   fetchCreateReply,
   fetchReplyPagination,
 } from '../../../../src/apis/replyQueries';
-import {useRecoilValue} from 'recoil';
-import {authRecoilState} from '../../../../src/recoil/atoms';
 import useSWR from 'swr';
 import {ReplyWithJoins} from '../../../../src/types';
 import FallbackComponent from '../../../../src/components/uis/FallbackComponent';
 import {toggleLike} from '../../../../src/apis/likeQueries';
 import ErrorBoundary from 'react-native-error-boundary';
+import {useAuthStore} from '../../../../src/stores/authStore';
 
 export default function Replies({
   flashListRef,
@@ -38,7 +37,7 @@ export default function Replies({
 }): JSX.Element {
   const {bottom} = useSafeAreaInsets();
   const {theme} = useDooboo();
-  const {authId} = useRecoilValue(authRecoilState);
+  const {authId} = useAuthStore();
   const [reply, setReply] = useState('');
   const [assets, setAssets] = useState<ImagePickerAsset[]>([]);
   const [cursor, setCursor] = useState<string | undefined>(undefined);

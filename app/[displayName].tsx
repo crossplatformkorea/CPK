@@ -13,13 +13,13 @@ import DoobooStats from '../src/components/fragments/DoobooStats';
 import {t} from '../src/STRINGS';
 import {fetchUserWithDisplayName} from '../src/apis/profileQueries';
 import CustomLoadingIndicator from '../src/components/uis/CustomLoadingIndicator';
-import {useRecoilValue} from 'recoil';
 import {authRecoilState} from '../src/recoil/atoms';
 import {
   fetchFollowCounts,
   fetchFollowUser,
   fetchIsAFollowing,
 } from '../src/apis/followQueries';
+import { useAuthStore } from '../src/stores/authStore';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -115,7 +115,7 @@ export default function DisplayName(): JSX.Element {
     displayName: string;
   }>();
   const {theme} = useDooboo();
-  const {authId} = useRecoilValue(authRecoilState);
+  const {authId} = useAuthStore();
   const [user, setUser] = useState<any>(null);
   const [tags, setTags] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);

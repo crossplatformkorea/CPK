@@ -17,10 +17,8 @@ import StatusBarBrightness from 'dooboo-ui/uis/StatusbarBrightness';
 import {Stack, useRouter} from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as SystemUI from 'expo-system-ui';
-import {useRecoilState} from 'recoil';
 
 import RootProvider from '../src/providers';
-import {authRecoilState, reportModalRecoilState} from '../src/recoil/atoms';
 import {getLocale, t} from '../src/STRINGS';
 import {supabase} from '../src/supabase';
 import {
@@ -36,6 +34,8 @@ import {fetchUserProfile} from '../src/apis/profileQueries';
 import {registerForPushNotificationsAsync} from '../src/utils/notifications';
 import {fetchAddPushToken} from '../src/apis/pushTokenQueries';
 import useAppState from '../src/hooks/useAppState';
+import {useAuthStore} from '../src/stores/authStore';
+import {useReportModal} from '../src/stores/reportModalStore';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -64,7 +64,7 @@ Notifications.setNotificationHandler({
 function App(): JSX.Element | null {
   const {assetLoaded, snackbar, theme} = useDooboo();
   const {back, replace} = useRouter();
-  const [{authId}, setAuth] = useRecoilState(authRecoilState);
+  const {authId, setAuth} = useAuthStore();
   const [initialRouteName, setInitialRouteName] = useState<string>();
   const [checkEasUpdate, setCheckEasUpdate] = useState(false);
   const {isUpdateAvailable, isUpdatePending} = useUpdates();
@@ -169,12 +169,13 @@ function App(): JSX.Element | null {
 
           const blockedUserIds = await fetchBlockUserIds(session.user.id);
 
-          setAuth({
+          setAuth((prev) => ({
+            ...prev,
             authId: session.user.id,
             user: profile,
             blockedUserIds,
             tags: userTags,
-          });
+          }));
 
           registerForPushNotificationsAsync()
             .then((token) => {
@@ -285,22 +286,15 @@ function App(): JSX.Element | null {
 }
 
 function Layout(): JSX.Element | null {
-  const [reportModalState, setReportModalState] = useRecoilState(
-    reportModalRecoilState,
-  );
+  const {visible, setVisible} = useReportModal((state) => state);
 
   return (
     <>
       <App />
       <ReportModal
-        {...reportModalState}
-        setVisible={(value) => {
-          setReportModalState({
-            ...reportModalState,
-            // @ts-ignore
-            visible: value,
-          });
-        }}
+        subject=''
+        visible={visible}
+        setVisible={() => setVisible(visible)}
       />
     </>
   );

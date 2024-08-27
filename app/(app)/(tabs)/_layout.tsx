@@ -1,9 +1,7 @@
 import {View} from 'react-native';
 import {Icon, useDooboo} from 'dooboo-ui';
 import {Redirect, Tabs, useRouter} from 'expo-router';
-import {useRecoilState} from 'recoil';
 
-import {authRecoilState} from '../../../src/recoil/atoms';
 import {t} from '../../../src/STRINGS';
 import {useEffect, useRef} from 'react';
 import * as Notifications from 'expo-notifications';
@@ -11,6 +9,7 @@ import {RectButton} from 'react-native-gesture-handler';
 import {css} from '@emotion/native';
 import {Image} from 'expo-image';
 import {IC_ICON} from '../../../src/icons';
+import {useAuthStore} from '../../../src/stores/authStore';
 
 function SettingsMenu(): JSX.Element {
   const {theme} = useDooboo();
@@ -34,7 +33,7 @@ function SettingsMenu(): JSX.Element {
 
 export default function TabLayout(): JSX.Element {
   const {theme} = useDooboo();
-  const [{authId, user}, setAuth] = useRecoilState(authRecoilState);
+  const {authId, user, setAuth} = useAuthStore();
   const notificationResponseListener = useRef<Notifications.Subscription>();
 
   useEffect(() => {

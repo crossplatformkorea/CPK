@@ -41,10 +41,12 @@
     "CROSSPLATFORMS",
     "dooboo",
     "hookform",
+    "immer",
     "lotties",
     "Onesignal",
     "Pressable",
     "Pretendard",
-    "svgs"
+    "svgs",
+    "zustand"
   ]
 }

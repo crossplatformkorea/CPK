@@ -14,17 +14,16 @@ import {
 import {Icon, Typography, useDooboo} from 'dooboo-ui';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import {Redirect, Stack, useRouter} from 'expo-router';
-import {useRecoilValue} from 'recoil';
 
 import {googleClientIdIOS, googleClientIdWeb} from '../../config';
 import {IMG_CROSSPLATFORMS, IC_ICON} from '../../src/icons';
-import {authRecoilState} from '../../src/recoil/atoms';
 import {t} from '../../src/STRINGS';
 import {supabase} from '../../src/supabase';
 import SocialSignInButton from '../../src/components/uis/ButtonGoogleSignIn/SocialSignInButton';
 import {showAlert} from '../../src/utils/alert';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ButtonGoogleSignIn} from '../../src/components/uis/ButtonGoogleSignIn';
+import { useAuthStore } from '../../src/stores/authStore';
 
 const Container = styled.View`
   flex: 1;
@@ -52,7 +51,7 @@ const Buttons = styled.View`
 
 export default function SignIn(): JSX.Element {
   const {theme} = useDooboo();
-  const {authId, user} = useRecoilValue(authRecoilState);
+  const {authId, user} = useAuthStore();
   const {push} = useRouter();
   const {top, bottom, left, right} = useSafeAreaInsets();
 

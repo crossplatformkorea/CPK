@@ -34,9 +34,7 @@ export default function ReportModal(props: ReportModalProps): JSX.Element {
         onReport?.(message);
       }}
       setOpened={setVisible}
-      textInputProps={{
-        textAlignVertical: 'top',
-      }}
+      textInputProps={{textAlignVertical: 'top'}}
       // eslint-disable-next-line react/destructuring-assignment
       title={t('common.reportSubject', {subject: visible ? props.subject : ''})}
       visible={visible}

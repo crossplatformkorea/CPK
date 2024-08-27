@@ -4,12 +4,12 @@ import {css} from '@emotion/native';
 import {useActionSheet} from '@expo/react-native-action-sheet';
 import {Button, useDooboo} from 'dooboo-ui';
 import createCtx from 'dooboo-ui/utils/createCtx';
-import {useRecoilValue, useSetRecoilState} from 'recoil';
 
-import {authRecoilState, reportModalRecoilState} from '../recoil/atoms';
 import {t} from '../STRINGS';
 import {fetchBlockUser} from '../apis/blockQueries';
 import {fetchCreateReport} from '../apis/reportQueries';
+import { useAuthStore } from '../stores/authStore';
+import { useReportModal } from '../stores/reportModalStore';
 
 type PeerContentActionProps = {
   userId: string;
@@ -38,11 +38,10 @@ interface Props {
 }
 
 function AppLogicProvider({children}: Props): JSX.Element {
-  const {authId} = useRecoilValue(authRecoilState);
+  const {authId, setAuth} = useAuthStore();
   const {showActionSheetWithOptions} = useActionSheet();
   const {alertDialog, snackbar} = useDooboo();
-  const setReportModalState = useSetRecoilState(reportModalRecoilState);
-  const setAuthState = useSetRecoilState(authRecoilState);
+  const {setState: setReportModalState} = useReportModal();
   const [isCreateReportInFlight, setIsCreateReportInFlight] = useState(false);
 
   const handlePeerContentAction = async ({
@@ -63,7 +62,7 @@ function AppLogicProvider({children}: Props): JSX.Element {
         await fetchBlockUser({authId, userId});
         snackbar.open({text: t('common.blockUserSuccess')});
 
-        setAuthState((prev) => ({
+        setAuth((prev) => ({
           ...prev,
           blockedUserIds: [...prev.blockedUserIds, userId],
         }));

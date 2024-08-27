@@ -5,10 +5,8 @@ import {FlashList} from '@shopify/flash-list';
 import {Button, Typography, useDooboo} from 'dooboo-ui';
 import CustomPressable from 'dooboo-ui/uis/CustomPressable';
 import {Stack} from 'expo-router';
-import {useRecoilState} from 'recoil';
 import UserImage from '../../../src/components/uis/UserImage';
 import {delayPressIn, PAGE_SIZE} from '../../../src/utils/constants';
-import {authRecoilState} from '../../../src/recoil/atoms';
 import NotFound from '../../../src/components/uis/NotFound';
 import {t} from '../../../src/STRINGS';
 import {
@@ -18,6 +16,7 @@ import {
 import {User} from '../../../src/types';
 import ErrorBoundary from 'react-native-error-boundary';
 import FallbackComponent from '../../../src/components/uis/FallbackComponent';
+import {useAuthStore} from '../../../src/stores/authStore';
 
 const Profile = styled.View`
   padding: 16px 16px 8px 16px;
@@ -77,7 +76,7 @@ const Container = styled.View`
 
 export default function BlockUser(): JSX.Element {
   const {alertDialog} = useDooboo();
-  const [{authId, blockedUserIds}, setAuth] = useRecoilState(authRecoilState);
+  const {authId, blockedUserIds, setAuth} = useAuthStore();
   const [blockUsers, setBlockUsers] = useState<User[]>([]);
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const [loadingMore, setLoadingMore] = useState(false);

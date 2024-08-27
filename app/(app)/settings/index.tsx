@@ -10,9 +10,6 @@ import CustomPressable from 'dooboo-ui/uis/CustomPressable';
 import * as Linking from 'expo-linking';
 import {Stack, useRouter} from 'expo-router';
 import * as SystemUI from 'expo-system-ui';
-import {useRecoilValue} from 'recoil';
-
-import {authRecoilState} from '../../../src/recoil/atoms';
 import {t} from '../../../src/STRINGS';
 import {AsyncStorageKey} from '../../../src/utils/constants';
 import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
@@ -20,6 +17,7 @@ import useAppState from '../../../src/hooks/useAppState';
 import {openEmail} from '../../../src/utils/common';
 import ErrorBoundary from 'react-native-error-boundary';
 import FallbackComponent from '../../../src/components/uis/FallbackComponent';
+import {useAuthStore} from '../../../src/stores/authStore';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -44,7 +42,7 @@ const Divider = styled.View`
 export default function Settings(): JSX.Element {
   const {push} = useRouter();
   const {theme, changeThemeType, themeType} = useDooboo();
-  const authId = useRecoilValue(authRecoilState);
+  const {authId} = useAuthStore();
   const {bottom} = useSafeAreaInsets();
 
   const [hasNotificationPermission, setHasNotificationPermission] =

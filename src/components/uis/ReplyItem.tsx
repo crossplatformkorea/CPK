@@ -5,13 +5,12 @@ import {Icon, Typography, useDooboo} from 'dooboo-ui';
 import CustomPressable from 'dooboo-ui/uis/CustomPressable';
 import {Image as ExpoImage} from 'expo-image';
 import {useRouter} from 'expo-router';
-import {useRecoilValue} from 'recoil';
 import {ReplyWithJoins} from '../../types';
 import {openURL} from '../../utils/common';
 import {formatDateTime} from '../../utils/date';
-import {authRecoilState} from '../../recoil/atoms';
 import UserImage from './UserImage';
 import {useAppLogic} from '../../providers/AppLogicProvider';
+import { useAuthStore } from '../../stores/authStore';
 
 const Container = styled.View`
   padding: 14px 24px;
@@ -58,7 +57,7 @@ export default function ReplyItem({
   const {push, replace} = useRouter();
   const {theme} = useDooboo();
   const userId = item?.user.id;
-  const {authId} = useRecoilValue(authRecoilState);
+  const {authId} = useAuthStore();
   const {handlePeerContentAction, handleUserContentAction} = useAppLogic();
 
   const handlePressMore = async (): Promise<void> => {

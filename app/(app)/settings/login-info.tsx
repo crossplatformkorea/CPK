@@ -5,9 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {IconName} from 'dooboo-ui';
 import {Button, Icon, Typography, useDooboo} from 'dooboo-ui';
 import {Stack, useRouter} from 'expo-router';
-import {useRecoilValue} from 'recoil';
 
-import {authRecoilState} from '../../../src/recoil/atoms';
 import {t} from '../../../src/STRINGS';
 import {supabase} from '../../../src/supabase';
 import type {User} from '../../../src/types';
@@ -17,6 +15,7 @@ import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingInd
 import {fetchDeletePushToken} from '../../../src/apis/pushTokenQueries';
 import ErrorBoundary from 'react-native-error-boundary';
 import FallbackComponent from '../../../src/components/uis/FallbackComponent';
+import {useAuthStore} from '../../../src/stores/authStore';
 
 const Container = styled.View`
   flex: 1;
@@ -96,7 +95,7 @@ export default function LoginInfo(): JSX.Element {
   const {back, replace} = useRouter();
   const {theme, alertDialog} = useDooboo();
   const {bottom} = useSafeAreaInsets();
-  const {authId, user, pushToken} = useRecoilValue(authRecoilState);
+  const {authId, user, pushToken} = useAuthStore();
 
   const handleSignOut = async (): Promise<void> => {
     if (pushToken && authId) {

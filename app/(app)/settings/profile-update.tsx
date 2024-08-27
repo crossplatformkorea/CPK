@@ -14,8 +14,6 @@ import {
 import {useState, useEffect} from 'react';
 import useSwr from 'swr';
 import {t} from '../../../src/STRINGS';
-import {useRecoilState} from 'recoil';
-import {authRecoilState} from '../../../src/recoil/atoms';
 import {uploadFileToSupabase} from '../../../src/supabase';
 import {ImageInsertArgs} from '../../../src/types';
 import CustomScrollView from '../../../src/components/uis/CustomScrollView';
@@ -31,6 +29,7 @@ import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingInd
 import {showAlert} from '../../../src/utils/alert';
 import {RectButton} from 'react-native-gesture-handler';
 import ErrorBoundary from 'react-native-error-boundary';
+import {useAuthStore} from '../../../src/stores/authStore';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -79,7 +78,7 @@ const fetcher = async (authId?: string | null) => {
 
 export default function ProfileUpdate(): JSX.Element {
   const {theme} = useDooboo();
-  const [{authId}, setAuth] = useRecoilState(authRecoilState);
+  const {authId, setAuth} = useAuthStore();
   const [tag, setTag] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [profileImg, setProfileImg] = useState<string>();

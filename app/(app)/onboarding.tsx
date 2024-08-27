@@ -24,13 +24,12 @@ import {
   fetchUserProfile,
 } from '../../src/apis/profileQueries';
 import {uploadFileToSupabase} from '../../src/supabase';
-import {useRecoilState} from 'recoil';
-import {authRecoilState} from '../../src/recoil/atoms';
 import {ImageInsertArgs} from '../../src/types';
 import FallbackComponent from '../../src/components/uis/FallbackComponent';
 import {showAlert} from '../../src/utils/alert';
 import {RectButton} from 'react-native-gesture-handler';
 import ErrorBoundary from 'react-native-error-boundary';
+import {useAuthStore} from '../../src/stores/authStore';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -86,7 +85,7 @@ const fetcher = async (authId: string | null) => {
 export default function Onboarding(): JSX.Element {
   const {theme} = useDooboo();
   const [displayNameError, setDisplayNameError] = useState<string>();
-  const [{authId, user}, setAuth] = useRecoilState(authRecoilState);
+  const {authId, user, setAuth} = useAuthStore();
   const [tag, setTag] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [profileImg, setProfileImg] = useState<string>();

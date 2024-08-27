@@ -11,8 +11,6 @@ import {
   Platform,
   View,
 } from 'react-native';
-import {useRecoilValue, useSetRecoilState} from 'recoil';
-import {authRecoilState, postsRecoilState} from '../../../src/recoil/atoms';
 import {fetchCreatePost} from '../../../src/apis/postQueries';
 import MultiUploadImageInput from '../../../src/components/uis/MultiUploadImageInput';
 import {useState} from 'react';
@@ -21,6 +19,8 @@ import {MAX_IMAGES_UPLOAD_LENGTH} from '../../../src/utils/constants';
 import CustomScrollView from '../../../src/components/uis/CustomScrollView';
 import {uploadFileToSupabase} from '../../../src/supabase';
 import {RectButton} from 'react-native-gesture-handler';
+import {useAuthStore} from '../../../src/stores/authStore';
+import {usePostsStore} from '../../../src/stores/postStore';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -43,8 +43,8 @@ type FormData = yup.InferType<typeof schema>;
 export default function PostWrite(): JSX.Element {
   const {back} = useRouter();
   const {theme, snackbar} = useDooboo();
-  const {authId} = useRecoilValue(authRecoilState);
-  const setPosts = useSetRecoilState(postsRecoilState);
+  const {authId} = useAuthStore();
+  const {setPosts} = usePostsStore();
   const [assets, setAssets] = useState<ImagePickerAsset[]>([]);
   const [isCreatePostInFlight, setIsCreatePostInFlight] = useState(false);
 

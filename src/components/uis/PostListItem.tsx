@@ -7,9 +7,8 @@ import UserListItem from './UserListItem';
 import {View} from 'react-native';
 import ControlItem, {ControlItemProps} from './ControlItem';
 import {Image as ExpoImage} from 'expo-image';
-import {useRecoilValue} from 'recoil';
-import {authRecoilState} from '../../recoil/atoms';
 import {isYoutubeURL} from '../../utils/urlParser';
+import { useAuthStore } from '../../stores/authStore';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -34,7 +33,7 @@ export default function PostListItem({
   controlItemProps,
 }: Props): JSX.Element | null {
   const {theme} = useDooboo();
-  const {blockedUserIds} = useRecoilValue(authRecoilState);
+  const {blockedUserIds} = useAuthStore();
 
   if (blockedUserIds.includes(post.user_id)) {
     return null;
