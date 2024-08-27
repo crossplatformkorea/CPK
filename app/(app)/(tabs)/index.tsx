@@ -8,11 +8,10 @@ import {fetchPostPagination} from '../../../src/apis/postQueries';
 import useSWR from 'swr';
 import FallbackComponent from '../../../src/components/uis/FallbackComponent';
 import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
-import {addPostsIfNotExists} from '../../../src/recoil/atoms';
 import ListEmptyItem from '../../../src/components/uis/ListEmptyItem';
 import ErrorBoundary from 'react-native-error-boundary';
 import {useAuthStore} from '../../../src/stores/authStore';
-import {usePostsStore} from '../../../src/stores/postStore';
+import {addPostsIfNotExists, usePostsStore} from '../../../src/stores/postStore';
 
 const Container = styled.View`
   flex: 1;

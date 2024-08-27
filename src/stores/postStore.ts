@@ -28,7 +28,10 @@ export const usePostsStore = create<{
     posts: [],
     setPosts: (posts) =>
       set((state) => {
-        state.posts = posts;
+        state = {
+          ...state,
+          ...posts,
+        };
       }),
     addPosts: (newPosts) =>
       set((state) => {

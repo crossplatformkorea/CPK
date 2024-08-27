@@ -29,8 +29,8 @@ export const useAuthStore = create<
     ...initialState,
     setAuth: (info) =>
       set((state) => {
-        state.auth = {
-          ...state.auth,
+        state = {
+          ...state,
           ...info,
         };
       }),

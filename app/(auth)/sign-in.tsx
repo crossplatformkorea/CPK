@@ -23,7 +23,7 @@ import SocialSignInButton from '../../src/components/uis/ButtonGoogleSignIn/Soci
 import {showAlert} from '../../src/utils/alert';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ButtonGoogleSignIn} from '../../src/components/uis/ButtonGoogleSignIn';
-import { useAuthStore } from '../../src/stores/authStore';
+import {useAuthStore} from '../../src/stores/authStore';
 
 const Container = styled.View`
   flex: 1;

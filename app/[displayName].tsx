@@ -13,7 +13,6 @@ import DoobooStats from '../src/components/fragments/DoobooStats';
 import {t} from '../src/STRINGS';
 import {fetchUserWithDisplayName} from '../src/apis/profileQueries';
 import CustomLoadingIndicator from '../src/components/uis/CustomLoadingIndicator';
-import {authRecoilState} from '../src/recoil/atoms';
 import {
   fetchFollowCounts,
   fetchFollowUser,

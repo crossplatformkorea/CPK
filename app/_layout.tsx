@@ -169,13 +169,12 @@ function App(): JSX.Element | null {
 
           const blockedUserIds = await fetchBlockUserIds(session.user.id);
 
-          setAuth((prev) => ({
-            ...prev,
+          setAuth({
             authId: session.user.id,
             user: profile,
             blockedUserIds,
             tags: userTags,
-          }));
+          });
 
           registerForPushNotificationsAsync()
             .then((token) => {
@@ -220,7 +219,7 @@ function App(): JSX.Element | null {
   useEffect(() => {
     if (assetLoaded) {
       // Adhoc: Set a timeout to hide the splash screen
-      // Wait for 2 seconds because supabase takes time to initialize
+      // Wait for 1.5 seconds because supabase takes time to initialize
       const timeout = setTimeout(() => {
         SplashScreen.hideAsync();
         setInitialRouteName(authId ? '/' : 'sign-in');
@@ -228,7 +227,7 @@ function App(): JSX.Element | null {
         if (timeout) {
           clearTimeout(timeout);
         }
-      }, 2000);
+      }, 1500);
     }
   }, [assetLoaded, authId]);
 
@@ -292,7 +291,7 @@ function Layout(): JSX.Element | null {
     <>
       <App />
       <ReportModal
-        subject=''
+        subject=""
         visible={visible}
         setVisible={() => setVisible(visible)}
       />
