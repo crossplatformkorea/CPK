@@ -31,14 +31,15 @@ export const fetchPostById = async (
       ),
       images (*),
       replies (
-        id
+        id,
+        deleted_at
       ),
       likes (*)
     `,
     )
     .eq('id', id)
+    .filter('replies.deleted_at', 'is', null)
     .single();
-
   if (error) {
     if (__DEV__) console.error('Error fetching post by ID:', error);
     return null;
@@ -64,12 +65,14 @@ export const fetchPostPagination = async ({
         user:user_id (*),
         images (*),
         replies (
-          id
+          id,
+          deleted_at
         ),
         likes (*)
       `,
     )
     .is('deleted_at', null)
+    .filter('replies.deleted_at', 'is', null)
     .order('created_at', {ascending: false})
     .limit(limit)
     .lt('created_at', cursor);
@@ -118,7 +121,8 @@ export const fetchUpdatePost = async ({
       ),
       images (*),
       replies (
-        id
+        id,
+        deleted_at
       ),
       likes (*)
     `,
@@ -210,7 +214,8 @@ export const fetchCreatePost = async (
       ),
       images (*),
       replies (
-        id
+        id,
+        deleted_at
       ),
       likes (*)
     `,
