@@ -276,7 +276,8 @@ function App(): JSX.Element | null {
               ),
           }}
         >
-          <Stack.Screen name="(app)/(tabs)" options={{headerShown: false}} />
+          <Stack.Screen name="(auth)" options={{headerShown: false}} />
+          <Stack.Screen name="(app)" options={{headerShown: false}} />
           {/* Note: Only modals are written here.  */}
         </Stack>
       </Content>
