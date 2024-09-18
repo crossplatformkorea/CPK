@@ -147,8 +147,8 @@ export default function BlockUser(): JSX.Element {
         <Button
           onPress={() => {
             alertDialog.close();
-
             fetchUnblockUser(authId, userId);
+
             setAuth((prev) => {
               return {
                 ...prev,

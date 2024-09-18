@@ -81,8 +81,8 @@
   },
   "loginInfo": {
     "cancel": "Cancel",
-    "cancelAccount": "Cancel Account",
-    "cancelAccountDescription": "Are you sure you want to cancel your account? This action cannot be undone.",
+    "withdrawAccount": "Cancel Account",
+    "withdrawAccountDescription": "Are you sure you want to cancel your account? This action cannot be undone.",
     "loggedInWith": "Logged in with {{provider}}",
     "loginMethod": "Login Method",
     "logout": "Logout",

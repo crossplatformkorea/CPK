@@ -3,7 +3,7 @@ import 'react-native';
 import type {RenderAPI} from '@testing-library/react-native';
 import {render, waitFor} from '@testing-library/react-native';
 
-import Page from '../../app/(app)/(tabs)/_layout';
+import Page from '../../app/(home)/(tabs)/_layout';
 import {createTestElement, createTestProps} from '../testUtils';
 
 let props: any;

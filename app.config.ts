@@ -46,6 +46,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     ],
     // @ts-ignore
     withAndroidLocalizedName,
+    'expo-secure-store',
     'expo-router',
     'expo-localization',
     [
@@ -68,7 +69,6 @@ export default ({config}: ConfigContext): ExpoConfig => ({
       },
     ],
     'expo-localization',
-    '@react-native-google-signin/google-signin',
   ],
   experiments: {
     typedRoutes: true,
@@ -81,9 +81,6 @@ export default ({config}: ConfigContext): ExpoConfig => ({
   extra: {
     supabaseUrl: process.env.supabaseUrl,
     supabaseAnonKey: process.env.supabaseAnonKey,
-    googleClientIdAndroid: process.env.googleClientIdAndroid,
-    googleClientIdIOS: process.env.googleClientIdIOS,
-    googleClientIdWeb: process.env.googleClientIdWeb,
     eas: {projectId: '1a0107b0-1cef-4913-875f-639c38f59101'},
   },
   updates: {

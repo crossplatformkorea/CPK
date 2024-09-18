@@ -114,6 +114,7 @@ export default function DisplayName(): JSX.Element {
   const {displayName: displayNameWithLeading} = useLocalSearchParams<{
     displayName: string;
   }>();
+
   const {theme} = useDooboo();
   const {authId} = useRecoilValue(authRecoilState);
   const [user, setUser] = useState<any>(null);

@@ -7,6 +7,30 @@ import {supabaseAnonKey, supabaseUrl} from '../../config';
 import * as FileSystem from 'expo-file-system';
 import type {Database} from '../../src/types/supabase';
 import {FileType, ImageInsertArgs} from '../types';
+import {ActiveSessionResource} from '@clerk/types';
+
+// TODO: Remove below supabase variable and migrate to below function to integrate RLS with Clerk
+export function createClerkSupabaseClient(session: ActiveSessionResource) {
+  return createClient<Database>(supabaseUrl, supabaseAnonKey, {
+    global: {
+      // Get the custom Supabase token from Clerk
+      fetch: async (url, options = {}) => {
+        const clerkToken = await session?.getToken({
+          template: 'supabase',
+        });
+
+        // Insert the Clerk Supabase token into the headers
+        const headers = new Headers(options?.headers);
+        headers.set('Authorization', `Bearer ${clerkToken}`);
+
+        return fetch(url, {
+          ...options,
+          headers,
+        });
+      },
+    },
+  });
+}
 
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
@@ -40,7 +64,6 @@ export const uploadFileToSupabase = async ({
       fileType ? {contentType: fileType, upsert: true} : {upsert: true},
     );
 
-
   if (error) {
     throw error;
   }
@@ -66,9 +89,7 @@ export const deleteFileFromSupabase = async ({
   bucket: string;
   filePath: string;
 }): Promise<void> => {
-  const {error} = await supabase.storage
-    .from(bucket)
-    .remove([filePath]);
+  const {error} = await supabase.storage.from(bucket).remove([filePath]);
 
   if (error) {
     throw error;

@@ -29,7 +29,7 @@ jobs:
         env:
           supabaseUrl: ${{ secrets.supabaseUrl }}
           supabaseAnonKey: ${{ secrets.supabaseAnonKey }}
-          googleClientIdWeb: ${{ secrets.googleClientIdWeb }}
+          EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           expoProjectId: ${{ secrets.expoProjectId }}
 
       # Meta tags are not updatable from Expo SDK 49 so add below step

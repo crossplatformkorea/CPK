@@ -171,10 +171,6 @@ export default function Onboarding(): JSX.Element {
     }
   }, [data, setValue]);
 
-  if (!authId) {
-    return <Redirect href={'/sign-in'} />;
-  }
-
   if (user?.display_name) {
     return <Redirect href={'/'} />;
   }

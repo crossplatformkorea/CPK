@@ -1,5 +1,6 @@
 import ICON from '../assets/icon.png';
 import GOOGLE from '../assets/icons/google.png';
+import GITHUB from '../assets/icons/github.png';
 import CrossPlatforms from '../assets/images/crossplatforms.png';
 import SpiderWebDark from '../assets/images/spider_web_d.png';
 import SpiderWebLight from '../assets/images/spider_web_l.png';
@@ -14,6 +15,7 @@ import TierSilver from '../assets/icons/tier_silver.png';
 
 export const IC_ICON = ICON;
 export const IC_GOOGLE = GOOGLE;
+export const IC_GITHUB = GITHUB;
 export const IC_TIER_BRONZE = TierBronze;
 export const IC_TIER_CHALLENGER = TierChallenger;
 export const IC_TIER_DIAMOND = TierDiamond;

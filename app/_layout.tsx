@@ -1,57 +1,41 @@
 import {useEffect, useState} from 'react';
 import type {ColorSchemeName} from 'react-native';
 import {Platform, useColorScheme} from 'react-native';
-import {GestureHandlerRootView, RectButton} from 'react-native-gesture-handler';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {tokenCache} from '../src/utils/cache';
 import {
   checkForUpdateAsync,
   fetchUpdateAsync,
   reloadAsync,
   useUpdates,
 } from 'expo-updates';
+
 import {dark, light} from '@dooboo-ui/theme';
-import styled, {css} from '@emotion/native';
+import {css} from '@emotion/native';
 import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Icon, useDooboo} from 'dooboo-ui';
+import {useDooboo} from 'dooboo-ui';
 import StatusBarBrightness from 'dooboo-ui/uis/StatusbarBrightness';
-import {Stack, useRouter} from 'expo-router';
+import {Slot} from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as SystemUI from 'expo-system-ui';
 import {useRecoilState} from 'recoil';
 
 import RootProvider from '../src/providers';
 import {authRecoilState, reportModalRecoilState} from '../src/recoil/atoms';
-import {getLocale, t} from '../src/STRINGS';
-import {supabase} from '../src/supabase';
-import {
-  AsyncStorageKey,
-  COMPONENT_WIDTH,
-  WEB_URL,
-} from '../src/utils/constants';
-import ReportModal from '../src/components/modals/ReportModal';
-import {fetchBlockUserIds} from '../src/apis/blockQueries';
-import {AuthChangeEvent} from '@supabase/supabase-js';
+import {AsyncStorageKey} from '../src/utils/constants';
 import CustomLoadingIndicator from '../src/components/uis/CustomLoadingIndicator';
+import useAppState from '../src/hooks/useAppState';
+import {ClerkProvider, ClerkLoaded, useUser} from '@clerk/clerk-expo';
+import ReportModal from '../src/components/modals/ReportModal';
+import {supabase} from '../src/supabase';
+import {getLocale, t} from '../src/STRINGS';
 import {fetchUserProfile} from '../src/apis/profileQueries';
+import {fetchBlockUserIds} from '../src/apis/blockQueries';
 import {registerForPushNotificationsAsync} from '../src/utils/notifications';
 import {fetchAddPushToken} from '../src/apis/pushTokenQueries';
-import useAppState from '../src/hooks/useAppState';
 
 SplashScreen.preventAutoHideAsync();
-
-const Container = styled.View`
-  flex: 1;
-  align-self: stretch;
-  background-color: ${({theme}) => theme.brand};
-`;
-
-const Content = styled.View`
-  align-self: center;
-  width: 100%;
-  flex: 1;
-  max-width: ${COMPONENT_WIDTH + 'px'};
-  background-color: ${({theme}) => theme.brand};
-`;
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -62,10 +46,9 @@ Notifications.setNotificationHandler({
 });
 
 function App(): JSX.Element | null {
-  const {assetLoaded, snackbar, theme} = useDooboo();
-  const {back, replace} = useRouter();
-  const [{authId}, setAuth] = useRecoilState(authRecoilState);
-  const [initialRouteName, setInitialRouteName] = useState<string>();
+  const {user} = useUser();
+  const {assetLoaded, snackbar} = useDooboo();
+  const [, setAuth] = useRecoilState(authRecoilState);
   const [checkEasUpdate, setCheckEasUpdate] = useState(false);
   const {isUpdateAvailable, isUpdatePending} = useUpdates();
 
@@ -106,59 +89,61 @@ function App(): JSX.Element | null {
   });
 
   useEffect(() => {
-    const {data} = supabase.auth.onAuthStateChange(async (evt, session) => {
-      if (
-        !(
-          ['INITIAL_SESSION', 'SIGNED_IN', 'SIGNED_OUT'] as AuthChangeEvent[]
-        ).includes(evt)
-      ) {
-        return;
-      }
+    const checkUser = async (): Promise<void> => {
+      try {
+        if (!user?.id) return;
 
-      if (session?.user) {
-        const {data: existingUser} = await supabase
+        let {data: existingUser} = await supabase
           .from('users')
           .select('id')
-          .eq('id', session.user.id)
+          .eq('clerk_id', user.id)
           .single();
 
         if (!existingUser) {
-          const {status} = await supabase
+          const {data} = await supabase
             .from('users')
-            .upsert({
-              id: session.user.id,
-              // AuthType
-              provider: session.user.app_metadata.provider as any,
+            .insert({
+              clerk_id: user.id,
+              provider:
+                (user?.externalAccounts?.[0].provider as any) || undefined,
               locale: getLocale(),
-              provider_id: session.user.app_metadata.provider_id,
-              last_sign_in_at: session.user.app_metadata.last_sign_in_at,
-              full_name: session.user.user_metadata.full_name,
-              name: session.user.user_metadata.name,
-              sub: session.user.user_metadata.sub,
-              email: session.user.email,
-              email_confirmed_at: session.user.email_confirmed_at,
-              birthday: session.user.user_metadata.birthday,
-              confirmed_at: session.user.user_metadata.confirmed_at,
-              avatar_url: session.user.user_metadata.avatar_url,
-              description: session.user.user_metadata.description,
-              phone_number: session.user.user_metadata.phone_number,
-              phone: session.user.user_metadata.phone,
-              phone_verified: session.user.user_metadata.phone_verified,
+              provider_id: user.externalAccounts?.[0].id,
+              sub: user.externalAccounts?.[0].providerUserId,
+              last_sign_in_at: user.lastSignInAt?.toISOString(),
+              full_name: user.fullName,
+              name: `${user.firstName} ${user.lastName}`,
+              email: user.primaryEmailAddress?.emailAddress,
+              email_confirmed_at:
+                user.primaryEmailAddress?.verification.status === 'verified'
+                  ? user.primaryEmailAddress?.verification.verifiedAtClient
+                  : undefined,
+              avatar_url: user.imageUrl,
+              phone_number: user.primaryPhoneNumber?.phoneNumber,
+              phone_verified: !!user.hasVerifiedPhoneNumber,
+              // TODO: Remove below fields in database
+              // birthday: undefined,
+              // confirmed_at: undefined,
+              // phone: undefined,
             })
             .single();
 
-          if (status !== 201 && status !== 200) {
-            await supabase.auth.signOut();
+          console.log('data', data);
 
-            return;
+          if (data) {
+            existingUser = data;
           }
         }
 
-        const {profile, userTags} = await fetchUserProfile(session.user.id);
+        if (!existingUser) {
+          return;
+        }
+
+        const {profile, userTags} = await fetchUserProfile(existingUser.id);
 
         if (profile) {
           if (profile?.deleted_at) {
             await supabase.auth.signOut();
+
             snackbar.open({
               text: t('common.deletedAccount'),
               color: 'danger',
@@ -167,10 +152,10 @@ function App(): JSX.Element | null {
             return;
           }
 
-          const blockedUserIds = await fetchBlockUserIds(session.user.id);
+          const blockedUserIds = await fetchBlockUserIds(existingUser.id);
 
           setAuth({
-            authId: session.user.id,
+            authId: existingUser.id,
             user: profile,
             blockedUserIds,
             tags: userTags,
@@ -185,7 +170,7 @@ function App(): JSX.Element | null {
                 }));
 
                 fetchAddPushToken({
-                  authId: session.user.id,
+                  authId: user.id,
                   expoPushToken: token,
                 });
               }
@@ -198,91 +183,27 @@ function App(): JSX.Element | null {
               }
             });
         }
-
-        return;
+      } catch (err) {
+        if (__DEV__) {
+          console.error(err);
+        }
       }
-
-      setAuth({
-        authId: null,
-        user: null,
-        blockedUserIds: [],
-        pushToken: null,
-        tags: [],
-      });
-    });
-
-    return () => {
-      data.subscription.unsubscribe();
     };
-  }, [setAuth, snackbar]);
+
+    checkUser();
+  }, [setAuth, snackbar, user]);
 
   useEffect(() => {
     if (assetLoaded) {
-      // Adhoc: Set a timeout to hide the splash screen
-      // Wait for 2 seconds because supabase takes time to initialize
-      const timeout = setTimeout(() => {
-        SplashScreen.hideAsync();
-        setInitialRouteName(authId ? '/' : 'sign-in');
-
-        if (timeout) {
-          clearTimeout(timeout);
-        }
-      }, 2000);
+      SplashScreen?.hideAsync();
     }
-  }, [assetLoaded, authId]);
+  }, [assetLoaded]);
 
-  if (!initialRouteName || checkEasUpdate) {
+  if (checkEasUpdate) {
     return <CustomLoadingIndicator />;
   }
 
-  return (
-    <Container>
-      <Content>
-        <Stack
-          initialRouteName={initialRouteName}
-          screenOptions={{
-            headerStyle: {backgroundColor: theme.bg.basic},
-            headerTintColor: theme.text.label,
-            headerTitleStyle: {
-              fontWeight: 'bold',
-              color: theme.text.basic,
-            },
-            headerLeft: ({canGoBack}) =>
-              canGoBack && (
-                <RectButton
-                  hitSlop={{top: 8, left: 8, right: 8, bottom: 8}}
-                  onPress={() =>
-                    canGoBack
-                      ? back()
-                      : Platform.OS === 'web'
-                        ? (window.location.href = WEB_URL)
-                        : replace('/')
-                  }
-                  style={
-                    Platform.OS === 'web'
-                      ? css`
-                          padding: 8px;
-                          border-radius: 48px;
-                        `
-                      : css`
-                          padding: 8px;
-                          border-radius: 48px;
-                          margin-left: -8px;
-                        `
-                  }
-                >
-                  <Icon name="CaretLeft" size={24} />
-                </RectButton>
-              ),
-          }}
-        >
-          <Stack.Screen name="(auth)" options={{headerShown: false}} />
-          <Stack.Screen name="(app)" options={{headerShown: false}} />
-          {/* Note: Only modals are written here.  */}
-        </Stack>
-      </Content>
-    </Container>
-  );
+  return <Slot />;
 }
 
 function Layout(): JSX.Element | null {
@@ -314,6 +235,14 @@ export default function RootLayout(): JSX.Element | null {
     undefined,
   );
 
+  const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
+
+  if (!publishableKey) {
+    throw new Error(
+      'Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env',
+    );
+  }
+
   useEffect(() => {
     const initializeThemeType = async (): Promise<void> => {
       const darkMode = await AsyncStorage.getItem(AsyncStorageKey.DarkMode);
@@ -342,12 +271,16 @@ export default function RootLayout(): JSX.Element | null {
         flex: 1;
       `}
     >
-      <RootProvider initialThemeType={localThemeType as ColorSchemeName}>
-        <>
-          <StatusBarBrightness />
-          <Layout />
-        </>
-      </RootProvider>
+      <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
+        <ClerkLoaded>
+          <RootProvider initialThemeType={localThemeType as ColorSchemeName}>
+            <>
+              <StatusBarBrightness />
+              <Layout />
+            </>
+          </RootProvider>
+        </ClerkLoaded>
+      </ClerkProvider>
     </GestureHandlerRootView>
   );
 }
