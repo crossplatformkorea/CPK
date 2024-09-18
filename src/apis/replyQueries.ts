@@ -1,5 +1,5 @@
+import {SupabaseClient} from '../hooks/useSupabase';
 import {t} from '../STRINGS';
-import {supabase} from '../supabase';
 import {
   ImageInsertArgs,
   NotificationInsertArgs,
@@ -29,10 +29,12 @@ export const fetchReplyPagination = async ({
   cursor = new Date().toISOString(),
   limit = PAGE_SIZE,
   postId,
+  supabase,
 }: {
   cursor: string | undefined;
   limit?: number;
   postId: string;
+  supabase: SupabaseClient;
 }): Promise<ReplyWithJoins[]> => {
   const {data, error} = await supabase
     .from('replies')
@@ -57,9 +59,13 @@ export const fetchReplyPagination = async ({
   return filterDeletedImagesInReplies(data as unknown as ReplyWithJoins[]);
 };
 
-export const fetchReplyById = async (
-  id: string,
-): Promise<ReplyWithJoins | null> => {
+export const fetchReplyById = async ({
+  id,
+  supabase,
+}: {
+  id: string;
+  supabase: SupabaseClient;
+}): Promise<ReplyWithJoins | null> => {
   const {data, error} = await supabase
     .from('replies')
     .select(
@@ -84,9 +90,11 @@ export const fetchReplyById = async (
 export const fetchCreateReply = async ({
   reply: replyArg,
   images: imagesArg = [],
+  supabase,
 }: {
   reply: ReplyInsertArgs;
   images?: ImageInsertArgs[];
+  supabase: SupabaseClient;
 }): Promise<ReplyWithJoins> => {
   const {message, user_id, post_id, reply_id} = replyArg;
 
@@ -140,6 +148,7 @@ export const fetchCreateReply = async ({
 
     // Send notifications to other users following the post
     const userIds = await sendNotificationsToPostUsers({
+      supabase,
       postId: post_id,
       body: message,
       title: title && t('common.newReplyOnTitle', {title}),

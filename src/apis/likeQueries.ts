@@ -1,13 +1,15 @@
-import {supabase} from '../supabase';
+import { SupabaseClient } from "../hooks/useSupabase";
 
 export async function toggleLike({
   userId,
   replyId,
   postId,
+  supabase,
 }: {
   userId: string;
   replyId?: string;
   postId?: string;
+  supabase: SupabaseClient;
 }) {
   if (!replyId && !postId) {
     throw new Error('Either replyId or postId must be provided');

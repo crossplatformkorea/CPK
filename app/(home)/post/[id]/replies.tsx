@@ -11,7 +11,6 @@ import ReplyInput from '../../../../src/components/uis/ReplyInput';
 import {ImagePickerAsset} from 'expo-image-picker';
 import {
   getPublicUrlFromPath,
-  supabase,
   uploadFileToSupabase,
 } from '../../../../src/supabase';
 import {
@@ -25,6 +24,7 @@ import {ReplyWithJoins} from '../../../../src/types';
 import FallbackComponent from '../../../../src/components/uis/FallbackComponent';
 import {toggleLike} from '../../../../src/apis/likeQueries';
 import ErrorBoundary from 'react-native-error-boundary';
+import useSupabase from '../../../../src/hooks/useSupabase';
 
 export default function Replies({
   flashListRef,
@@ -36,6 +36,7 @@ export default function Replies({
   postId?: string;
   replyId?: string;
 }): JSX.Element {
+  const {supabase} = useSupabase();
   const {bottom} = useSafeAreaInsets();
   const {theme} = useDooboo();
   const {authId} = useRecoilValue(authRecoilState);
@@ -48,7 +49,12 @@ export default function Replies({
 
   const {error, isValidating, mutate} = useSWR<ReplyWithJoins[]>(
     ['replies', postId, cursor],
-    () => fetchReplyPagination({cursor, postId: postId as string}),
+    () =>
+      fetchReplyPagination({
+        cursor,
+        postId: postId as string,
+        supabase: supabase!,
+      }),
     {
       revalidateOnFocus: false,
       onSuccess: (data) => {
@@ -63,7 +69,7 @@ export default function Replies({
   );
 
   const handleCreateReply = async () => {
-    if (!authId || !postId) return;
+    if (!authId || !postId || !supabase) return;
 
     setIsCreateReplyInFlight(true);
 
@@ -77,12 +83,14 @@ export default function Replies({
           fileType: asset.type === 'video' ? 'Video' : 'Image',
           bucket: 'images',
           destPath,
+          supabase,
         });
       });
 
       const images = await Promise.all(imageUploadPromises);
 
       const newReply = await fetchCreateReply({
+        supabase,
         reply: {
           message: reply,
           user_id: authId,
@@ -93,7 +101,10 @@ export default function Replies({
           .map((el) => ({
             ...el,
             image_url: el?.image_url
-              ? getPublicUrlFromPath(el.image_url)
+              ? getPublicUrlFromPath({
+                  path: el.image_url,
+                  supabase,
+                })
               : undefined,
           })),
       });
@@ -126,7 +137,7 @@ export default function Replies({
   };
 
   const handleToggleLike = async (replyId: string) => {
-    if (!authId) return;
+    if (!authId || !supabase) return;
 
     const updatedReplies = replies.map((reply) => {
       if (reply.id === replyId) {
@@ -153,6 +164,7 @@ export default function Replies({
     await toggleLike({
       userId: authId,
       replyId,
+      supabase,
     });
 
     mutate();
@@ -162,7 +174,7 @@ export default function Replies({
     const updatedReplies = replies.filter((reply) => reply.id !== replyId);
     setReplies(updatedReplies);
 
-    await supabase
+    await supabase!
       .from('replies')
       .update({deleted_at: new Date().toISOString()})
       .eq('id', replyId);

@@ -18,6 +18,7 @@ import {
 import {User} from '../../../src/types';
 import ErrorBoundary from 'react-native-error-boundary';
 import FallbackComponent from '../../../src/components/uis/FallbackComponent';
+import useSupabase from '../../../src/hooks/useSupabase';
 
 const Profile = styled.View`
   padding: 16px 16px 8px 16px;
@@ -82,10 +83,17 @@ export default function BlockUser(): JSX.Element {
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const [loadingMore, setLoadingMore] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const {supabase} = useSupabase();
 
   const loadBlockedUsers = useCallback(
     async (loadMore = false) => {
-      if (loadingMore || refreshing || !authId || blockedUserIds.length === 0)
+      if (
+        !supabase ||
+        loadingMore ||
+        refreshing ||
+        !authId ||
+        blockedUserIds.length === 0
+      )
         return;
 
       if (loadMore) {
@@ -96,11 +104,12 @@ export default function BlockUser(): JSX.Element {
       }
 
       try {
-        const data = await fetchBlockUsersPagination(
-          authId,
-          loadMore ? cursor : new Date().toISOString(),
-          PAGE_SIZE,
-        );
+        const data = await fetchBlockUsersPagination({
+          userId: authId,
+          limit: PAGE_SIZE,
+          supabase,
+          cursor: loadMore ? cursor : new Date().toISOString(),
+        });
 
         setBlockUsers((prev) => (loadMore ? [...prev, ...data] : data));
 
@@ -114,7 +123,7 @@ export default function BlockUser(): JSX.Element {
         setRefreshing(false);
       }
     },
-    [authId, blockedUserIds.length, cursor, loadingMore, refreshing],
+    [authId, blockedUserIds.length, cursor, loadingMore, refreshing, supabase],
   );
 
   useEffect(() => {
@@ -147,7 +156,11 @@ export default function BlockUser(): JSX.Element {
         <Button
           onPress={() => {
             alertDialog.close();
-            fetchUnblockUser(authId, userId);
+            fetchUnblockUser({
+              userId: authId,
+              blockUserId: userId,
+              supabase: supabase!,
+            });
 
             setAuth((prev) => {
               return {

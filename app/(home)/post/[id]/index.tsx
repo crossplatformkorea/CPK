@@ -31,6 +31,7 @@ import {
 import {RectButton} from 'react-native-gesture-handler';
 import ErrorBoundary from 'react-native-error-boundary';
 import FallbackComponent from '../../../../src/components/uis/FallbackComponent';
+import useSupabase from '../../../../src/hooks/useSupabase';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -44,6 +45,7 @@ const Content = styled.View`
 `;
 
 export default function PostDetails(): JSX.Element {
+  const {supabase} = useSupabase();
   const {id} = useLocalSearchParams<{id: string}>();
   const {theme, snackbar} = useDooboo();
   const {bottom} = useSafeAreaInsets();
@@ -80,9 +82,9 @@ export default function PostDetails(): JSX.Element {
   }, [post, authId]);
 
   const handleDeletePost = useCallback(async () => {
-    if (!post) return;
+    if (!post || !supabase) return;
 
-    const result = await fetchDeletePost({id: post.id});
+    const result = await fetchDeletePost({id: post.id, supabase});
 
     if (result) {
       snackbar.open({text: t('common.deleteSuccess')});
@@ -95,7 +97,7 @@ export default function PostDetails(): JSX.Element {
       color: 'danger',
       text: t('common.unhandledError'),
     });
-  }, [back, post, snackbar, setPosts]);
+  }, [post, supabase, snackbar, setPosts, back]);
 
   const handlePressMore = useCallback(() => {
     if (authId === post?.user_id) {
@@ -140,7 +142,7 @@ export default function PostDetails(): JSX.Element {
   }, [post?.user.display_name, push]);
 
   const handleToggleLike = async () => {
-    if (!authId || !post) return;
+    if (!authId || !post || !supabase) return;
 
     const userLike = post.likes?.find((like) => like.user_id === authId);
 
@@ -155,6 +157,7 @@ export default function PostDetails(): JSX.Element {
     await toggleLike({
       userId: authId,
       postId: post.id,
+      supabase,
     });
 
     setPosts((prevPosts) =>

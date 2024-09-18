@@ -17,6 +17,7 @@ import {
 } from '../../../src/recoil/atoms';
 import ListEmptyItem from '../../../src/components/uis/ListEmptyItem';
 import ErrorBoundary from 'react-native-error-boundary';
+import useSupabase from '../../../src/hooks/useSupabase';
 
 const Container = styled.View`
   flex: 1;
@@ -25,6 +26,7 @@ const Container = styled.View`
 `;
 
 export default function Posts(): JSX.Element {
+  const {supabase} = useSupabase();
   const {push} = useRouter();
   const {authId, blockedUserIds} = useRecoilValue(authRecoilState);
   const [cursor, setCursor] = useState<string | undefined>(undefined);
@@ -34,13 +36,13 @@ export default function Posts(): JSX.Element {
 
   const fetcher = useCallback(
     (cursor: string | undefined) =>
-      fetchPostPagination({cursor, blockedUserIds}),
-    [blockedUserIds],
+      fetchPostPagination({cursor, blockedUserIds, supabase: supabase!}),
+    [blockedUserIds, supabase],
   );
 
   const {error, isValidating, mutate} = useSWR(
     ['posts', cursor],
-    () => fetchPostPagination({cursor, blockedUserIds}),
+    () => fetchPostPagination({cursor, blockedUserIds, supabase: supabase!}),
     {
       revalidateOnFocus: false,
       revalidateIfStale: false,

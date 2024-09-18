@@ -1,9 +1,10 @@
-import {supabase} from '../supabase';
+import {SupabaseClient} from '../hooks/useSupabase';
 
 type Notification = {
   title: string;
   body: string;
   data?: Record<string, any>;
+  supabase: SupabaseClient;
 };
 
 export const sendNotifications = async (
@@ -55,6 +56,7 @@ export const sendNotificationsToAllUsers = async ({
   title,
   body,
   data,
+  supabase,
 }: Notification) => {
   async function getAllPushTokens() {
     const {data, error} = await supabase.from('push_tokens').select('token');
@@ -77,6 +79,7 @@ export const sendNotificationsToAllUsers = async ({
       body,
       title,
       data,
+      supabase,
     });
   }
 };
@@ -86,11 +89,13 @@ export const sendNotificationsToPostUsers = async ({
   title = '',
   body,
   data,
+  supabase,
 }: {
   postId: string;
   body: string;
   title?: string;
   data?: Record<string, unknown>;
+  supabase: SupabaseClient;
 }) => {
   // Function to fetch push tokens of the post author, likers, and commenters
   async function getPostRelatedUserIdsAndPushTokens() {
@@ -156,6 +161,7 @@ export const sendNotificationsToPostUsers = async ({
   // If there are any tokens, send notifications
   if (tokens.length > 0) {
     await sendNotifications(tokens, {
+      supabase,
       body,
       title,
       data,

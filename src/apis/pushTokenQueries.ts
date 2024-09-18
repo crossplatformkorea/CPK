@@ -1,12 +1,14 @@
 import {Platform} from 'react-native';
-import {supabase} from '../supabase';
+import {SupabaseClient} from '../hooks/useSupabase';
 
 export async function fetchAddPushToken({
   authId,
   expoPushToken,
+  supabase,
 }: {
   authId: string;
   expoPushToken: string;
+  supabase: SupabaseClient;
 }) {
   const {data: existingToken} = await supabase
     .from('push_tokens')
@@ -39,9 +41,11 @@ export async function fetchAddPushToken({
 export async function fetchDeletePushToken({
   authId,
   expoPushToken,
+  supabase,
 }: {
   authId: string;
   expoPushToken: string;
+  supabase: SupabaseClient;
 }) {
   const {data: deletedToken, error: deleteError} = await supabase
     .from('push_tokens')
@@ -59,7 +63,13 @@ export async function fetchDeletePushToken({
   return deletedToken;
 }
 
-export async function fetchPushTokens(userId: string) {
+export async function fetchPushTokens({
+  userId,
+  supabase,
+}: {
+  userId: string;
+  supabase: SupabaseClient;
+}) {
   const {data: tokens, error} = await supabase
     .from('push_tokens')
     .select('*')

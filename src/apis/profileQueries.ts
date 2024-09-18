@@ -1,8 +1,14 @@
+import {SupabaseClient} from '../hooks/useSupabase';
 import {t} from '../STRINGS';
-import {supabase} from '../supabase';
 import {User, UserUpdateArgs} from '../types';
 
-export const fetchUserProfile = async (authId: string) => {
+export const fetchUserProfile = async ({
+  authId,
+  supabase,
+}: {
+  authId: string;
+  supabase: SupabaseClient;
+}) => {
   const {data: profile, error: profileError} = await supabase
     .from('users')
     .select('*')
@@ -42,7 +48,13 @@ export const fetchUserProfile = async (authId: string) => {
   return {profile, userTags};
 };
 
-export const fetchUserWithDisplayName = async (displayName: string) => {
+export const fetchUserWithDisplayName = async ({
+  displayName,
+  supabase,
+}: {
+  displayName: string;
+  supabase: SupabaseClient;
+}) => {
   const {data: profile, error: profileError} = await supabase
     .from('users')
     .select('*')
@@ -84,16 +96,18 @@ export const fetchUserWithDisplayName = async (displayName: string) => {
   const userTags = tags?.map((tag) => tag.tag) || [];
 
   return {profile, userTags};
-}
+};
 
 export const fetchUpdateProfile = async ({
   args,
   authId,
   tags,
+  supabase,
 }: {
   args: UserUpdateArgs;
   tags: string[];
   authId: string;
+  supabase: SupabaseClient;
 }) => {
   if (!args.display_name) {
     const error = new Error(t('error.displayNameIsEmpty'));

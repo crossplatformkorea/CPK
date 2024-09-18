@@ -28,6 +28,7 @@ import {filterUploadableAssets} from '../../../../src/utils/common';
 import {RectButton} from 'react-native-gesture-handler';
 import ErrorBoundary from 'react-native-error-boundary';
 import FallbackComponent from '../../../../src/components/uis/FallbackComponent';
+import useSupabase from '../../../../src/hooks/useSupabase';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -49,6 +50,7 @@ type FormData = yup.InferType<typeof schema>;
 
 export default function PostUpdate(): JSX.Element {
   const {id} = useLocalSearchParams<{id: string}>();
+  const {supabase} = useSupabase();
   const {back} = useRouter();
   const {theme, snackbar} = useDooboo();
   const {authId} = useRecoilValue(authRecoilState);
@@ -68,28 +70,36 @@ export default function PostUpdate(): JSX.Element {
     data: post,
     error,
     isValidating,
-  } = useSWR(id ? `post-${id}` : null, () => fetchPostById(id || ''), {
-    onSuccess: (data) => {
-      if (data) {
-        reset({
-          title: data.title,
-          content: data.content,
-          url: data?.url || undefined,
-        });
-        setAssets(
-          (data.images || []).map((el) => ({
-            uri: el.image_url as string,
-            type: 'image',
-            height: el.height || 0,
-            width: el.width || 0,
-          })),
-        );
-      }
+  } = useSWR(
+    id ? `post-${id}` : null,
+    () =>
+      fetchPostById({
+        id: id || '',
+        supabase: supabase!,
+      }),
+    {
+      onSuccess: (data) => {
+        if (data) {
+          reset({
+            title: data.title,
+            content: data.content,
+            url: data?.url || undefined,
+          });
+          setAssets(
+            (data.images || []).map((el) => ({
+              uri: el.image_url as string,
+              type: 'image',
+              height: el.height || 0,
+              width: el.width || 0,
+            })),
+          );
+        }
+      },
     },
-  });
+  );
 
   const handleUpdatePost: SubmitHandler<FormData> = async (data) => {
-    if (!authId || !id) return;
+    if (!authId || !id || !supabase) return;
 
     try {
       const imageUploadPromises = filterUploadableAssets(assets).map(
@@ -102,6 +112,7 @@ export default function PostUpdate(): JSX.Element {
             fileType: asset.type === 'video' ? 'Video' : 'Image',
             bucket: 'images',
             destPath,
+            supabase,
           });
         },
       );
@@ -129,6 +140,7 @@ export default function PostUpdate(): JSX.Element {
             image_url: el?.image_url || undefined,
           })),
         imageUrlsToDelete: deleteImageUrls,
+        supabase,
       });
 
       setPosts((prevPosts) =>

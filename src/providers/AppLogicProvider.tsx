@@ -10,6 +10,7 @@ import {authRecoilState, reportModalRecoilState} from '../recoil/atoms';
 import {t} from '../STRINGS';
 import {fetchBlockUser} from '../apis/blockQueries';
 import {fetchCreateReport} from '../apis/reportQueries';
+import useSupabase from '../hooks/useSupabase';
 
 type PeerContentActionProps = {
   userId: string;
@@ -44,6 +45,7 @@ function AppLogicProvider({children}: Props): JSX.Element {
   const setReportModalState = useSetRecoilState(reportModalRecoilState);
   const setAuthState = useSetRecoilState(authRecoilState);
   const [isCreateReportInFlight, setIsCreateReportInFlight] = useState(false);
+  const {supabase} = useSupabase();
 
   const handlePeerContentAction = async ({
     userId,
@@ -53,14 +55,14 @@ function AppLogicProvider({children}: Props): JSX.Element {
     const cancelButtonIndex = 2;
 
     const handleBlockUser = async () => {
-      if (!userId || !authId) {
+      if (!userId || !authId || !supabase) {
         return;
       }
 
       setIsCreateReportInFlight(true);
 
       try {
-        await fetchBlockUser({authId, userId});
+        await fetchBlockUser({authId, userId, supabase});
         snackbar.open({text: t('common.blockUserSuccess')});
 
         setAuthState((prev) => ({
@@ -81,15 +83,18 @@ function AppLogicProvider({children}: Props): JSX.Element {
     };
 
     const handleReport = async (content: string): Promise<void> => {
-      if (!content || !userId || !authId) {
+      if (!content || !userId || !authId || !supabase) {
         return;
       }
 
       await fetchCreateReport({
-        content,
-        src_user_id: authId,
-        title: t('common.reportSubject', {subject: t('common.user')}),
-        user_id: userId,
+        supabase,
+        report: {
+          content,
+          src_user_id: authId,
+          title: t('common.reportSubject', {subject: t('common.user')}),
+          user_id: userId,
+        },
       });
 
       snackbar.open({

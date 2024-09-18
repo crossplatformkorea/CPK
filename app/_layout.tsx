@@ -28,12 +28,12 @@ import CustomLoadingIndicator from '../src/components/uis/CustomLoadingIndicator
 import useAppState from '../src/hooks/useAppState';
 import {ClerkProvider, ClerkLoaded, useUser} from '@clerk/clerk-expo';
 import ReportModal from '../src/components/modals/ReportModal';
-import {supabase} from '../src/supabase';
 import {getLocale, t} from '../src/STRINGS';
 import {fetchUserProfile} from '../src/apis/profileQueries';
 import {fetchBlockUserIds} from '../src/apis/blockQueries';
 import {registerForPushNotificationsAsync} from '../src/utils/notifications';
 import {fetchAddPushToken} from '../src/apis/pushTokenQueries';
+import useSupabase from '../src/hooks/useSupabase';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -51,6 +51,7 @@ function App(): JSX.Element | null {
   const [, setAuth] = useRecoilState(authRecoilState);
   const [checkEasUpdate, setCheckEasUpdate] = useState(false);
   const {isUpdateAvailable, isUpdatePending} = useUpdates();
+  const {supabase} = useSupabase();
 
   useEffect(() => {
     if (isUpdatePending) {
@@ -89,6 +90,8 @@ function App(): JSX.Element | null {
   });
 
   useEffect(() => {
+    if (!supabase) return;
+
     const checkUser = async (): Promise<void> => {
       try {
         if (!user?.id) return;
@@ -138,7 +141,10 @@ function App(): JSX.Element | null {
           return;
         }
 
-        const {profile, userTags} = await fetchUserProfile(existingUser.id);
+        const {profile, userTags} = await fetchUserProfile({
+          authId: existingUser.id,
+          supabase,
+        });
 
         if (profile) {
           if (profile?.deleted_at) {
@@ -152,7 +158,10 @@ function App(): JSX.Element | null {
             return;
           }
 
-          const blockedUserIds = await fetchBlockUserIds(existingUser.id);
+          const blockedUserIds = await fetchBlockUserIds({
+            userId: existingUser.id,
+            supabase,
+          });
 
           setAuth({
             authId: existingUser.id,
@@ -172,6 +181,7 @@ function App(): JSX.Element | null {
                 fetchAddPushToken({
                   authId: user.id,
                   expoPushToken: token,
+                  supabase,
                 });
               }
 
@@ -191,7 +201,7 @@ function App(): JSX.Element | null {
     };
 
     checkUser();
-  }, [setAuth, snackbar, user]);
+  }, [setAuth, snackbar, supabase, user]);
 
   useEffect(() => {
     if (assetLoaded) {

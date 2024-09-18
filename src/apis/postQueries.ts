@@ -1,4 +1,4 @@
-import {supabase} from '../supabase';
+import {SupabaseClient} from '../hooks/useSupabase';
 import {ImageInsertArgs, PostInsertArgs, PostWithJoins} from '../types';
 import {PAGE_SIZE} from '../utils/constants';
 import {sendNotificationsToAllUsers} from './notifications';
@@ -18,9 +18,13 @@ const filterDeletedImagesInPosts = (
   });
 };
 
-export const fetchPostById = async (
-  id: string,
-): Promise<PostWithJoins | null> => {
+export const fetchPostById = async ({
+  id,
+  supabase,
+}: {
+  id: string;
+  supabase: SupabaseClient;
+}): Promise<PostWithJoins | null> => {
   const {data, error} = await supabase
     .from('posts')
     .select(
@@ -52,10 +56,12 @@ export const fetchPostPagination = async ({
   cursor = new Date().toISOString(),
   limit = PAGE_SIZE,
   blockedUserIds = [],
+  supabase,
 }: {
   cursor: string | undefined;
   blockedUserIds?: string[];
   limit?: number;
+  supabase: SupabaseClient;
 }): Promise<PostWithJoins[]> => {
   const {data, error} = await supabase
     .from('posts')
@@ -101,6 +107,7 @@ export const fetchUpdatePost = async ({
   url,
   images,
   imageUrlsToDelete,
+  supabase,
 }: {
   postId: string;
   title: string;
@@ -108,6 +115,7 @@ export const fetchUpdatePost = async ({
   url: string | null;
   images: ImageInsertArgs[];
   imageUrlsToDelete: string[];
+  supabase: SupabaseClient;
 }): Promise<PostWithJoins> => {
   const {data: post, error: updateError} = await supabase
     .from('posts')
@@ -157,9 +165,11 @@ export const fetchUpdatePost = async ({
 export const fetchDeletePost = async ({
   id,
   softDelete = true,
+  supabase,
 }: {
   id: string;
   softDelete?: boolean;
+  supabase: SupabaseClient;
 }): Promise<boolean> => {
   if (softDelete) {
     const {error} = await supabase
@@ -195,9 +205,13 @@ export const fetchDeletePost = async ({
   return true;
 };
 
-export const fetchCreatePost = async (
-  post: PostInsertArgs & {images?: ImageInsertArgs[]},
-) => {
+export const fetchCreatePost = async ({
+  post,
+  supabase,
+}: {
+  post: PostInsertArgs & {images?: ImageInsertArgs[]};
+  supabase: SupabaseClient;
+}) => {
   const {data, error} = await supabase
     .from('posts')
     .insert({
@@ -240,6 +254,7 @@ export const fetchCreatePost = async (
   sendNotificationsToAllUsers({
     title: post.title,
     body: post.content,
+    supabase,
   });
 
   return data as unknown as PostWithJoins;

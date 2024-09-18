@@ -14,7 +14,7 @@ import {OAuthProvider} from '@clerk/types/dist';
 import {useRecoilState} from 'recoil';
 import {authRecoilState} from '../../../src/recoil/atoms';
 import {fetchDeletePushToken} from '../../../src/apis/pushTokenQueries';
-import {supabase} from '../../../src/supabase';
+import useSupabase from '../../../src/hooks/useSupabase';
 
 const Container = styled.View`
   flex: 1;
@@ -92,6 +92,7 @@ function SocialProvider({provider, email}: ProviderType): JSX.Element {
 }
 
 export default function LoginInfo(): JSX.Element {
+  const {supabase} = useSupabase();
   const {replace} = useRouter();
   const {theme, alertDialog} = useDooboo();
   const {bottom} = useSafeAreaInsets();
@@ -100,9 +101,10 @@ export default function LoginInfo(): JSX.Element {
   const [{pushToken}, setAuth] = useRecoilState(authRecoilState);
 
   const handleSignOut = async (): Promise<void> => {
-    if (isSignedIn) {
+    if (isSignedIn && supabase) {
       if (pushToken && user?.id) {
         await fetchDeletePushToken({
+          supabase,
           authId: user?.id,
           expoPushToken: pushToken,
         });
@@ -123,7 +125,7 @@ export default function LoginInfo(): JSX.Element {
     }
 
     if (user?.id) {
-      await supabase
+      await supabase!
         .from('users')
         .update({deleted_at: new Date().toISOString()})
         .eq('id', user?.id);
