@@ -14,15 +14,10 @@ enum Gender {
   intersex
 }
 
-enum AuthType {
-  email
-  google
-  apple
-}
-
 model User {
   id                              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  email                           String?   @unique
+  clerkId                         String?   @unique @map("clerk_id")
+  email                           String?
   fullName                        String?   @map("full_name")
   name                            String?
   displayName                     String?   @map("display_name")
@@ -30,7 +25,7 @@ model User {
   phoneVerified                   Boolean?  @default(false) @map("phone_verified")
   providerId                      String?   @map("provider_id")
   sub                             String?
-  provider                        AuthType  @default(email)
+  provider                        String?   @default("email")
   birthday                        DateTime?
   gender                          Gender?
   phone                           String?
