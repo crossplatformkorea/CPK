@@ -26,7 +26,7 @@ import {authRecoilState, reportModalRecoilState} from '../src/recoil/atoms';
 import {AsyncStorageKey} from '../src/utils/constants';
 import CustomLoadingIndicator from '../src/components/uis/CustomLoadingIndicator';
 import useAppState from '../src/hooks/useAppState';
-import {ClerkProvider, ClerkLoaded, useUser} from '@clerk/clerk-expo';
+import {ClerkProvider, ClerkLoaded, useUser, useAuth} from '@clerk/clerk-expo';
 import ReportModal from '../src/components/modals/ReportModal';
 import {getLocale, t} from '../src/STRINGS';
 import {fetchUserProfile} from '../src/apis/profileQueries';
@@ -48,6 +48,7 @@ Notifications.setNotificationHandler({
 function App(): JSX.Element | null {
   const {user} = useUser();
   const {assetLoaded, snackbar} = useDooboo();
+  const {signOut} = useAuth();
   const [, setAuth] = useRecoilState(authRecoilState);
   const [checkEasUpdate, setCheckEasUpdate] = useState(false);
   const {isUpdateAvailable, isUpdatePending} = useUpdates();
@@ -130,8 +131,6 @@ function App(): JSX.Element | null {
             })
             .single();
 
-          console.log('data', data);
-
           if (data) {
             existingUser = data;
           }
@@ -148,7 +147,7 @@ function App(): JSX.Element | null {
 
         if (profile) {
           if (profile?.deleted_at) {
-            await supabase.auth.signOut();
+            signOut();
 
             snackbar.open({
               text: t('common.deletedAccount'),
@@ -201,7 +200,7 @@ function App(): JSX.Element | null {
     };
 
     checkUser();
-  }, [setAuth, snackbar, supabase, user]);
+  }, [setAuth, signOut, snackbar, supabase, user]);
 
   useEffect(() => {
     if (assetLoaded) {

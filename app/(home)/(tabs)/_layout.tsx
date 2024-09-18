@@ -21,9 +21,9 @@ function SettingsMenu(): JSX.Element {
       style={css`
         align-items: center;
         justify-content: center;
-        padding: 8px;
+        padding: 2px;
         border-radius: 99px;
-        margin-right: 4px;
+        margin-right: 8px;
       `}
     >
       <Icon color={theme.text.basic} name="List" size={22} />
@@ -58,6 +58,7 @@ export default function TabLayout(): JSX.Element {
 
   return (
     <Tabs
+      initialRouteName="index"
       screenOptions={{
         tabBarActiveTintColor: theme.role.primary,
         headerStyle: {backgroundColor: theme.bg.basic},

@@ -60,8 +60,11 @@ export default function PostDetails(): JSX.Element {
   const post = posts.find((p) => p.id === id);
 
   useEffect(() => {
-    if (id) {
-      incrementViewCount(id);
+    if (id && supabase) {
+      incrementViewCount({
+        postId: id,
+        supabase,
+      });
 
       setPosts((prevPosts) =>
         prevPosts.map((p) =>
@@ -69,7 +72,7 @@ export default function PostDetails(): JSX.Element {
         ),
       );
     }
-  }, [id, setPosts]);
+  }, [id, setPosts, supabase]);
 
   useEffect(() => {
     if (post) {
@@ -341,9 +344,9 @@ export default function PostDetails(): JSX.Element {
                 <RectButton
                   hitSlop={{top: 20, left: 20, right: 20, bottom: 20}}
                   onPress={handlePressMore}
+                  activeOpacity={0}
                   style={css`
                     margin-right: -8px;
-                    padding: 8px;
                     border-radius: 48px;
                   `}
                 >

@@ -112,6 +112,16 @@ export default function LoginInfo(): JSX.Element {
 
       signOut();
     }
+
+    setAuth({
+      authId: null,
+      user: null,
+      blockedUserIds: [],
+      pushToken: null,
+      tags: [],
+    });
+
+    replace('/');
   };
 
   const handleWithdrawUser = async (): Promise<void> => {
