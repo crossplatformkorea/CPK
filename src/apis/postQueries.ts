@@ -267,7 +267,13 @@ BEGIN
   UPDATE posts SET view_count = view_count + 1 WHERE id = post_id;
 END;
 */
-export const incrementViewCount = async (postId: string) => {
+export const incrementViewCount = async ({
+  postId,
+  supabase,
+}: {
+  postId: string;
+  supabase: SupabaseClient;
+}) => {
   //@ts-ignore
   const {data, error} = await supabase.rpc('increment_view_count', {
     post_id: postId,

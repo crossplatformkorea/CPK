@@ -4,13 +4,13 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {css} from '@emotion/native';
 import {IconButton} from 'dooboo-ui';
 import {Stack, useLocalSearchParams, useRouter} from 'expo-router';
-import CustomLoadingIndicator from '../../src/components/uis/CustomLoadingIndicator';
-import Wrapper from '../../src/components/uis/Wrapper';
-import ImageZoomView from '../../src/components/uis/ImageZoomView';
-import {isDesktopDevice} from '../../src/utils/common';
-import {t} from '../../src/STRINGS';
+import CustomLoadingIndicator from '../src/components/uis/CustomLoadingIndicator';
+import Wrapper from '../src/components/uis/Wrapper';
+import ImageZoomView from '../src/components/uis/ImageZoomView';
+import {isDesktopDevice} from '../src/utils/common';
+import {t} from '../src/STRINGS';
 import ErrorBoundary from 'react-native-error-boundary';
-import FallbackComponent from '../../src/components/uis/FallbackComponent';
+import FallbackComponent from '../src/components/uis/FallbackComponent';
 
 export default function Picture(): JSX.Element {
   const {imageUrl} = useLocalSearchParams();

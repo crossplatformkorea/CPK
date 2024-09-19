@@ -314,7 +314,6 @@ export default function PostUpdate(): JSX.Element {
               style={css`
                 align-items: center;
                 justify-content: center;
-                padding: 6px;
                 margin-right: -4px;
                 border-radius: 99px;
               `}

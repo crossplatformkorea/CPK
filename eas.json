@@ -26,10 +26,11 @@
       "channel": "production",
       "cache": {
         "disabled": true
+      },
+      "android": {
+        "ndk": "26.2.11394342"
       }
     }
   },
-  "submit": {
-    "production": {}
-  }
+  "submit": {}
 }

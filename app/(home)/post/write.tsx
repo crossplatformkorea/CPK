@@ -123,10 +123,10 @@ export default function PostWrite(): JSX.Element {
             <RectButton
               // @ts-ignore
               onPress={handleSubmit(handleWritePost)}
+              activeOpacity={0}
               style={css`
                 align-items: center;
                 justify-content: center;
-                padding: 6px;
                 margin-right: -4px;
                 border-radius: 99px;
               `}
