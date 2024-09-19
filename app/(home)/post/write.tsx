@@ -21,6 +21,7 @@ import {MAX_IMAGES_UPLOAD_LENGTH} from '../../../src/utils/constants';
 import CustomScrollView from '../../../src/components/uis/CustomScrollView';
 import {uploadFileToSupabase} from '../../../src/supabase';
 import {RectButton} from 'react-native-gesture-handler';
+import useSupabase from '../../../src/hooks/useSupabase';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -41,6 +42,7 @@ const schema = yup.object().shape({
 type FormData = yup.InferType<typeof schema>;
 
 export default function PostWrite(): JSX.Element {
+  const {supabase} = useSupabase();
   const {back} = useRouter();
   const {theme, snackbar} = useDooboo();
   const {authId} = useRecoilValue(authRecoilState);
@@ -57,7 +59,7 @@ export default function PostWrite(): JSX.Element {
   });
 
   const handleWritePost: SubmitHandler<FormData> = async (data) => {
-    if (!authId) return;
+    if (!authId || !supabase) return;
 
     setIsCreatePostInFlight(true);
 
@@ -71,21 +73,25 @@ export default function PostWrite(): JSX.Element {
           fileType: asset.type === 'video' ? 'Video' : 'Image',
           bucket: 'images',
           destPath,
+          supabase,
         });
       });
 
       const images = await Promise.all(imageUploadPromises);
 
       const newPost = await fetchCreatePost({
-        title: data.title,
-        content: data.content,
-        user_id: authId,
-        images: images
-          .filter((el) => !!el)
-          .map((el) => ({
-            ...el,
-            image_url: el?.image_url || undefined,
-          })),
+        supabase,
+        post: {
+          title: data.title,
+          content: data.content,
+          user_id: authId,
+          images: images
+            .filter((el) => !!el)
+            .map((el) => ({
+              ...el,
+              image_url: el?.image_url || undefined,
+            })),
+        },
       });
 
       setPosts((prevPosts) => [newPost, ...prevPosts]);
@@ -117,10 +123,10 @@ export default function PostWrite(): JSX.Element {
             <RectButton
               // @ts-ignore
               onPress={handleSubmit(handleWritePost)}
+              activeOpacity={0}
               style={css`
                 align-items: center;
                 justify-content: center;
-                padding: 6px;
                 margin-right: -4px;
                 border-radius: 99px;
               `}

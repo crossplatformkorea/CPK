@@ -46,5 +46,6 @@
     "Pressable",
     "Pretendard",
     "svgs"
-  ]
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

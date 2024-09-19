@@ -1,22 +1,20 @@
 import {ScrollView, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import styled, {css} from '@emotion/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {IconName} from 'dooboo-ui';
 import {Button, Icon, Typography, useDooboo} from 'dooboo-ui';
 import {Stack, useRouter} from 'expo-router';
-import {useRecoilValue} from 'recoil';
-
-import {authRecoilState} from '../../../src/recoil/atoms';
 import {t} from '../../../src/STRINGS';
-import {supabase} from '../../../src/supabase';
-import type {User} from '../../../src/types';
 import {showConfirm} from '../../../src/utils/alert';
-import {AsyncStorageKey} from '../../../src/utils/constants';
 import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
-import {fetchDeletePushToken} from '../../../src/apis/pushTokenQueries';
 import ErrorBoundary from 'react-native-error-boundary';
 import FallbackComponent from '../../../src/components/uis/FallbackComponent';
+import {useAuth, useUser} from '@clerk/clerk-expo';
+import {OAuthProvider} from '@clerk/types/dist';
+import {useRecoilState} from 'recoil';
+import {authRecoilState} from '../../../src/recoil/atoms';
+import {fetchDeletePushToken} from '../../../src/apis/pushTokenQueries';
+import useSupabase from '../../../src/hooks/useSupabase';
 
 const Container = styled.View`
   flex: 1;
@@ -38,20 +36,21 @@ const LoginInfoWrapper = styled.View`
 `;
 
 type ProviderType = {
-  provider: User['provider'];
   email: string;
+  provider: OAuthProvider;
 };
 
 function SocialProvider({provider, email}: ProviderType): JSX.Element {
   const {theme} = useDooboo();
+
   const iconName: IconName =
-    provider === 'email'
-      ? 'Envelope'
-      : provider === 'apple'
-        ? 'AppleLogo'
-        : provider === 'google'
-          ? 'GoogleLogo'
-          : 'GithubLogo';
+    provider === 'apple'
+      ? 'AppleLogo'
+      : provider === 'google'
+        ? 'GoogleLogo'
+        : provider === 'github'
+          ? 'GithubLogo'
+          : 'Envelope';
 
   return (
     <LoginInfoWrapper>
@@ -93,49 +92,71 @@ function SocialProvider({provider, email}: ProviderType): JSX.Element {
 }
 
 export default function LoginInfo(): JSX.Element {
-  const {back, replace} = useRouter();
+  const {supabase} = useSupabase();
+  const {replace} = useRouter();
   const {theme, alertDialog} = useDooboo();
   const {bottom} = useSafeAreaInsets();
-  const {authId, user, pushToken} = useRecoilValue(authRecoilState);
+  const {signOut} = useAuth();
+  const {isSignedIn, user} = useUser();
+  const [{pushToken}, setAuth] = useRecoilState(authRecoilState);
 
   const handleSignOut = async (): Promise<void> => {
-    if (pushToken && authId) {
-      await fetchDeletePushToken({
-        authId,
-        expoPushToken: pushToken,
-      });
+    if (isSignedIn && supabase) {
+      if (pushToken && user?.id) {
+        await fetchDeletePushToken({
+          supabase,
+          authId: user?.id,
+          expoPushToken: pushToken,
+        });
+      }
+
+      signOut();
     }
 
-    await AsyncStorage.removeItem(AsyncStorageKey.Token);
-    supabase.auth.signOut();
-    back();
-    back();
+    setAuth({
+      authId: null,
+      user: null,
+      blockedUserIds: [],
+      pushToken: null,
+      tags: [],
+    });
+
+    replace('/');
   };
 
   const handleWithdrawUser = async (): Promise<void> => {
-    if (!user || !authId) {
-      return;
-    }
-
     const confirmed = await showConfirm({
-      title: t('loginInfo.cancelAccount'),
-      description: t('loginInfo.cancelAccountDescription'),
+      title: t('loginInfo.withdrawAccount'),
+      description: t('loginInfo.withdrawAccountDescription'),
     });
 
     if (!confirmed) {
       return;
     }
 
-    await supabase
-      .from('users')
-      .update({deleted_at: new Date().toISOString()})
-      .eq('id', authId);
+    if (user?.id) {
+      await supabase!
+        .from('users')
+        .update({deleted_at: new Date().toISOString()})
+        .eq('id', user?.id);
 
-    supabase.auth.signOut();
+      if (isSignedIn) {
+        signOut();
+      }
+    }
+
+    setAuth({
+      authId: null,
+      user: null,
+      blockedUserIds: [],
+      pushToken: null,
+      tags: [],
+    });
+
     replace('/');
   };
 
-  if (!user) {
+  if (!isSignedIn) {
     return (
       <>
         <Stack.Screen options={{title: t('loginInfo.title')}} />
@@ -158,8 +179,8 @@ export default function LoginInfo(): JSX.Element {
               {t('loginInfo.loginMethod')}
             </Typography.Heading5>
             <SocialProvider
-              email={user?.email ?? ''}
-              provider={user?.provider ?? 'email'}
+              email={user?.primaryEmailAddress?.emailAddress ?? ''}
+              provider={user?.externalAccounts?.[0].provider ?? 'email'}
             />
             <Button
               color="warning"
@@ -185,8 +206,8 @@ export default function LoginInfo(): JSX.Element {
           color="danger"
           onPress={() => {
             alertDialog.open({
-              title: t('loginInfo.cancelAccount'),
-              body: t('loginInfo.cancelAccountDescription'),
+              title: t('loginInfo.withdrawAccount'),
+              body: t('loginInfo.withdrawAccountDescription'),
               closeOnTouchOutside: false,
               actions: [
                 <Button
@@ -227,7 +248,7 @@ export default function LoginInfo(): JSX.Element {
               font-size: 16px;
             `,
           }}
-          text={t('loginInfo.cancelAccount')}
+          text={t('loginInfo.withdrawAccount')}
           touchableHighlightProps={{
             underlayColor: theme.text.contrast,
           }}

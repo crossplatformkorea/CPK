@@ -81,12 +81,12 @@
   },
   "loginInfo": {
     "cancel": "취소",
-    "cancelAccount": "계정 탈퇴",
-    "cancelAccountDescription": "계정을 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
     "loggedInWith": "{{provider}} 계정으로 로그인했습니다",
     "loginMethod": "로그인 수단",
     "logout": "로그아웃",
-    "title": "로그인 정보"
+    "title": "로그인 정보",
+    "withdrawAccount": "계정 탈퇴",
+    "withdrawAccountDescription": "계정을 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다."
   },
   "onboarding": {
     "affiliation": "소속",

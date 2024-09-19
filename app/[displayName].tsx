@@ -20,6 +20,7 @@ import {
   fetchFollowUser,
   fetchIsAFollowing,
 } from '../src/apis/followQueries';
+import useSupabase from '../src/hooks/useSupabase';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -114,6 +115,8 @@ export default function DisplayName(): JSX.Element {
   const {displayName: displayNameWithLeading} = useLocalSearchParams<{
     displayName: string;
   }>();
+
+  const {supabase} = useSupabase();
   const {theme} = useDooboo();
   const {authId} = useRecoilValue(authRecoilState);
   const [user, setUser] = useState<any>(null);
@@ -125,12 +128,13 @@ export default function DisplayName(): JSX.Element {
 
   const followUser = async () => {
     try {
-      if (!authId || !user?.id) return;
+      if (!supabase || !authId || !user?.id) return;
 
       const result = await fetchFollowUser({
         authId,
         followingId: user.id,
         follow: !isFollowing,
+        supabase,
       });
 
       if (result) {
@@ -146,8 +150,14 @@ export default function DisplayName(): JSX.Element {
 
   useEffect(() => {
     async function fetchData() {
+      if (!supabase) return;
+
       try {
-        const {profile, userTags} = await fetchUserWithDisplayName(displayName);
+        const {profile, userTags} = await fetchUserWithDisplayName({
+          displayName,
+          supabase,
+        });
+
         setUser(profile);
         setTags(userTags);
 
@@ -157,12 +167,17 @@ export default function DisplayName(): JSX.Element {
             const isUserFollowing = await fetchIsAFollowing({
               authId,
               followingId: profile.id,
+              supabase,
             });
 
             setIsFollowing(isUserFollowing);
           }
 
-          const followingsData = await fetchFollowCounts(authId); // 팔로우 수를 가져오는 API
+          const followingsData = await fetchFollowCounts({
+            userId: profile.id,
+            supabase,
+          });
+
           setFollowingCount(followingsData.followingCount);
         }
       } catch (err: any) {
@@ -173,7 +188,7 @@ export default function DisplayName(): JSX.Element {
     }
 
     fetchData();
-  }, [authId, displayName]);
+  }, [authId, displayName, supabase]);
 
   if (loading) {
     return (

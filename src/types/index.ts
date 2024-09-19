@@ -32,6 +32,14 @@ export type ReplyInsertArgs = Database['public']['Tables']['replies']['Insert'];
 export type ReplyUpdateArgs = Database['public']['Tables']['replies']['Update'];
 export type ImageInsertArgs = Database['public']['Tables']['images']['Insert'];
 export type ImageUpdateArgs = Database['public']['Tables']['images']['Update'];
-export type ReportInsertArgs = Database['public']['Tables']['reports']['Insert'];
+export type ReportInsertArgs =
+  Database['public']['Tables']['reports']['Insert'];
 export type TagInsertArgs = Database['public']['Tables']['tags']['Insert'];
-export type NotificationInsertArgs = Database['public']['Tables']['notifications']['Insert'];
+export type NotificationInsertArgs =
+  Database['public']['Tables']['notifications']['Insert'];
+
+export type TokenCache = {
+  getToken: (key: string) => Promise<string | undefined | null>;
+  saveToken: (key: string, token: string) => Promise<void>;
+  clearToken?: (key: string) => void;
+};

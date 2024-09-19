@@ -1,13 +1,15 @@
-import {supabase} from '../supabase';
+import {SupabaseClient} from '../hooks/useSupabase';
 
 export async function fetchFollowUser({
   authId,
   followingId,
   follow,
+  supabase,
 }: {
   authId: string;
   followingId: string;
   follow: boolean;
+  supabase: SupabaseClient;
 }) {
   if (!authId) {
     throw new Error('ERR_NOT_AUTHORIZED');
@@ -111,9 +113,11 @@ export async function fetchFollowUser({
 export async function fetchIsAFollowing({
   authId,
   followingId,
+  supabase,
 }: {
   authId: string;
   followingId: string;
+  supabase: SupabaseClient;
 }) {
   if (!authId) {
     throw new Error('ERR_NOT_AUTHORIZED');
@@ -151,10 +155,12 @@ export async function fetchFollowers({
   userId,
   cursor,
   limit = 10,
+  supabase,
 }: {
   userId: string;
   cursor?: string;
   limit?: number;
+  supabase: SupabaseClient;
 }) {
   if (!userId) {
     throw new Error('ERR_NOT_AUTHORIZED');
@@ -197,10 +203,12 @@ export async function fetchFollowings({
   userId,
   cursor,
   limit = 10,
+  supabase,
 }: {
   userId: string;
   cursor?: string;
   limit?: number;
+  supabase: SupabaseClient;
 }) {
   if (!userId) {
     throw new Error('ERR_NOT_AUTHORIZED');
@@ -241,9 +249,13 @@ export async function fetchFollowings({
   }
 }
 
-export async function fetchFollowCounts(
-  userId: string,
-): Promise<{followingCount: number; followerCount: number}> {
+export async function fetchFollowCounts({
+  userId,
+  supabase,
+}: {
+  userId: string;
+  supabase: SupabaseClient;
+}): Promise<{followingCount: number; followerCount: number}> {
   if (!userId) {
     throw new Error('ERR_NOT_AUTHORIZED');
   }

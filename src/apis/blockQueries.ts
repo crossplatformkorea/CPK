@@ -1,12 +1,14 @@
-import {supabase} from '../supabase';
+import {SupabaseClient} from '../hooks/useSupabase';
 import {User} from '../types';
 
 export async function fetchBlockUser({
   authId,
   userId,
+  supabase,
 }: {
   authId: string;
   userId: string;
+  supabase: SupabaseClient;
 }) {
   const {data: existingBlock} = await supabase
     .from('blocks')
@@ -36,7 +38,15 @@ export async function fetchBlockUser({
   return newBlock;
 }
 
-export async function fetchUnblockUser(userId: string, blockUserId: string) {
+export async function fetchUnblockUser({
+  userId,
+  blockUserId,
+  supabase,
+}: {
+  userId: string;
+  blockUserId: string;
+  supabase: SupabaseClient;
+}) {
   if (!userId) {
     throw new Error('ERR_NOT_AUTHORIZED');
   }
@@ -55,11 +65,17 @@ export async function fetchUnblockUser(userId: string, blockUserId: string) {
   return deletedBlock;
 }
 
-export const fetchBlockUsersPagination = async (
-  userId: string,
-  cursor: string = new Date().toISOString(),
-  limit: number,
-) => {
+export const fetchBlockUsersPagination = async ({
+  userId,
+  limit,
+  cursor = new Date().toISOString(),
+  supabase,
+}: {
+  userId: string;
+  cursor?: string;
+  limit: number;
+  supabase: SupabaseClient;
+}) => {
   if (!userId) {
     return [];
   }
@@ -83,7 +99,13 @@ export const fetchBlockUsersPagination = async (
   return data.map((block) => block.block_user) as unknown as User[];
 };
 
-export const fetchBlockUserIds = async (userId: string): Promise<string[]> => {
+export const fetchBlockUserIds = async ({
+  userId,
+  supabase,
+}: {
+  userId: string;
+  supabase: SupabaseClient;
+}): Promise<string[]> => {
   const {data: blockedUsersData, error: blockedUsersError} = await supabase
     .from('blocks')
     .select('block_user_id')
@@ -96,5 +118,5 @@ export const fetchBlockUserIds = async (userId: string): Promise<string[]> => {
     return [];
   }
 
-  return blockedUsersData.map((block) => block.block_user_id);
+  return blockedUsersData.map((block) => block.block_user_id as string);
 };

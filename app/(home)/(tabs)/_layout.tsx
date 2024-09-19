@@ -1,9 +1,6 @@
 import {View} from 'react-native';
 import {Icon, useDooboo} from 'dooboo-ui';
 import {Redirect, Tabs, useRouter} from 'expo-router';
-import {useRecoilState} from 'recoil';
-
-import {authRecoilState} from '../../../src/recoil/atoms';
 import {t} from '../../../src/STRINGS';
 import {useEffect, useRef} from 'react';
 import * as Notifications from 'expo-notifications';
@@ -11,6 +8,8 @@ import {RectButton} from 'react-native-gesture-handler';
 import {css} from '@emotion/native';
 import {Image} from 'expo-image';
 import {IC_ICON} from '../../../src/icons';
+import {useRecoilValue} from 'recoil';
+import {authRecoilState} from '../../../src/recoil/atoms';
 
 function SettingsMenu(): JSX.Element {
   const {theme} = useDooboo();
@@ -22,9 +21,9 @@ function SettingsMenu(): JSX.Element {
       style={css`
         align-items: center;
         justify-content: center;
-        padding: 8px;
+        padding: 2px;
         border-radius: 99px;
-        margin-right: 4px;
+        margin-right: 8px;
       `}
     >
       <Icon color={theme.text.basic} name="List" size={22} />
@@ -34,11 +33,12 @@ function SettingsMenu(): JSX.Element {
 
 export default function TabLayout(): JSX.Element {
   const {theme} = useDooboo();
-  const [{authId, user}, setAuth] = useRecoilState(authRecoilState);
   const notificationResponseListener = useRef<Notifications.Subscription>();
+  const {user} = useRecoilValue(authRecoilState);
 
   useEffect(() => {
-    if (!authId) return;
+    if (!user?.id) return;
+
     notificationResponseListener.current =
       Notifications.addNotificationResponseReceivedListener((response) => {
         console.log(JSON.stringify(response.notification.request));
@@ -50,11 +50,7 @@ export default function TabLayout(): JSX.Element {
           notificationResponseListener.current,
         );
     };
-  }, [authId, setAuth]);
-
-  if (!authId) {
-    return <Redirect href="/sign-in" />;
-  }
+  }, [user?.id]);
 
   if (!user?.display_name) {
     return <Redirect href="/onboarding" />;
@@ -62,6 +58,7 @@ export default function TabLayout(): JSX.Element {
 
   return (
     <Tabs
+      initialRouteName="index"
       screenOptions={{
         tabBarActiveTintColor: theme.role.primary,
         headerStyle: {backgroundColor: theme.bg.basic},
@@ -94,7 +91,9 @@ export default function TabLayout(): JSX.Element {
               `}
             >
               <Image
-                source={user?.avatar_url ? {uri: user.avatar_url} : IC_ICON}
+                source={
+                  user && user?.avatar_url ? {uri: user.avatar_url} : IC_ICON
+                }
                 style={css`
                   width: 24px;
                   height: 24px;

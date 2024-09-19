@@ -5,10 +5,9 @@ import type {
   TextStyle,
   ViewStyle,
 } from 'react-native';
-import {Image} from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import {Image, TouchableOpacity} from 'react-native';
 import styled from '@emotion/native';
-import {Typography} from 'dooboo-ui';
+import {LoadingIndicator, Typography, useDooboo} from 'dooboo-ui';
 
 type Props = {
   style?: StyleProp<ViewStyle>;
@@ -20,10 +19,12 @@ type Props = {
     text?: StyleProp<TextStyle>;
   };
   onPress?: () => void;
+  loading?: boolean;
 };
 
 const Container = styled.View`
   padding: 8px 16px;
+  height: 40px;
 
   flex-direction: row;
   justify-content: center;
@@ -38,18 +39,27 @@ export default function SocialSignInButton({
   text,
   styles,
   onPress,
+  loading,
 }: Props): JSX.Element {
+  const {theme} = useDooboo();
+
   return (
     <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
       <Container style={style}>
-        {leftElement ? (
-          leftElement
-        ) : imageSource ? (
-          <Image source={imageSource} style={styles?.image} />
-        ) : null}
-        {text ? (
-          <Typography.Body2 style={styles?.text}>{text}</Typography.Body2>
-        ) : null}
+        {loading ? (
+          <LoadingIndicator size="small" color={theme.text.placeholder}/>
+        ) : (
+          <>
+            {leftElement ? (
+              leftElement
+            ) : imageSource ? (
+              <Image source={imageSource} style={styles?.image} />
+            ) : null}
+            {text ? (
+              <Typography.Body2 style={styles?.text}>{text}</Typography.Body2>
+            ) : null}
+          </>
+        )}
       </Container>
     </TouchableOpacity>
   );

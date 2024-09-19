@@ -31,6 +31,7 @@ import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingInd
 import {showAlert} from '../../../src/utils/alert';
 import {RectButton} from 'react-native-gesture-handler';
 import ErrorBoundary from 'react-native-error-boundary';
+import useSupabase, {SupabaseClient} from '../../../src/hooks/useSupabase';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -70,10 +71,19 @@ type FormData = yup.InferType<
   }
 >;
 
-const fetcher = async (authId?: string | null) => {
-  if (!authId) return;
+const fetcher = async ({
+  authId,
+  supabase,
+}: {
+  authId?: string | null;
+  supabase: SupabaseClient;
+}) => {
+  if (!authId || !supabase) return;
 
-  const {profile, userTags} = await fetchUserProfile(authId);
+  const {profile, userTags} = await fetchUserProfile({
+    authId,
+    supabase,
+  });
   return {profile, userTags};
 };
 
@@ -84,10 +94,11 @@ export default function ProfileUpdate(): JSX.Element {
   const [tags, setTags] = useState<string[]>([]);
   const [profileImg, setProfileImg] = useState<string>();
   const [displayNameError, setDisplayNameError] = useState<string>();
+  const {supabase} = useSupabase();
   const {back} = useRouter();
 
   const {data: user, error} = useSwr(authId && `/profile/${authId}`, () =>
-    fetcher(authId),
+    fetcher({supabase: supabase!, authId}),
   );
 
   const handleAddTag = () => {
@@ -107,7 +118,7 @@ export default function ProfileUpdate(): JSX.Element {
   });
 
   const handleProfileUpdate: SubmitHandler<FormData> = async (data) => {
-    if (!authId) return;
+    if (!authId || !supabase) return;
 
     let image: ImageInsertArgs | undefined = {};
 
@@ -115,11 +126,14 @@ export default function ProfileUpdate(): JSX.Element {
       const destPath = `users/${authId}`;
 
       image = await uploadFileToSupabase({
+        supabase,
         uri: profileImg,
         fileType: 'Image',
         bucket: 'images',
         destPath,
       });
+
+      console.log('image', image);
     }
 
     const formDataWithTags = {
@@ -135,6 +149,7 @@ export default function ProfileUpdate(): JSX.Element {
         args: formDataWithTags,
         authId,
         tags: tags || [],
+        supabase,
       });
 
       if (user) {
@@ -552,7 +567,6 @@ export default function ProfileUpdate(): JSX.Element {
               style={css`
                 align-items: center;
                 justify-content: center;
-                padding: 6px;
                 margin-right: -4px;
                 border-radius: 99px;
               `}

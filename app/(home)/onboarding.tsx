@@ -31,6 +31,8 @@ import FallbackComponent from '../../src/components/uis/FallbackComponent';
 import {showAlert} from '../../src/utils/alert';
 import {RectButton} from 'react-native-gesture-handler';
 import ErrorBoundary from 'react-native-error-boundary';
+import useSupabase, {SupabaseClient} from '../../src/hooks/useSupabase';
+import CustomLoadingIndicator from '../../src/components/uis/CustomLoadingIndicator';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -76,10 +78,13 @@ type FormData = yup.InferType<
   }
 >;
 
-const fetcher = async (authId: string | null) => {
+const fetcher = async (authId: string | null, supabase: SupabaseClient) => {
   if (!authId) return;
 
-  const {profile, userTags} = await fetchUserProfile(authId);
+  const {profile, userTags} = await fetchUserProfile({
+    authId,
+    supabase,
+  });
   return {profile, userTags};
 };
 
@@ -90,9 +95,10 @@ export default function Onboarding(): JSX.Element {
   const [tag, setTag] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [profileImg, setProfileImg] = useState<string>();
+  const {supabase} = useSupabase();
 
   const {data, error} = useSwr(authId && `/profile/${authId}`, () =>
-    fetcher(authId),
+    fetcher(authId, supabase!),
   );
 
   const handleAddTag = () => {
@@ -112,7 +118,7 @@ export default function Onboarding(): JSX.Element {
   });
 
   const handleFinishOnboarding: SubmitHandler<FormData> = async (data) => {
-    if (!authId) return;
+    if (!authId || !supabase) return;
 
     let image: ImageInsertArgs | undefined = {};
 
@@ -124,6 +130,7 @@ export default function Onboarding(): JSX.Element {
         fileType: 'Image',
         bucket: 'images',
         destPath,
+        supabase,
       });
     }
 
@@ -137,6 +144,7 @@ export default function Onboarding(): JSX.Element {
         args: formDataWithTags,
         authId,
         tags: tags || [],
+        supabase,
       });
 
       if (updatedUser) {
@@ -171,24 +179,21 @@ export default function Onboarding(): JSX.Element {
     }
   }, [data, setValue]);
 
-  if (!authId) {
-    return <Redirect href={'/sign-in'} />;
+  if (!user?.id) {
+    return (
+      <>
+        <Stack.Screen options={{headerShown: false}} />
+        <CustomLoadingIndicator />
+      </>
+    );
   }
 
   if (user?.display_name) {
-    return <Redirect href={'/'} />;
+    return <Redirect href={'/(tabs)'} />;
   }
 
   if (error) {
     return <FallbackComponent />;
-  }
-
-  if (!data) {
-    return (
-      <Container>
-        <ActivityIndicator size="large" color={theme.text.label} />
-      </Container>
-    );
   }
 
   return (
@@ -198,6 +203,7 @@ export default function Onboarding(): JSX.Element {
           title: t('onboarding.title'),
           headerRight: () => (
             <RectButton
+              activeOpacity={0}
               // @ts-ignore
               onPress={handleSubmit(handleFinishOnboarding)}
               hitSlop={{
@@ -209,7 +215,7 @@ export default function Onboarding(): JSX.Element {
               style={css`
                 align-items: center;
                 justify-content: center;
-                padding: 6px;
+                padding: 2px;
                 margin-right: -4px;
                 border-radius: 99px;
               `}
