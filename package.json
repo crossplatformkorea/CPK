@@ -54,7 +54,7 @@
     "@supabase/supabase-js": "^2.45.1",
     "base64-arraybuffer": "^1.0.2",
     "date-fns": "^4.0.0",
-    "dooboo-ui": "^0.2.37",
+    "dooboo-ui": "^0.2.38",
     "expo": "~51.0.31",
     "expo-constants": "~16.0.2",
     "expo-device": "~6.0.2",
