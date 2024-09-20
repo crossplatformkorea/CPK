@@ -2,19 +2,21 @@ import {useSession} from '@clerk/clerk-expo';
 import {createClient} from '@supabase/supabase-js';
 import {useEffect, useState} from 'react';
 import {Database} from '../types/supabase';
-import {supabaseAnonKey, supabaseUrl} from '../../config';
 import {ActiveSessionResource} from '@clerk/types';
 import {useSetRecoilState} from 'recoil';
 import {authRecoilState} from '../recoil/atoms';
 
 export type SupabaseClient = ReturnType<typeof createClient<Database>>;
 
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY;
+
 function createClerkSupabaseClient(
   session?: ActiveSessionResource | null,
 ): SupabaseClient | null {
   if (!session) return null;
 
-  return createClient<Database>(supabaseUrl, supabaseAnonKey, {
+  return createClient<Database>(supabaseUrl!, supabaseAnonKey!, {
     global: {
       // Get the custom Supabase token from Clerk
       fetch: async (url, options = {}) => {
