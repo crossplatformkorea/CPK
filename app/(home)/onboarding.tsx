@@ -201,6 +201,7 @@ export default function Onboarding(): JSX.Element {
       <Stack.Screen
         options={{
           title: t('onboarding.title'),
+          headerShown: true,
           headerRight: () => (
             <RectButton
               activeOpacity={0}
