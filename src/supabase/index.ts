@@ -3,7 +3,7 @@ import 'react-native-url-polyfill/auto';
 import {decode} from 'base64-arraybuffer';
 import * as FileSystem from 'expo-file-system';
 import {FileType, ImageInsertArgs} from '../types';
-import { SupabaseClient } from '../hooks/useSupabase';
+import {SupabaseClient} from '../hooks/useSupabase';
 
 export const uploadFileToSupabase = async ({
   uri,
@@ -73,13 +73,15 @@ export const getPublicUrlFromPath = ({
   path: string;
   supabase: SupabaseClient;
 }): string => {
+  
   const {data} = supabase.storage.from('images').getPublicUrl(path);
 
   if (!data?.publicUrl) {
     throw new Error('Failed to get signed URL');
   }
 
-  return data?.publicUrl;
+  //! Note: supabase returns wrong url based on platform
+  return data.publicUrl.replace(/(\/images)(\/images)+/, '/images');
 };
 
 export const getSignedUrlFromUploadFile = async ({
