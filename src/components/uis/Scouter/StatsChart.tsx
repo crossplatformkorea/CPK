@@ -16,8 +16,9 @@ import SvgStatsWater from '../../svgs/SvgStatsWater';
 
 type Axis = {x: number; y: number};
 
-const Container = styled.View`
+const Container = styled.View<{width: number}>`
   padding: 32px;
+  width: ${({width}) => width} + 'px';
 
   justify-content: center;
   align-items: center;
@@ -229,7 +230,7 @@ const StatsChart = ({
   const posTree = convertPosition(centerPosition, tree, 'tree');
 
   return (
-    <Container style={{width: width + 72}}>
+    <Container width={width + 72}>
       <StatUnits centerPosition={centerPosition} onPressStat={onPressStat} />
       <StatsContainer>
         <ImageBackground

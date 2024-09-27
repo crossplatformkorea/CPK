@@ -30,6 +30,7 @@ const Scouter = ({
   >;
   style?: StyleProp<ViewStyle>;
 }): ReactElement => {
+  const [width, setWidth] = useState(0);
   const [selectedStat, setSelectedStat] = useState<StatType | null>(null);
   const [tierName, setTierName] = useState<ScoreType['tierName']>('Silver');
   const pluginStats = !githubLogin
@@ -68,8 +69,14 @@ const Scouter = ({
   };
 
   return (
-    <Container style={style}>
+    <Container
+      style={style}
+      onLayout={(e) => {
+        setWidth(e.nativeEvent.layout.width);
+      }}
+    >
       <StatsChart
+        width={width > 330 ? 330 : width - 64}
         selectedStat={selectedStat}
         onPressStat={onPressStat}
         statsScore={{
