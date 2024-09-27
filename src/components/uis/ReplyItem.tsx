@@ -88,7 +88,7 @@ export default function ReplyItem({
       <Pressable
         onPress={() => {
           push({
-            pathname: `/[displayName]`,
+            pathname: `/user/[displayName]`,
             params: {displayName: `@${item.user.display_name}`},
           });
         }}

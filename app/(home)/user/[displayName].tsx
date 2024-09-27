@@ -1,26 +1,26 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import styled from '@emotion/native';
 import {Stack, useLocalSearchParams} from 'expo-router';
 import {Button, Icon, Typography, useDooboo} from 'dooboo-ui';
 import {css} from '@emotion/native';
-import {Pressable} from 'react-native';
+import {Pressable, RefreshControl} from 'react-native';
 import ErrorBoundary from 'react-native-error-boundary';
-import FallbackComponent from '../src/components/uis/FallbackComponent';
-import CustomScrollView from '../src/components/uis/CustomScrollView';
-import {IC_ICON} from '../src/icons';
-import {openURL, removeLeadingAt} from '../src/utils/common';
-import DoobooStats from '../src/components/fragments/DoobooStats';
-import {t} from '../src/STRINGS';
-import {fetchUserWithDisplayName} from '../src/apis/profileQueries';
-import CustomLoadingIndicator from '../src/components/uis/CustomLoadingIndicator';
+import FallbackComponent from '../../../src/components/uis/FallbackComponent';
+import CustomScrollView from '../../../src/components/uis/CustomScrollView';
+import {IC_ICON} from '../../../src/icons';
+import {openURL, removeLeadingAt} from '../../../src/utils/common';
+import DoobooStats from '../../../src/components/fragments/DoobooStats';
+import {t} from '../../../src/STRINGS';
+import {fetchUserWithDisplayName} from '../../../src/apis/profileQueries';
+import CustomLoadingIndicator from '../../../src/components/uis/CustomLoadingIndicator';
 import {useRecoilValue} from 'recoil';
-import {authRecoilState} from '../src/recoil/atoms';
+import {authRecoilState} from '../../../src/recoil/atoms';
 import {
   fetchFollowCounts,
   fetchFollowUser,
   fetchIsAFollowing,
-} from '../src/apis/followQueries';
-import useSupabase from '../src/hooks/useSupabase';
+} from '../../../src/apis/followQueries';
+import useSupabase from '../../../src/hooks/useSupabase';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -36,7 +36,7 @@ const ProfileHeader = styled.View`
 `;
 
 const Content = styled.View`
-  padding: 24px;
+  padding: 16px;
 `;
 
 const UserAvatar = styled.Image`
@@ -148,52 +148,61 @@ export default function DisplayName(): JSX.Element {
     }
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      if (!supabase) return;
+  const fetchData = useCallback(async () => {
+    if (!supabase) return;
 
-      try {
-        const {profile, userTags} = await fetchUserWithDisplayName({
-          displayName,
-          supabase,
-        });
+    try {
+      const {profile, userTags} = await fetchUserWithDisplayName({
+        displayName,
+        supabase,
+      });
 
-        setUser(profile);
-        setTags(userTags);
+      setUser(profile);
+      setTags(userTags);
 
-        // Check if the current user is following this profile
-        if (authId) {
-          if (profile.id !== authId) {
-            const isUserFollowing = await fetchIsAFollowing({
-              authId,
-              followingId: profile.id,
-              supabase,
-            });
-
-            setIsFollowing(isUserFollowing);
-          }
-
-          const followingsData = await fetchFollowCounts({
-            userId: profile.id,
+      // Check if the current user is following this profile
+      if (authId) {
+        if (profile.id !== authId) {
+          const isUserFollowing = await fetchIsAFollowing({
+            authId,
+            followingId: profile.id,
             supabase,
           });
 
-          setFollowingCount(followingsData.followingCount);
+          setIsFollowing(isUserFollowing);
         }
-      } catch (err: any) {
-        throw new Error(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
 
+        const followingsData = await fetchFollowCounts({
+          userId: profile.id,
+          supabase,
+        });
+
+        setFollowingCount(followingsData.followerCount);
+      }
+    } catch (err: any) {
+      throw new Error(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [supabase, displayName, authId]);
+
+  const onRefresh = async () => {
     fetchData();
-  }, [authId, displayName, supabase]);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   if (loading) {
     return (
       <>
-        <Stack.Screen options={{title: displayName || t('common.profile')}} />
+        <Stack.Screen
+          options={{
+            headerShown: true,
+            title: displayName || t('common.profile'),
+          }}
+        />
         <CustomLoadingIndicator />
       </>
     );
@@ -201,9 +210,21 @@ export default function DisplayName(): JSX.Element {
 
   return (
     <ErrorBoundary FallbackComponent={FallbackComponent}>
-      <Stack.Screen options={{title: displayName || t('common.profile')}} />
       <Container>
-        <CustomScrollView bounces={false}>
+        <Stack.Screen
+          options={{
+            headerShown: true,
+            title: displayName || t('common.profile'),
+          }}
+        />
+        <CustomScrollView
+          bounces={false}
+          scrollViewProps={{
+            refreshControl: (
+              <RefreshControl refreshing={loading} onRefresh={onRefresh} />
+            ),
+          }}
+        >
           <ProfileHeader>
             <UserAvatar
               style={css`

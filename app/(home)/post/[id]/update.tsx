@@ -312,10 +312,12 @@ export default function PostUpdate(): JSX.Element {
                 top: 8,
               }}
               style={css`
-                align-items: center;
-                justify-content: center;
+                margin-top: 4px;
                 margin-right: -4px;
                 border-radius: 99px;
+
+                align-items: center;
+                justify-content: center;
               `}
             >
               {isSubmitting ? (

@@ -138,7 +138,7 @@ export default function PostDetails(): JSX.Element {
   const handlePressUser = useCallback(() => {
     if (post?.user.display_name) {
       push({
-        pathname: `/[displayName]`,
+        pathname: `/user/[displayName]`,
         params: {displayName: `@${post.user.display_name}`},
       });
     }
@@ -331,7 +331,7 @@ export default function PostDetails(): JSX.Element {
     <ErrorBoundary FallbackComponent={FallbackComponent}>
       <Stack.Screen
         options={{
-          title: post?.title || t('common.post'),
+          title: (post?.title || t('common.post')).substring(0, 29),
           headerRight: () =>
             authId ? (
               <View
@@ -346,6 +346,7 @@ export default function PostDetails(): JSX.Element {
                   onPress={handlePressMore}
                   activeOpacity={0}
                   style={css`
+                    margin-top: 4px;
                     margin-right: -8px;
                     border-radius: 48px;
                   `}

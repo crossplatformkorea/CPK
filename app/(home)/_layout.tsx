@@ -8,7 +8,7 @@ import {WEB_URL} from '../../src/utils/constants';
 import {css} from '@emotion/native';
 import {useAuth} from '@clerk/clerk-expo';
 
-export default function Layout() {
+export default function HomeLayout() {
   const {theme} = useDooboo();
   const {back, replace} = useRouter();
   const {isSignedIn} = useAuth();
@@ -46,6 +46,7 @@ export default function Layout() {
                   : css`
                       border-radius: 48px;
                       margin-left: -8px;
+                      margin-top: 4px;
                     `
               }
             >

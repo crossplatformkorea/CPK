@@ -125,10 +125,12 @@ export default function PostWrite(): JSX.Element {
               onPress={handleSubmit(handleWritePost)}
               activeOpacity={0}
               style={css`
-                align-items: center;
-                justify-content: center;
+                margin-top: 4px;
                 margin-right: -4px;
                 border-radius: 99px;
+
+                align-items: center;
+                justify-content: center;
               `}
               hitSlop={{
                 bottom: 8,

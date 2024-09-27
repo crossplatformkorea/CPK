@@ -214,6 +214,7 @@ export default function Onboarding(): JSX.Element {
                 top: 8,
               }}
               style={css`
+                margin-top: 4px;
                 align-items: center;
                 justify-content: center;
                 padding: 2px;

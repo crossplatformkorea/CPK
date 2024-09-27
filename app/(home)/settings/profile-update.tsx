@@ -565,10 +565,12 @@ export default function ProfileUpdate(): JSX.Element {
               onPress={handleSubmit(handleProfileUpdate)}
               hitSlop={{bottom: 8, left: 8, right: 8, top: 8}}
               style={css`
-                align-items: center;
-                justify-content: center;
+                margin-top: 4px;
                 margin-right: -4px;
                 border-radius: 99px;
+
+                align-items: center;
+                justify-content: center;
               `}
             >
               {isSubmitting ? (

@@ -27,7 +27,7 @@ const ProfileHeader = styled.View`
 `;
 
 const Content = styled.View`
-  padding: 24px;
+  padding: 16px;
 `;
 
 const UserAvatar = styled.Image`

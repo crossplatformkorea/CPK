@@ -121,7 +121,7 @@ export default function LoginInfo(): JSX.Element {
       tags: [],
     });
 
-    replace('/');
+    replace('/intro');
   };
 
   const handleWithdrawUser = async (): Promise<void> => {
