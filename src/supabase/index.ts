@@ -73,7 +73,6 @@ export const getPublicUrlFromPath = ({
   path: string;
   supabase: SupabaseClient;
 }): string => {
-  
   const {data} = supabase.storage.from('images').getPublicUrl(path);
 
   if (!data?.publicUrl) {
