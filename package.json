@@ -116,7 +116,6 @@
     "@types/jest": "^29.5.13",
     "@types/react": "~18.3.10",
     "@types/recoil": "^0.0.9",
-    "@typescript-eslint/eslint-plugin": "^8.7.0",
     "ajv": "^8.17.1",
     "babel-jest": "^29.7.0",
     "commitlint-plugin-function-rules": "^4.0.0",

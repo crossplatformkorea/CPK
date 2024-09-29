@@ -5,9 +5,10 @@ import type {
   TextStyle,
   ViewStyle,
 } from 'react-native';
-import {Image, TouchableOpacity} from 'react-native';
+import {TouchableOpacity} from 'react-native';
 import styled from '@emotion/native';
 import {LoadingIndicator, Typography, useDooboo} from 'dooboo-ui';
+import {Image} from 'expo-image';
 
 type Props = {
   style?: StyleProp<ViewStyle>;
@@ -47,7 +48,7 @@ export default function SocialSignInButton({
     <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
       <Container style={style}>
         {loading ? (
-          <LoadingIndicator size="small" color={theme.text.placeholder}/>
+          <LoadingIndicator size="small" color={theme.text.placeholder} />
         ) : (
           <>
             {leftElement ? (

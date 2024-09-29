@@ -9,6 +9,7 @@ import {
   IC_TIER_PLATINUM,
   IC_TIER_SILVER,
 } from '../../../icons';
+import {Image} from 'expo-image';
 
 const Container = styled.View`
   align-self: stretch;
@@ -33,7 +34,7 @@ const ScoreView = styled.View`
   align-items: center;
 `;
 
-const StyledImage = styled.Image`
+const StyledImage = styled(Image)`
   width: 32px;
   height: 32px;
   margin-right: 8px;

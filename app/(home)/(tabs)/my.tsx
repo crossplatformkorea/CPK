@@ -12,6 +12,8 @@ import {openURL} from '../../../src/utils/common';
 import DoobooStats from '../../../src/components/fragments/DoobooStats';
 import ErrorBoundary from 'react-native-error-boundary';
 import FallbackComponent from '../../../src/components/uis/FallbackComponent';
+import {Image} from 'expo-image';
+import {authRecoilSelector} from '../../../src/recoil/selectors';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -30,7 +32,7 @@ const Content = styled.View`
   padding: 16px;
 `;
 
-const UserAvatar = styled.Image`
+const UserAvatar = styled(Image)`
   width: 120px;
   height: 120px;
   border-radius: 60px;
@@ -103,7 +105,8 @@ const TagText = styled.Text`
 `;
 
 export default function My(): JSX.Element {
-  const {user, tags} = useRecoilValue(authRecoilState);
+  const {tags} = useRecoilValue(authRecoilState);
+  const {user} = useRecoilValue(authRecoilSelector);
   const {theme} = useDooboo();
 
   return (

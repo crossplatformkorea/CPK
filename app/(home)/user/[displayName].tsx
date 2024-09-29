@@ -21,6 +21,7 @@ import {
   fetchIsAFollowing,
 } from '../../../src/apis/followQueries';
 import useSupabase from '../../../src/hooks/useSupabase';
+import {Image} from 'expo-image';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -39,7 +40,7 @@ const Content = styled.View`
   padding: 16px;
 `;
 
-const UserAvatar = styled.Image`
+const UserAvatar = styled(Image)`
   width: 120px;
   height: 120px;
   border-radius: 60px;

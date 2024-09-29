@@ -84,6 +84,7 @@ const fetcher = async ({
     authId,
     supabase,
   });
+
   return {profile, userTags};
 };
 
@@ -181,7 +182,9 @@ export default function ProfileUpdate(): JSX.Element {
       );
       setValue('future_expectations', user.profile.future_expectations || '');
       setTags(user.userTags);
-      setProfileImg(`${user.profile.avatar_url}` || undefined);
+      setProfileImg(
+        `${user.profile.avatar_url}?${new Date().toISOString()}` || undefined,
+      );
     }
   }, [user, setValue]);
 

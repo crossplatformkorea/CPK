@@ -9,7 +9,7 @@ import {css} from '@emotion/native';
 import {Image} from 'expo-image';
 import {IC_ICON} from '../../../src/icons';
 import {useRecoilValue} from 'recoil';
-import {authRecoilState} from '../../../src/recoil/atoms';
+import {authRecoilSelector} from '../../../src/recoil/selectors';
 
 function SettingsMenu(): JSX.Element {
   const {theme} = useDooboo();
@@ -34,7 +34,7 @@ function SettingsMenu(): JSX.Element {
 export default function TabLayout(): JSX.Element {
   const {theme} = useDooboo();
   const notificationResponseListener = useRef<Notifications.Subscription>();
-  const {user} = useRecoilValue(authRecoilState);
+  const {user} = useRecoilValue(authRecoilSelector);
 
   useEffect(() => {
     if (!user?.id) return;

@@ -1,4 +1,4 @@
-import {Image, ScrollView, View} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 
 import styled, {css} from '@emotion/native';
@@ -11,6 +11,7 @@ import {t} from '../../src/STRINGS';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ButtonSocialSignIn from '../../src/components/uis/ButtonSocialSignIn';
 import {useWarmUpBrowser} from '../../src/hooks/useWarmUpBrowser';
+import {Image} from 'expo-image';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -97,6 +98,8 @@ export default function Intro(): JSX.Element {
             source={IMG_CROSSPLATFORMS}
             style={css`
               margin-top: 24px;
+              width: 330px;
+              height: 260px;
             `}
           />
           <View
