@@ -49,7 +49,7 @@ export const openEmail = () => {
 
 export const goToAppStore = (): void => {
   if (Platform.OS === 'ios') {
-    Linking.openURL('itms-apps://itunes.apple.com/us/app/apple-store/<cpk-id>');
+    Linking.openURL('itms-apps://itunes.apple.com/us/app/apple-store/id6642658451');
   } else {
     Linking.openURL('market://details?id=com.crossplatformkorea.app');
   }

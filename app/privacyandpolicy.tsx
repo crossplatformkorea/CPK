@@ -30,7 +30,7 @@ function PrivacyPolicy(): JSX.Element {
       <View style={styles.section}>
         <Text style={styles.title}>제 1 조 (개인정보 수집 및 이용 동의)</Text>
         <Text style={styles.content}>
-          두부랩(이하 ‘회사’라 한다)는 정보통신망이용촉진 및 정보보호 등에 관한
+          크로스플랫폼 코리아 커뮤니티는 정보통신망이용촉진 및 정보보호 등에 관한
           법률, 개인정보 보호법 등에 따라 회원님의 개인정보를 보호하고 이와
           관련한 고충을 신속하고 원활하게 처리할 수 있도록 하기 위하여 다음과
           같이 개인정보 취급방침을 수립·공개합니다.

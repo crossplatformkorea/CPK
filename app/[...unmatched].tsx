@@ -17,8 +17,7 @@ export default function Unmatched(): JSX.Element {
   const pathname = usePathname();
 
   useEffect(() => {
-    // ios 신규 설치 버그 수정
-    // https://github.com/dooboolab/dooboo-task/issues/101
+    // Fix ios new install bug
     if (pathname === '/google/link') {
       if (canGoBack()) {
         back();

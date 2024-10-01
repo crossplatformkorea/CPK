@@ -31,7 +31,7 @@ function TermsOfService(): JSX.Element {
       <View style={styles.section}>
         <Text style={styles.title}>제 1조 (목적)</Text>
         <Text style={styles.content}>
-          이 약관은 두부랩(이하 "회사")가 제공하는 서비스 이용(이하 "서비스")과
+          이 약관은 크로스플랫폼 코리아 커뮤니티가 제공하는 서비스 이용(이하 "서비스")과
           관련하여 회사와 이용자 간의 권리와 의무 및 필요한 제반 사항을 정하는데
           그 목적이 있습니다.
         </Text>
