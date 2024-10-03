@@ -15,6 +15,7 @@ export default function AuthLayout() {
     <Stack
       initialRouteName="intro"
       screenOptions={{
+        headerBackTitleVisible: false,
         headerStyle: {backgroundColor: theme.bg.basic},
         headerTintColor: theme.text.label,
         headerTitleStyle: {

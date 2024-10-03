@@ -3,6 +3,7 @@ import React from 'react';
 import {ScrollView, Text, View} from 'react-native';
 import {css} from '@emotion/native';
 import {Stack} from 'expo-router';
+import { t } from '../../src/STRINGS';
 
 const styles = {
   container: css`
@@ -27,13 +28,17 @@ const styles = {
 function TermsOfService(): JSX.Element {
   return (
     <ScrollView style={styles.container}>
-      <Stack.Screen options={{title: '서비스 이용약관'}} />
+      <Stack.Screen
+        options={{
+          title: t('common.termsOfService'),
+        }}
+      />
       <View style={styles.section}>
         <Text style={styles.title}>제 1조 (목적)</Text>
         <Text style={styles.content}>
-          이 약관은 크로스플랫폼 코리아 커뮤니티가 제공하는 서비스 이용(이하 "서비스")과
-          관련하여 회사와 이용자 간의 권리와 의무 및 필요한 제반 사항을 정하는데
-          그 목적이 있습니다.
+          이 약관은 크로스플랫폼 코리아 커뮤니티가 제공하는 서비스 이용(이하
+          "서비스")과 관련하여 회사와 이용자 간의 권리와 의무 및 필요한 제반
+          사항을 정하는데 그 목적이 있습니다.
         </Text>
       </View>
 
