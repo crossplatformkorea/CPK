@@ -1,7 +1,7 @@
 import {t} from '../STRINGS';
 import {DoobooGithubStats} from '../types/github-stats';
 
-const API_ENDPOINT = 'https://stats.dooboo.io/api/github-stats';
+const API_ENDPOINT = 'https://stats.hyo.dev/api/github-stats';
 
 export const updateDoobooGithub = async (
   login: string,

@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import type {ColorSchemeName} from 'react-native';
-import {Platform, useColorScheme} from 'react-native';
+import {Platform, useColorScheme, View} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {tokenCache} from '../src/utils/cache';
 import {
@@ -216,24 +216,42 @@ function App(): JSX.Element | null {
 }
 
 function Layout(): JSX.Element | null {
+  const {theme} = useDooboo();
   const [reportModalState, setReportModalState] = useRecoilState(
     reportModalRecoilState,
   );
 
   return (
-    <>
-      <App />
-      <ReportModal
-        {...reportModalState}
-        setVisible={(value) => {
-          setReportModalState({
-            ...reportModalState,
-            // @ts-ignore
-            visible: value,
-          });
-        }}
-      />
-    </>
+    <View
+      style={css`
+        flex: 1;
+        align-self: stretch;
+        background-color: ${theme.bg.paper};
+
+        flex-direction: row;
+        justify-content: center;
+      `}
+    >
+      <View
+        style={css`
+          flex: 1;
+          max-width: 480px;
+          background-color: ${theme.bg.basic};
+        `}
+      >
+        <App />
+        <ReportModal
+          {...reportModalState}
+          setVisible={(value) => {
+            setReportModalState({
+              ...reportModalState,
+              // @ts-ignore
+              visible: value,
+            });
+          }}
+        />
+      </View>
+    </View>
   );
 }
 

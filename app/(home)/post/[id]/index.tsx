@@ -4,7 +4,7 @@ import {Stack, useLocalSearchParams, useRouter} from 'expo-router';
 import {ReplyWithJoins} from '../../../../src/types';
 import {t} from '../../../../src/STRINGS';
 import NotFound from '../../../../src/components/uis/NotFound';
-import {Pressable, View} from 'react-native';
+import {Platform, Pressable, View} from 'react-native';
 import {openURL} from '../../../../src/utils/common';
 import {formatDateTime} from '../../../../src/utils/date';
 import UserListItem from '../../../../src/components/uis/UserListItem';
@@ -335,11 +335,17 @@ export default function PostDetails(): JSX.Element {
           headerRight: () =>
             authId ? (
               <View
-                style={css`
-                  flex-direction: row;
-                  align-items: center;
-                  gap: 4px;
-                `}
+                style={[
+                  css`
+                    flex-direction: row;
+                    justify-content: center;
+                    align-items: center;
+                    gap: 4px;
+                  `,
+                  Platform.OS === 'web' && css`
+                    margin-right: 24px;
+                  `,
+                ]}
               >
                 <RectButton
                   hitSlop={{top: 20, left: 20, right: 20, bottom: 20}}

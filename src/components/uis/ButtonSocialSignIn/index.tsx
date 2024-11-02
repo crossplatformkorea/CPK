@@ -34,11 +34,11 @@ export function ButtonSocialSignIn({strategy}: Props): JSX.Element {
 
     setLoading(true);
 
+    const redirectUrl = Linking.createURL('/', {scheme: 'cpk'});
+
     try {
       const {createdSessionId, signIn, signUp, setActive} =
-        await startOAuthFlow({
-          redirectUrl: Linking.createURL('/', {scheme: 'cpk'}),
-        });
+        await startOAuthFlow({redirectUrl});
 
       if (!signIn || !signUp) {
         return;
@@ -89,6 +89,7 @@ export function ButtonSocialSignIn({strategy}: Props): JSX.Element {
       // and has an OAuth account connected to it, you can sign them in.
       signInWith(strategy);
     } catch (error: any) {
+      console.log('error', JSON.stringify(error));
       if (error.clerkError) {
         const {code} = error.errors[0];
         console.log(`[signIn] Clerk Error (${code}):`, error);

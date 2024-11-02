@@ -42,6 +42,7 @@ export default function HomeLayout() {
                 Platform.OS === 'web'
                   ? css`
                       border-radius: 48px;
+                      margin-left: 12px;
                     `
                   : css`
                       border-radius: 48px;
