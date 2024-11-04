@@ -34,7 +34,9 @@ export function ButtonSocialSignIn({strategy}: Props): JSX.Element {
 
     setLoading(true);
 
-    const redirectUrl = Linking.createURL('/', {scheme: 'cpk'});
+    const redirectUrl = Linking.createURL('oauth-native-callback', {
+      scheme: 'cpk',
+    });
 
     try {
       const {createdSessionId, signIn, signUp, setActive} =
