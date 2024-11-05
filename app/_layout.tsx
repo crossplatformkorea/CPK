@@ -136,12 +136,8 @@ function App(): JSX.Element | null {
           }
         }
 
-        if (!existingUser) {
-          return;
-        }
-
         const {profile, userTags} = await fetchUserProfile({
-          authId: existingUser.id,
+          clerkId: user.id,
           supabase,
         });
 
@@ -158,12 +154,12 @@ function App(): JSX.Element | null {
           }
 
           const blockedUserIds = await fetchBlockUserIds({
-            userId: existingUser.id,
+            userId: user.id,
             supabase,
           });
 
           setAuth({
-            authId: existingUser.id,
+            authId: profile.id,
             user: profile,
             blockedUserIds,
             tags: userTags,

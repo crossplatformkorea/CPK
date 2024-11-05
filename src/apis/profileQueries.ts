@@ -3,28 +3,30 @@ import {t} from '../STRINGS';
 import {User, UserUpdateArgs} from '../types';
 
 export const fetchUserProfile = async ({
-  authId,
+  clerkId,
   supabase,
 }: {
-  authId: string;
+  clerkId: string;
   supabase: SupabaseClient;
 }) => {
   const {data: profile, error: profileError} = await supabase
     .from('users')
     .select('*')
-    .eq('id', authId)
+    .eq('clerk_id', clerkId)
     .single();
 
-  if (profileError) {
+  if (profileError || !profile) {
     if (__DEV__) {
       console.error(profileError);
     }
+
+    throw new Error(t('error.failedToFetchData'));
   }
 
   const {data: tagsData, error: tagsError} = await supabase
     .from('_TagToUser')
     .select('A')
-    .eq('B', authId);
+    .eq('B', profile.id);
 
   if (tagsError) {
     throw new Error(tagsError.message);
@@ -100,13 +102,13 @@ export const fetchUserWithDisplayName = async ({
 
 export const fetchUpdateProfile = async ({
   args,
-  authId,
+  clerkId,
   tags,
   supabase,
 }: {
   args: UserUpdateArgs;
   tags: string[];
-  authId: string;
+  clerkId: string;
   supabase: SupabaseClient;
 }) => {
   if (!args.display_name) {
@@ -119,7 +121,7 @@ export const fetchUpdateProfile = async ({
     .from('users')
     .select('id')
     .eq('display_name', args.display_name)
-    .neq('id', authId)
+    .neq('clerk_id', clerkId)
     .single();
 
   // PGRST116 means no matching record found
@@ -130,7 +132,7 @@ export const fetchUpdateProfile = async ({
     throw new Error(t('error.default'));
   }
 
-  if (existingUser) {
+  if (!existingUser?.id) {
     const error = new Error(t('error.displayNameExists'));
     error.name = 'displayName';
     throw error;
@@ -141,7 +143,7 @@ export const fetchUpdateProfile = async ({
     .update({
       ...args,
     })
-    .eq('id', authId)
+    .eq('id', existingUser.id)
     .select('*')
     .single();
 
@@ -158,7 +160,7 @@ export const fetchUpdateProfile = async ({
       .from('tags')
       .upsert({tag: tagData})
       .eq('tag', tagData)
-      .eq('id', authId)
+      .eq('id', existingUser.id)
       .select('id')
       .single();
 
@@ -166,7 +168,7 @@ export const fetchUpdateProfile = async ({
       await supabase.from('_TagToUser').upsert(
         {
           A: data.id,
-          B: authId,
+          B: existingUser.id,
         },
         {
           ignoreDuplicates: true,

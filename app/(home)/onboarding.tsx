@@ -79,28 +79,32 @@ type FormData = yup.InferType<
   }
 >;
 
-const fetcher = async (authId: string | null, supabase: SupabaseClient) => {
-  if (!authId) return;
+const fetcher = async (
+  clerkId: string | null | undefined,
+  supabase: SupabaseClient,
+) => {
+  if (!clerkId) return;
 
   const {profile, userTags} = await fetchUserProfile({
-    authId,
+    clerkId,
     supabase,
   });
+
   return {profile, userTags};
 };
 
 export default function Onboarding(): JSX.Element {
   const {theme} = useDooboo();
   const [displayNameError, setDisplayNameError] = useState<string>();
-  const [{authId, user}, setAuth] = useRecoilState(authRecoilState);
+  const [{user}, setAuth] = useRecoilState(authRecoilState);
   const [tag, setTag] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [profileImg, setProfileImg] = useState<string>();
   const {supabase} = useSupabase();
-  const {signOut, isSignedIn} = useAuth();
+  const {signOut, isSignedIn, userId} = useAuth();
 
-  const {data, error} = useSwr(authId && `/profile/${authId}`, () =>
-    fetcher(authId, supabase!),
+  const {data, error} = useSwr(userId && `/profile/${userId}`, () =>
+    fetcher(userId, supabase!),
   );
 
   const handleAddTag = () => {
@@ -131,12 +135,12 @@ export default function Onboarding(): JSX.Element {
   });
 
   const handleFinishOnboarding: SubmitHandler<FormData> = async (data) => {
-    if (!authId || !supabase) return;
+    if (!userId || !supabase) return;
 
     let image: ImageInsertArgs | undefined = {};
 
     if (profileImg && !profileImg.startsWith('http')) {
-      const destPath = `users/${authId}`;
+      const destPath = `users/${userId}`;
 
       image = await uploadFileToSupabase({
         uri: profileImg,
@@ -155,7 +159,7 @@ export default function Onboarding(): JSX.Element {
     try {
       const updatedUser = await fetchUpdateProfile({
         args: formDataWithTags,
-        authId,
+        clerkId: userId,
         tags: tags || [],
         supabase,
       });

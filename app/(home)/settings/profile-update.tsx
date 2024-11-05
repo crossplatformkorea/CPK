@@ -14,7 +14,7 @@ import {
 import {useState, useEffect} from 'react';
 import useSwr from 'swr';
 import {t} from '../../../src/STRINGS';
-import {useRecoilState} from 'recoil';
+import {useSetRecoilState} from 'recoil';
 import {authRecoilState} from '../../../src/recoil/atoms';
 import {uploadFileToSupabase} from '../../../src/supabase';
 import {ImageInsertArgs} from '../../../src/types';
@@ -32,6 +32,7 @@ import {showAlert} from '../../../src/utils/alert';
 import {RectButton} from 'react-native-gesture-handler';
 import ErrorBoundary from 'react-native-error-boundary';
 import useSupabase, {SupabaseClient} from '../../../src/hooks/useSupabase';
+import {useAuth} from '@clerk/clerk-expo';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -72,16 +73,16 @@ type FormData = yup.InferType<
 >;
 
 const fetcher = async ({
-  authId,
+  clerkId,
   supabase,
 }: {
-  authId?: string | null;
+  clerkId?: string | null;
   supabase: SupabaseClient;
 }) => {
-  if (!authId || !supabase) return;
+  if (!clerkId || !supabase) return;
 
   const {profile, userTags} = await fetchUserProfile({
-    authId,
+    clerkId,
     supabase,
   });
 
@@ -90,7 +91,8 @@ const fetcher = async ({
 
 export default function ProfileUpdate(): JSX.Element {
   const {theme} = useDooboo();
-  const [{authId}, setAuth] = useRecoilState(authRecoilState);
+  const setAuth = useSetRecoilState(authRecoilState);
+  const {userId} = useAuth();
   const [tag, setTag] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [profileImg, setProfileImg] = useState<string>();
@@ -98,8 +100,8 @@ export default function ProfileUpdate(): JSX.Element {
   const {supabase} = useSupabase();
   const {back} = useRouter();
 
-  const {data: user, error} = useSwr(authId && `/profile/${authId}`, () =>
-    fetcher({supabase: supabase!, authId}),
+  const {data: user, error} = useSwr(userId && `/profile/${userId}`, () =>
+    fetcher({supabase: supabase!, clerkId: userId}),
   );
 
   const handleAddTag = () => {
@@ -119,12 +121,12 @@ export default function ProfileUpdate(): JSX.Element {
   });
 
   const handleProfileUpdate: SubmitHandler<FormData> = async (data) => {
-    if (!authId || !supabase) return;
+    if (!userId || !supabase) return;
 
     let image: ImageInsertArgs | undefined = {};
 
     if (profileImg && !profileImg.startsWith('http')) {
-      const destPath = `users/${authId}`;
+      const destPath = `users/${userId}`;
 
       image = await uploadFileToSupabase({
         supabase,
@@ -148,7 +150,7 @@ export default function ProfileUpdate(): JSX.Element {
     try {
       const user = await fetchUpdateProfile({
         args: formDataWithTags,
-        authId,
+        clerkId: userId,
         tags: tags || [],
         supabase,
       });
