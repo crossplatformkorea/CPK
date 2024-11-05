@@ -113,6 +113,8 @@
     "otherSnsUrlsPlaceholder": "다른 SNS URL을 입력하세요",
     "sectionDescription": "계속 진행하기 위해 아래 웰컴 카드를 제출해주세요!",
     "sectionTitle": "개발자 커뮤니티에 오신 것을 환영합니다!",
+    "signOutDescription": "정말로 로그아웃하시겠습니까?",
+    "signOutTitle": "로그아웃",
     "title": "온보딩",
     "userTags": "사용자 태그",
     "yourTags": "나의 태그",

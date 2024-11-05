@@ -113,6 +113,8 @@
     "otherSnsUrlsPlaceholder": "Enter your other SNS URLs",
     "sectionDescription": "Please submit your welcome card below to proceed!",
     "sectionTitle": "Welcome to Dev Community!",
+    "signOutDescription": "Are you sure you want to sign out?",
+    "signOutTitle": "Sign Out",
     "title": "Onboarding",
     "userTags": "User Tags",
     "yourTags": "Your Tags",

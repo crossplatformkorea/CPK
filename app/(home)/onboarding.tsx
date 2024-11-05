@@ -28,11 +28,12 @@ import {useRecoilState} from 'recoil';
 import {authRecoilState} from '../../src/recoil/atoms';
 import {ImageInsertArgs} from '../../src/types';
 import FallbackComponent from '../../src/components/uis/FallbackComponent';
-import {showAlert} from '../../src/utils/alert';
+import {showAlert, showConfirm} from '../../src/utils/alert';
 import {RectButton} from 'react-native-gesture-handler';
 import ErrorBoundary from 'react-native-error-boundary';
 import useSupabase, {SupabaseClient} from '../../src/hooks/useSupabase';
 import CustomLoadingIndicator from '../../src/components/uis/CustomLoadingIndicator';
+import {useAuth} from '@clerk/clerk-expo';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -96,6 +97,7 @@ export default function Onboarding(): JSX.Element {
   const [tags, setTags] = useState<string[]>([]);
   const [profileImg, setProfileImg] = useState<string>();
   const {supabase} = useSupabase();
+  const {signOut, isSignedIn} = useAuth();
 
   const {data, error} = useSwr(authId && `/profile/${authId}`, () =>
     fetcher(authId, supabase!),
@@ -105,6 +107,17 @@ export default function Onboarding(): JSX.Element {
     if (tag && !tags.includes(tag)) {
       setTags([...tags, tag]);
       setTag('');
+    }
+  };
+
+  const handleSignOut = async () => {
+    const result = await showConfirm({
+      title: t('onboarding.signOutTitle'),
+      description: t('onboarding.signOutDescription'),
+    });
+
+    if (result) {
+      signOut();
     }
   };
 
@@ -179,7 +192,7 @@ export default function Onboarding(): JSX.Element {
     }
   }, [data, setValue]);
 
-  if (!user?.id) {
+  if (!user?.id || !isSignedIn) {
     return (
       <>
         <Stack.Screen options={{headerShown: false}} />
@@ -254,6 +267,7 @@ export default function Onboarding(): JSX.Element {
                 `}
               >
                 <Text
+                  onLongPress={handleSignOut}
                   style={css`
                     font-size: 20px;
                     font-family: Pretendard-Bold;
