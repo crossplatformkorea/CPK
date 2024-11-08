@@ -6,7 +6,7 @@ import withAndroidLocalizedName from '@mmomtchev/expo-android-localized-app-name
 import {version} from './package.json';
 
 const DEEP_LINK_URL = '[firebaseAppId].web.app';
-const buildNumber = 18;
+const buildNumber = 19;
 
 export default ({config}: ConfigContext): ExpoConfig => ({
   ...config,
