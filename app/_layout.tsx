@@ -154,7 +154,7 @@ function App(): JSX.Element | null {
           }
 
           const blockedUserIds = await fetchBlockUserIds({
-            userId: user.id,
+            userId: profile.id,
             supabase,
           });
 
@@ -174,7 +174,7 @@ function App(): JSX.Element | null {
                 }));
 
                 fetchAddPushToken({
-                  authId: user.id,
+                  authId: profile.id,
                   expoPushToken: token,
                   supabase,
                 });

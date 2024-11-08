@@ -17,6 +17,15 @@ export default function Unmatched(): JSX.Element {
   const pathname = usePathname();
 
   useEffect(() => {
+    // Fix android clerk sign-in done bug
+    if (pathname === '/oauth-native-callback') {
+      if (canGoBack()) {
+        back();
+      }
+  
+      replace('/');
+    }
+
     // Fix ios new install bug
     if (pathname === '/google/link') {
       if (canGoBack()) {

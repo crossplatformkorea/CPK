@@ -98,14 +98,14 @@ export default function LoginInfo(): JSX.Element {
   const {bottom} = useSafeAreaInsets();
   const {signOut} = useAuth();
   const {isSignedIn, user} = useUser();
-  const [{pushToken}, setAuth] = useRecoilState(authRecoilState);
+  const [{pushToken, authId}, setAuth] = useRecoilState(authRecoilState);
 
   const handleSignOut = async (): Promise<void> => {
     if (isSignedIn && supabase) {
-      if (pushToken && user?.id) {
+      if (pushToken && authId) {
         await fetchDeletePushToken({
           supabase,
-          authId: user?.id,
+          authId,
           expoPushToken: pushToken,
         });
       }
