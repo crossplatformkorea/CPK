@@ -1,7 +1,12 @@
+import {Platform} from 'react-native';
 import {t} from '../STRINGS';
 import {DoobooGithubStats} from '../types/github-stats';
+import {WEB_URL} from '../utils/constants';
 
-const API_ENDPOINT = 'https://stats.hyo.dev/api/github-stats';
+const API_ENDPOINT =
+  Platform.OS === 'web'
+    ? `${WEB_URL}/api/proxy-github-stats`
+    : 'https://stats.hyo.dev/api/github-stats';
 
 export const updateDoobooGithub = async (
   login: string,

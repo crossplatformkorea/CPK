@@ -38,11 +38,11 @@ jobs:
           sed -i '/<\/head>/i \
           <meta property="og:image" content="https://crossplatformkorea.com/img/hero.svg" />\n\
           <meta property="og:type" content="website" />\n\
-          <meta property="og:url" content="https://app.crossplatformkorea.com" />\n\
+          <meta property="og:url" content="https://forums.crossplatformkorea.com" />\n\
           <meta property="og:description" content="Cross-Platform Korea Community" />\n\
           <meta property="og:title" content="Cross-Platform Korea" />\n\
           <meta property="twitter:card" content="Cross-Platform Korea" />\n\
-          <meta property="twitter:url" content="https://app.crossplatformkorea.com" />\n\
+          <meta property="twitter:url" content="https://forums.crossplatformkorea.com" />\n\
           <meta property="twitter:title" content="Cross-Platform Korea" />\n\
           <meta property="twitter:description" content="Cross-Platform Korea Community" />\n' ./dist/index.html
 
