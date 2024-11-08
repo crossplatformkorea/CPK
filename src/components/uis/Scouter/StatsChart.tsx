@@ -3,9 +3,9 @@ import {IMG_SPIDER_WEB_LIGHT, IMG_SPIDER_WEB_DARK} from '../../../icons';
 import Animated, {BounceIn} from 'react-native-reanimated';
 
 import {type ReactElement} from 'react';
-import styled from '@emotion/native';
+import styled, {css} from '@emotion/native';
 import {useDooboo} from 'dooboo-ui';
-import {ImageBackground, Platform, TouchableOpacity} from 'react-native';
+import {Platform, TouchableOpacity} from 'react-native';
 import {StatType} from '../../../types/github-stats';
 import SvgStatsPerson from '../../svgs/SvgStatsPerson';
 import SvgStatsTree from '../../svgs/SvgStatsTree';
@@ -13,6 +13,7 @@ import SvgStatsFire from '../../svgs/SvgStatsFire';
 import SvgStatsEarth from '../../svgs/SvgStatsEarth';
 import SvgStatsGold from '../../svgs/SvgStatsGold';
 import SvgStatsWater from '../../svgs/SvgStatsWater';
+import {Image} from 'expo-image';
 
 type Axis = {x: number; y: number};
 
@@ -228,40 +229,45 @@ const StatsChart = ({
   const posWater = convertPosition(centerPosition, water, 'water');
   const posPerson = convertPosition(centerPosition, people, 'people');
   const posTree = convertPosition(centerPosition, tree, 'tree');
+  const containerWidth = width + 72;
 
   return (
-    <Container width={width + 72}>
+    <Container width={containerWidth}>
       <StatUnits centerPosition={centerPosition} onPressStat={onPressStat} />
       <StatsContainer>
-        <ImageBackground
+        <Image
+          style={css`
+            position: absolute;
+            width: ${width + 'px'};
+            height: ${height + 'px'};
+          `}
           source={
             themeType === 'dark' ? IMG_SPIDER_WEB_DARK : IMG_SPIDER_WEB_LIGHT
           }
-        >
-          <AnimatedSvg height={height} width={width} entering={BounceIn}>
-            <Polygon
-              strokeWidth={2}
-              stroke={theme.text.basic}
-              fill="url(#gradient)"
-              fillOpacity={0.7}
-              points={`${posFire} ${posEarth} ${posGold} ${posWater} ${posPerson} ${posTree}`}
-            />
-            <Defs>
-              {/* @ts-ignore - This will be fixed in react-native-svg@13+*/}
-              <LinearGradient
-                id={'gradient'}
-                x1={'0'}
-                y1={'0%'}
-                x2={'100%'}
-                y2={'100%'}
-              >
-                <Stop offset={'0%'} stopColor={'rgb(209, 114, 255)'} />
-                <Stop offset={'50%'} stopColor={'rgb(89, 151, 235)'} />
-                <Stop offset={'100%'} stopColor={'rgb(77, 255, 255)'} />
-              </LinearGradient>
-            </Defs>
-          </AnimatedSvg>
-        </ImageBackground>
+        />
+        <AnimatedSvg height={height} width={width} entering={BounceIn}>
+          <Polygon
+            strokeWidth={2}
+            stroke={theme.text.basic}
+            fill="url(#gradient)"
+            fillOpacity={0.7}
+            points={`${posFire} ${posEarth} ${posGold} ${posWater} ${posPerson} ${posTree}`}
+          />
+          <Defs>
+            {/* @ts-ignore - This will be fixed in react-native-svg@13+*/}
+            <LinearGradient
+              id={'gradient'}
+              x1={'0'}
+              y1={'0%'}
+              x2={'100%'}
+              y2={'100%'}
+            >
+              <Stop offset={'0%'} stopColor={'rgb(209, 114, 255)'} />
+              <Stop offset={'50%'} stopColor={'rgb(89, 151, 235)'} />
+              <Stop offset={'100%'} stopColor={'rgb(77, 255, 255)'} />
+            </LinearGradient>
+          </Defs>
+        </AnimatedSvg>
       </StatsContainer>
     </Container>
   );

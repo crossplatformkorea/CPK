@@ -230,14 +230,20 @@ export default function Onboarding(): JSX.Element {
                 right: 8,
                 top: 8,
               }}
-              style={css`
-                margin-top: 4px;
-                align-items: center;
-                justify-content: center;
-                padding: 2px;
-                margin-right: -4px;
-                border-radius: 99px;
-              `}
+              style={[
+                css`
+                  margin-top: 4px;
+                  align-items: center;
+                  justify-content: center;
+                  padding: 2px;
+                  margin-right: -4px;
+                  border-radius: 99px;
+                `,
+                Platform.OS === 'web' &&
+                  css`
+                    margin-right: 20px;
+                  `,
+              ]}
             >
               {isSubmitting ? (
                 <ActivityIndicator size="small" color={theme.text.label} />
@@ -294,7 +300,11 @@ export default function Onboarding(): JSX.Element {
                   {t('onboarding.sectionDescription')}
                 </Text>
               </SectionHeaderGradient>
-              <UserImageView>
+              <UserImageView
+                style={css`
+                  height: 108px;
+                `}
+              >
                 <ProfileImageInput
                   imageUri={profileImg}
                   onChangeImageUri={setProfileImg}

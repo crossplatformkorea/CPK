@@ -1,5 +1,5 @@
 import {memo, useEffect, useState, type ReactElement} from 'react';
-import styled from '@emotion/native';
+import styled, {css} from '@emotion/native';
 import StatsChart, {StatsChartType} from './StatsChart';
 import {StyleProp, View, ViewStyle} from 'react-native';
 import {
@@ -90,23 +90,21 @@ const Scouter = ({
         {...chartType}
       />
       {githubLogin ? (
-        <View>
+        <View
+          style={css`
+            flex: 1;
+            align-self: stretch;
+          `}
+        >
           <View style={{height: 8}} />
           <Score score={score} tierName={tierName} />
           <View style={{height: 36}} />
-          <View
-            style={{
-              paddingHorizontal: 24,
-              alignSelf: 'stretch',
-            }}
-          >
-            <CombatDetails
-              selectedStat={selectedStat || null}
-              onPressStat={onPressStat}
-              pluginStats={pluginStats}
-              json={doobooStats.json}
-            />
-          </View>
+          <CombatDetails
+            selectedStat={selectedStat || null}
+            onPressStat={onPressStat}
+            pluginStats={pluginStats}
+            json={doobooStats.json}
+          />
         </View>
       ) : null}
 

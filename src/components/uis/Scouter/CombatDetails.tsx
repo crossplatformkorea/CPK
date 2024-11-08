@@ -27,9 +27,10 @@ import SvgStatsFire from '../../svgs/SvgStatsFire';
 import SvgStatsGold from '../../svgs/SvgStatsGold';
 import SvgStatsWater from '../../svgs/SvgStatsWater';
 import SvgStatsPerson from '../../svgs/SvgStatsPerson';
+import {COMPONENT_WIDTH} from '../../../utils/constants';
 
 const Container = styled.View`
-  width: ${Platform.OS === 'web' ? 'calc(100vw - 56px)' : undefined};
+  width: ${Platform.OS === 'web' ? COMPONENT_WIDTH - 80 + 'px' : undefined};
   min-width: 300px;
   border-radius: 4px;
   border-width: 1px;
@@ -43,7 +44,7 @@ const Container = styled.View`
 `;
 
 const Details = styled.View`
-  width: 100%;
+  align-self: stretch;
   padding: 20px;
 `;
 
@@ -55,8 +56,6 @@ const DetailHead = styled.View`
 `;
 
 const DetailBody = styled.View`
-  width: 100%;
-
   flex-direction: column;
 `;
 
@@ -78,7 +77,6 @@ const StatIcons = ({
     <View
       style={{
         height: 56,
-        width: '100%',
         alignSelf: 'stretch',
         borderBottomWidth: 1,
         borderColor: theme.role.border,
