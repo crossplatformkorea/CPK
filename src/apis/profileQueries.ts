@@ -117,22 +117,14 @@ export const fetchUpdateProfile = async ({
     throw error;
   }
 
-  const {data: existingUser, error: checkError} = await supabase
+  const {data: existingUser} = await supabase
     .from('users')
     .select('id')
     .eq('display_name', args.display_name)
     .neq('clerk_id', clerkId)
     .single();
 
-  // PGRST116 means no matching record found
-  if (checkError && checkError.code !== 'PGRST116') {
-    if (__DEV__) {
-      console.error(checkError);
-    }
-    throw new Error(t('error.default'));
-  }
-
-  if (!existingUser?.id) {
+  if (existingUser?.id) {
     const error = new Error(t('error.displayNameExists'));
     error.name = 'displayName';
     throw error;
@@ -143,7 +135,7 @@ export const fetchUpdateProfile = async ({
     .update({
       ...args,
     })
-    .eq('id', existingUser.id)
+    .eq('clerk_id', clerkId)
     .select('*')
     .single();
 
@@ -160,7 +152,7 @@ export const fetchUpdateProfile = async ({
       .from('tags')
       .upsert({tag: tagData})
       .eq('tag', tagData)
-      .eq('id', existingUser.id)
+      .eq('id', updatedProfile.id)
       .select('id')
       .single();
 
@@ -168,7 +160,7 @@ export const fetchUpdateProfile = async ({
       await supabase.from('_TagToUser').upsert(
         {
           A: data.id,
-          B: existingUser.id,
+          B: updatedProfile.id,
         },
         {
           ignoreDuplicates: true,
