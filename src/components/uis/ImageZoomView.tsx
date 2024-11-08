@@ -4,6 +4,7 @@ import {ImageZoom} from '@likashefqet/react-native-image-zoom';
 
 export default function ImageZoomView(props: ImageZoomProps): JSX.Element {
   if (Platform.OS === 'web') {
+    // @ts-ignore
     return <Image {...props} />;
   }
 
