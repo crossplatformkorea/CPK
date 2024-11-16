@@ -6,14 +6,13 @@ import withAndroidLocalizedName from '@mmomtchev/expo-android-localized-app-name
 import {version} from './package.json';
 
 const DEEP_LINK_URL = '[firebaseAppId].web.app';
-const buildNumber = 19;
+const buildNumber = 20;
 
 export default ({config}: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'Cross-Platform Korea',
   scheme: 'cpk',
   slug: 'cpk',
-  privacy: 'public',
   platforms: ['ios', 'android', 'web'],
   version,
   orientation: 'default',
@@ -25,7 +24,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
       {
         // https://github.com/software-mansion/react-native-screens/issues/2219
         ios: {newArchEnabled: true},
-        android: {newArchEnabled: false},
+        android: {newArchEnabled: true},
       },
     ],
     // @ts-ignore

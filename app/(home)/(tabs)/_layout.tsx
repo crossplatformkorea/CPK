@@ -33,7 +33,8 @@ function SettingsMenu(): JSX.Element {
 
 export default function TabLayout(): JSX.Element {
   const {theme} = useDooboo();
-  const notificationResponseListener = useRef<Notifications.Subscription>();
+  const notificationResponseListener =
+    useRef<Notifications.EventSubscription>();
   const {user} = useRecoilValue(authRecoilSelector);
 
   useEffect(() => {
