@@ -66,11 +66,6 @@ const InfoCard = styled.View`
   border-radius: 15px;
   padding: 16px 16px 24px 16px;
   margin-bottom: 16px;
-  shadow-color: ${({theme}) => theme.role.underlayContrast};
-  shadow-offset: 0px 1px;
-  shadow-opacity: 0.1;
-  shadow-radius: 2px;
-  elevation: 2;
 
   gap: 16px;
 `;
@@ -130,7 +125,15 @@ export default function My(): JSX.Element {
             ) : null}
           </ProfileHeader>
           <Content>
-            <InfoCard>
+            <InfoCard
+              style={{
+                shadowColor: theme.role.underlayContrast,
+                shadowOffset: {width: 0, height: 1},
+                shadowOpacity: 0.1,
+                shadowRadius: 2,
+                elevation: 2,
+              }}
+            >
               <InfoItem>
                 <InfoLabel>{t('onboarding.githubId')}</InfoLabel>
                 <Pressable

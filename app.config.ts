@@ -57,7 +57,7 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     typedRoutes: true,
   },
   splash: {
-    image: './assets/splash.png',
+    image: './assets/icon.png',
     resizeMode: 'cover',
     backgroundColor: '#343434',
   },
