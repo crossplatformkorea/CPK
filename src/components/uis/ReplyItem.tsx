@@ -78,7 +78,7 @@ export default function ReplyItem({
   };
 
   const hasLiked = !!item.likes?.some(
-    (like) => like.user_id === userId && like.liked,
+    (like) => like.user_id === authId && like.liked,
   );
 
   const likeCnt = item.likes?.length || 0;
