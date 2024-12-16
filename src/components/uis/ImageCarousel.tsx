@@ -10,7 +10,7 @@ import {Image as ExpoImage} from 'expo-image';
 import {useRouter} from 'expo-router';
 import {Image} from '../../types';
 import {generateThumbnailFromVideo} from '../../utils/common';
-import { delayPressIn } from '../../utils/constants';
+import {delayPressIn} from '../../utils/constants';
 
 type Styles = {
   container?: ViewStyle;

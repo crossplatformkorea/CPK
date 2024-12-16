@@ -33,11 +33,10 @@ export const uploadFileToSupabase = async ({
     throw error;
   }
 
+  const image_url = getPublicUrlFromPath({path: destPath, supabase});
+
   return {
-    image_url: getPublicUrlFromPath({
-      path: data.fullPath,
-      supabase,
-    }),
+    image_url,
     url: data.fullPath,
     id: data.id,
     type: fileType || null,
@@ -79,8 +78,7 @@ export const getPublicUrlFromPath = ({
     throw new Error('Failed to get signed URL');
   }
 
-  //! Note: supabase returns wrong url based on platform
-  return data.publicUrl.replace(/(\/images)(\/images)+/, '/images');
+  return data.publicUrl;
 };
 
 export const getSignedUrlFromUploadFile = async ({

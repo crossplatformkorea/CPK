@@ -127,7 +127,6 @@ export const fetchUpdatePost = async ({
       user:user_id (
         *
       ),
-      images (*),
       replies (
         id,
         deleted_at
@@ -142,24 +141,49 @@ export const fetchUpdatePost = async ({
   }
 
   if (imageUrlsToDelete.length > 0) {
-    await supabase
+    const {error: deleteError} = await supabase
       .from('images')
       .update({deleted_at: new Date().toISOString()})
       .in('image_url', imageUrlsToDelete);
+
+    if (deleteError) {
+      throw new Error(deleteError.message);
+    }
   }
 
   if (images && images.length > 0) {
     const imageInsertPromises = images.map((image) =>
       supabase.from('images').insert({
         ...image,
-        post_id: post.id,
+        post_id: postId,
       }),
     );
 
-    await Promise.all(imageInsertPromises);
+    const imageInsertResults = await Promise.all(imageInsertPromises);
+
+    imageInsertResults.forEach(({error}) => {
+      if (error) {
+        throw new Error(error.message);
+      }
+    });
   }
 
-  return post as unknown as PostWithJoins;
+  const {data: updatedImages, error: fetchImagesError} = await supabase
+    .from('images')
+    .select('*')
+    .eq('post_id', postId)
+    .is('deleted_at', null);
+
+  if (fetchImagesError) {
+    throw new Error(fetchImagesError.message);
+  }
+
+  const postWithImages = {
+    ...post,
+    images: updatedImages,
+  };
+
+  return postWithImages as unknown as PostWithJoins;
 };
 
 export const fetchDeletePost = async ({
@@ -226,7 +250,6 @@ export const fetchCreatePost = async ({
       user:user_id (
         *
       ),
-      images (*),
       replies (
         id,
         deleted_at
@@ -251,13 +274,27 @@ export const fetchCreatePost = async ({
     await Promise.all(imageInsertPromises);
   }
 
+  const {data: images, error: imagesError} = await supabase
+    .from('images')
+    .select('*')
+    .eq('post_id', data.id);
+
+  if (imagesError) {
+    throw new Error(imagesError.message);
+  }
+
+  const postWithImages = {
+    ...data,
+    images,
+  };
+
   sendNotificationsToAllUsers({
     title: post.title,
     body: post.content,
     supabase,
   });
 
-  return data as unknown as PostWithJoins;
+  return postWithImages as unknown as PostWithJoins;
 };
 
 /*

@@ -117,7 +117,7 @@ export default function PostUpdate(): JSX.Element {
         },
       );
 
-      const images = await Promise.all(imageUploadPromises);
+      const imageUploads = await Promise.all(imageUploadPromises);
 
       const initialImageUrls =
         post?.images?.map((el) => el?.image_url as string) || [];
@@ -128,17 +128,19 @@ export default function PostUpdate(): JSX.Element {
         (element) => !imageUris.includes(element) && element.startsWith('http'),
       );
 
+      const images = imageUploads
+        .filter((el) => !!el)
+        .map((el) => ({
+          ...el,
+          image_url: el?.image_url || undefined,
+        }));
+
       const updatedPost = await fetchUpdatePost({
         postId: id,
         title: data.title,
         content: data.content,
         url: data.url || null,
-        images: images
-          .filter((el) => !!el)
-          .map((el) => ({
-            ...el,
-            image_url: el?.image_url || undefined,
-          })),
+        images,
         imageUrlsToDelete: deleteImageUrls,
         supabase,
       });

@@ -9,10 +9,7 @@ import {t} from '../../../../src/STRINGS';
 import ReplyItem from '../../../../src/components/uis/ReplyItem';
 import ReplyInput from '../../../../src/components/uis/ReplyInput';
 import {ImagePickerAsset} from 'expo-image-picker';
-import {
-  getPublicUrlFromPath,
-  uploadFileToSupabase,
-} from '../../../../src/supabase';
+import {uploadFileToSupabase} from '../../../../src/supabase';
 import {
   fetchCreateReply,
   fetchReplyPagination,
@@ -20,7 +17,7 @@ import {
 import {useRecoilValue} from 'recoil';
 import {authRecoilState} from '../../../../src/recoil/atoms';
 import useSWR from 'swr';
-import {ReplyWithJoins} from '../../../../src/types';
+import {Image, ReplyWithJoins} from '../../../../src/types';
 import FallbackComponent from '../../../../src/components/uis/FallbackComponent';
 import {toggleLike} from '../../../../src/apis/likeQueries';
 import ErrorBoundary from 'react-native-error-boundary';
@@ -87,7 +84,11 @@ export default function Replies({
         });
       });
 
-      const images = await Promise.all(imageUploadPromises);
+      const images = (await Promise.all(imageUploadPromises))
+        .filter((el) => !!el)
+        .map((el) => ({
+          ...el,
+        }));
 
       const newReply = await fetchCreateReply({
         supabase,
@@ -96,21 +97,17 @@ export default function Replies({
           user_id: authId,
           post_id: postId,
         },
-        images: images
-          .filter((el) => !!el)
-          .map((el) => ({
-            ...el,
-            image_url: el?.image_url
-              ? getPublicUrlFromPath({
-                  path: el.image_url,
-                  supabase,
-                })
-              : undefined,
-          })),
+        images,
       });
 
       if (newReply) {
-        setReplies((prevReplies) => [newReply, ...prevReplies]);
+        setReplies((prevReplies) => [
+          {
+            ...newReply,
+            images: images as Image[],
+          },
+          ...prevReplies,
+        ]);
       }
     } catch (error) {
       if (__DEV__) console.error('Failed to create reply:', error);

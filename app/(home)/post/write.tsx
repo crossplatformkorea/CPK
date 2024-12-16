@@ -77,7 +77,14 @@ export default function PostWrite(): JSX.Element {
         });
       });
 
-      const images = await Promise.all(imageUploadPromises);
+      const imageUploads = await Promise.all(imageUploadPromises);
+
+      const images = imageUploads
+        .filter((el) => !!el)
+        .map((el) => ({
+          ...el,
+          image_url: el?.image_url || undefined,
+        }));
 
       const newPost = await fetchCreatePost({
         supabase,
@@ -85,12 +92,7 @@ export default function PostWrite(): JSX.Element {
           title: data.title,
           content: data.content,
           user_id: authId,
-          images: images
-            .filter((el) => !!el)
-            .map((el) => ({
-              ...el,
-              image_url: el?.image_url || undefined,
-            })),
+          images,
         },
       });
 
