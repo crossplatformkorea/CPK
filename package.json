@@ -54,7 +54,7 @@
     "@shopify/flash-list": "1.7.1",
     "@supabase/supabase-js": "^2.46.1",
     "base64-arraybuffer": "^1.0.2",
-    "cpk-ui": "0.0.7",
+    "cpk-ui": "^0.1.0",
     "date-fns": "^4.1.0",
     "expo": "~52.0.11",
     "expo-constants": "~17.0.3",

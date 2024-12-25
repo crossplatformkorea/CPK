@@ -34,6 +34,11 @@ jest.mock('react-native-device-info', () => {
   };
 });
 
+jest.mock('@clerk/clerk-expo', () => ({
+  useSession: jest.fn(() => ({session: null})),
+  useSignIn: jest.fn(() => ({signIn: jest.fn()})),
+}));
+
 // const customGlobal: any = global;
 
 // customGlobal.fetch = require('jest-fetch-mock');

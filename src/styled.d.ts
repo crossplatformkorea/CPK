@@ -4,7 +4,7 @@ import {CSSObject} from '@emotion/react';
 import {StyleProp, ViewStyle} from 'react-native';
 import {CpkTheme} from 'cpk-ui/utils/theme';
 
-type AllTheme = CustomAppTheme & CpkTheme;
+type AllTheme = CustomAppTheme & CpkThemeParams;
 
 declare module '@emotion/react' {
   export interface Theme extends AllTheme {}
