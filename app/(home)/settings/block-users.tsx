@@ -2,8 +2,6 @@ import {useState, useEffect, useCallback} from 'react';
 import {Platform} from 'react-native';
 import styled, {css} from '@emotion/native';
 import {FlashList} from '@shopify/flash-list';
-import {Button, Typography, useDooboo} from 'dooboo-ui';
-import CustomPressable from 'dooboo-ui/uis/CustomPressable';
 import {Stack} from 'expo-router';
 import {useRecoilState} from 'recoil';
 import UserImage from '../../../src/components/uis/UserImage';
@@ -19,6 +17,7 @@ import {User} from '../../../src/types';
 import ErrorBoundary from 'react-native-error-boundary';
 import FallbackComponent from '../../../src/components/uis/FallbackComponent';
 import useSupabase from '../../../src/hooks/useSupabase';
+import {Button, CustomPressable, Typography, useCPK} from 'cpk-ui';
 
 const Profile = styled.View`
   padding: 16px 16px 8px 16px;
@@ -36,7 +35,7 @@ function BlockUserItem({
   displayName: string;
   onPress?: () => void;
 }): JSX.Element {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
 
   return (
     <Profile>
@@ -77,7 +76,7 @@ const Container = styled.View`
 `;
 
 export default function BlockUser(): JSX.Element {
-  const {alertDialog} = useDooboo();
+  const {alertDialog} = useCPK();
   const [{authId, blockedUserIds}, setAuth] = useRecoilState(authRecoilState);
   const [blockUsers, setBlockUsers] = useState<User[]>([]);
   const [cursor, setCursor] = useState<string | undefined>(undefined);

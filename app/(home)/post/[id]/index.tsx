@@ -1,5 +1,4 @@
 import styled, {css} from '@emotion/native';
-import {Hr, Icon, Typography, useDooboo} from 'dooboo-ui';
 import {Stack, useLocalSearchParams, useRouter} from 'expo-router';
 import {ReplyWithJoins} from '../../../../src/types';
 import {t} from '../../../../src/STRINGS';
@@ -32,6 +31,7 @@ import {RectButton} from 'react-native-gesture-handler';
 import ErrorBoundary from 'react-native-error-boundary';
 import FallbackComponent from '../../../../src/components/uis/FallbackComponent';
 import useSupabase from '../../../../src/hooks/useSupabase';
+import {Hr, Icon, Typography, useCPK} from 'cpk-ui';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -47,7 +47,7 @@ const Content = styled.View`
 export default function PostDetails(): JSX.Element {
   const {supabase} = useSupabase();
   const {id} = useLocalSearchParams<{id: string}>();
-  const {theme, snackbar} = useDooboo();
+  const {theme, snackbar} = useCPK();
   const {bottom} = useSafeAreaInsets();
   const [{authId}] = useRecoilState(authRecoilState);
   const [posts, setPosts] = useRecoilState(postsRecoilState);
@@ -342,9 +342,10 @@ export default function PostDetails(): JSX.Element {
                     align-items: center;
                     gap: 4px;
                   `,
-                  Platform.OS === 'web' && css`
-                    margin-right: 24px;
-                  `,
+                  Platform.OS === 'web' &&
+                    css`
+                      margin-right: 24px;
+                    `,
                 ]}
               >
                 <RectButton

@@ -1,4 +1,4 @@
-import type {DoobooThemeParams} from '@dooboo-ui/theme';
+import {CpkThemeParams} from 'cpk-ui/utils/theme';
 
 export const colors = {
   apple: '#000000',
@@ -14,7 +14,7 @@ export const light = {
   },
 };
 
-export type CustomAppTheme = typeof light & DoobooThemeParams;
+export type CustomAppTheme = typeof light & CpkThemeParams;
 
 export const dark: typeof light = {
   brand: '#666',

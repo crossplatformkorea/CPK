@@ -1,6 +1,5 @@
 import styled from '@emotion/native';
 import {Stack} from 'expo-router';
-import {Icon, Typography, useDooboo} from 'dooboo-ui';
 import {t} from '../../../src/STRINGS';
 import {useRecoilValue} from 'recoil';
 import {authRecoilState} from '../../../src/recoil/atoms';
@@ -14,6 +13,7 @@ import ErrorBoundary from 'react-native-error-boundary';
 import FallbackComponent from '../../../src/components/uis/FallbackComponent';
 import {Image} from 'expo-image';
 import {authRecoilSelector} from '../../../src/recoil/selectors';
+import {Icon, Typography, useCPK} from 'cpk-ui';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -102,7 +102,7 @@ const TagText = styled.Text`
 export default function My(): JSX.Element {
   const {tags} = useRecoilValue(authRecoilState);
   const {user} = useRecoilValue(authRecoilSelector);
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
 
   return (
     <ErrorBoundary FallbackComponent={FallbackComponent}>

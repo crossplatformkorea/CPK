@@ -1,8 +1,8 @@
-import {useDooboo} from 'dooboo-ui';
+import {useCPK} from 'cpk-ui';
 import {Path, Svg} from 'react-native-svg';
 
 export default function SvgMask(): JSX.Element {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
   return (
     <Svg width="66" height="66" viewBox="0 0 66 66" fill="none">
       <Path

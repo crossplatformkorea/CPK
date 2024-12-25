@@ -1,15 +1,15 @@
 import {Stack} from 'expo-router/stack';
 import {t} from '../../src/STRINGS';
-import {Icon, useDooboo} from 'dooboo-ui';
 import {RectButton} from 'react-native-gesture-handler';
 import {Redirect, useRouter} from 'expo-router';
 import {Platform} from 'react-native';
 import {WEB_URL} from '../../src/utils/constants';
 import {css} from '@emotion/native';
 import {useAuth} from '@clerk/clerk-expo';
+import {Icon, useCPK} from 'cpk-ui';
 
 export default function HomeLayout() {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
   const {back, replace} = useRouter();
   const {isSignedIn} = useAuth();
 

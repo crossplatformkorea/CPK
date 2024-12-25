@@ -3,7 +3,7 @@ import type {ViewStyle} from 'react-native';
 import {Platform} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import styled, {css} from '@emotion/native';
-import {useDooboo} from 'dooboo-ui';
+import {useCPK} from 'cpk-ui';
 
 const Container = styled.View`
   flex: 1;
@@ -27,7 +27,7 @@ export default function Wrapper({
   children: ReactNode;
 }): JSX.Element {
   const {left, right} = useSafeAreaInsets();
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
 
   return (
     <Container

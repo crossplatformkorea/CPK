@@ -1,8 +1,8 @@
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import type {ThemeType} from 'dooboo-ui';
 import type * as Device from 'expo-device';
 
 import RootProvider from '../src/providers';
+import {ThemeType} from 'cpk-ui';
 
 type MockContext = {
   themeType?: ThemeType;

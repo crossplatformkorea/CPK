@@ -1,5 +1,4 @@
 import {View} from 'react-native';
-import {Icon, useDooboo} from 'dooboo-ui';
 import {Redirect, Tabs, useRouter} from 'expo-router';
 import {t} from '../../../src/STRINGS';
 import {useEffect, useRef} from 'react';
@@ -10,9 +9,10 @@ import {Image} from 'expo-image';
 import {IC_ICON} from '../../../src/icons';
 import {useRecoilValue} from 'recoil';
 import {authRecoilSelector} from '../../../src/recoil/selectors';
+import {Icon, useCPK} from 'cpk-ui';
 
 function SettingsMenu(): JSX.Element {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
   const {push} = useRouter();
 
   return (
@@ -32,7 +32,7 @@ function SettingsMenu(): JSX.Element {
 }
 
 export default function TabLayout(): JSX.Element {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
   const notificationResponseListener =
     useRef<Notifications.EventSubscription>();
   const {user} = useRecoilValue(authRecoilSelector);

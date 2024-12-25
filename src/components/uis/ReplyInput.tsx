@@ -1,12 +1,11 @@
-import {EditText, EditTextProps, Icon, useDooboo} from 'dooboo-ui';
 import {useImagePickerActionSheet} from '../../hooks/useActionSheet';
 import {ActivityIndicator, Platform, ViewStyle} from 'react-native';
 import {ImagePickerAsset, MediaTypeOptions} from 'expo-image-picker';
-import styled, { css } from '@emotion/native';
-import CustomPressable from 'dooboo-ui/uis/CustomPressable';
-import { delayPressIn, MAX_IMAGES_UPLOAD_LENGTH } from '../../utils/constants';
+import styled, {css} from '@emotion/native';
+import {delayPressIn, MAX_IMAGES_UPLOAD_LENGTH} from '../../utils/constants';
 import MultiUploadImageInput from './MultiUploadImageInput';
-import { t } from '../../STRINGS';
+import {t} from '../../STRINGS';
+import {CustomPressable, EditText, EditTextProps, Icon, useCPK} from 'cpk-ui';
 
 const Container = styled.View`
   padding: 24px 24px 0 24px;
@@ -42,7 +41,7 @@ export default function ReplyInput({
   setAssets,
 }: Props): JSX.Element {
   const {openImagePicker} = useImagePickerActionSheet();
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
 
   return (
     <Container style={style}>
@@ -65,7 +64,6 @@ export default function ReplyInput({
               />
             ) : (
               <>
-                {/* 사진선택 아이콘 */}
                 <CustomPressable
                   disabled={loading}
                   onPress={() =>
@@ -94,7 +92,6 @@ export default function ReplyInput({
                   <Icon name="Images" size={22} />
                 </CustomPressable>
 
-                {/* 댓글 제출 아이콘 */}
                 <CustomPressable
                   delayHoverIn={delayPressIn}
                   onPress={createReply}

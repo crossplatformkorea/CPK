@@ -2,8 +2,6 @@ import type {Dispatch, SetStateAction} from 'react';
 import {useState} from 'react';
 import {css} from '@emotion/native';
 import {useActionSheet} from '@expo/react-native-action-sheet';
-import {Button, useDooboo} from 'dooboo-ui';
-import createCtx from 'dooboo-ui/utils/createCtx';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
 
 import {authRecoilState, reportModalRecoilState} from '../recoil/atoms';
@@ -11,6 +9,8 @@ import {t} from '../STRINGS';
 import {fetchBlockUser} from '../apis/blockQueries';
 import {fetchCreateReport} from '../apis/reportQueries';
 import useSupabase from '../hooks/useSupabase';
+import {Button, useCPK} from 'cpk-ui';
+import createCtx from '../utils/createCtx';
 
 type PeerContentActionProps = {
   userId: string;
@@ -41,7 +41,7 @@ interface Props {
 function AppLogicProvider({children}: Props): JSX.Element {
   const {authId} = useRecoilValue(authRecoilState);
   const {showActionSheetWithOptions} = useActionSheet();
-  const {alertDialog, snackbar} = useDooboo();
+  const {alertDialog, snackbar} = useCPK();
   const setReportModalState = useSetRecoilState(reportModalRecoilState);
   const setAuthState = useSetRecoilState(authRecoilState);
   const [isCreateReportInFlight, setIsCreateReportInFlight] = useState(false);

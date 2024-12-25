@@ -2,7 +2,6 @@ import {memo} from 'react';
 import {Pressable, type TextStyle, type ViewStyle} from 'react-native';
 import styled, {css} from '@emotion/native';
 import {useActionSheet} from '@expo/react-native-action-sheet';
-import {IconButton, useDooboo} from 'dooboo-ui';
 import type {ImageStyle} from 'expo-image';
 import {Image} from 'expo-image';
 import {
@@ -18,6 +17,7 @@ import {
   launchMediaLibraryAsync,
 } from '../../../src/utils/imagePicker';
 import {IC_ICON} from '../../icons';
+import {IconButton, useCPK} from 'cpk-ui';
 
 const Container = styled.View`
   flex: 1;
@@ -42,7 +42,7 @@ function SingleUploadImageInput({
     image?: ImageStyle;
   };
 }): JSX.Element {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
   const {showActionSheetWithOptions} = useActionSheet();
 
   const hasImage = !!imageUri;

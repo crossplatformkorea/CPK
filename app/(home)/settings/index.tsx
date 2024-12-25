@@ -1,12 +1,9 @@
 import {Fragment, useEffect, useMemo, useState} from 'react';
 import {Platform, ScrollView, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {dark, light} from '@dooboo-ui/theme';
 import styled, {css} from '@emotion/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Notifications from 'expo-notifications';
-import {Icon, SwitchToggle, Typography, useDooboo} from 'dooboo-ui';
-import CustomPressable from 'dooboo-ui/uis/CustomPressable';
 import * as Linking from 'expo-linking';
 import {Stack, useRouter} from 'expo-router';
 import * as SystemUI from 'expo-system-ui';
@@ -20,6 +17,8 @@ import useAppState from '../../../src/hooks/useAppState';
 import {openEmail} from '../../../src/utils/common';
 import ErrorBoundary from 'react-native-error-boundary';
 import FallbackComponent from '../../../src/components/uis/FallbackComponent';
+import {CustomPressable, Icon, SwitchToggle, Typography, useCPK} from 'cpk-ui';
+import { dark, light } from 'cpk-ui/utils/colors';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -43,7 +42,7 @@ const Divider = styled.View`
 
 export default function Settings(): JSX.Element {
   const {push} = useRouter();
-  const {theme, changeThemeType, themeType} = useDooboo();
+  const {theme, changeThemeType, themeType} = useCPK();
   const authId = useRecoilValue(authRecoilState);
   const {bottom} = useSafeAreaInsets();
 

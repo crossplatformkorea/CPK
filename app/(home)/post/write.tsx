@@ -2,7 +2,6 @@ import styled, {css} from '@emotion/native';
 import {Stack, useRouter} from 'expo-router';
 import {yupResolver} from '@hookform/resolvers/yup';
 import {t} from '../../../src/STRINGS';
-import {EditText, Typography, useDooboo} from 'dooboo-ui';
 import * as yup from 'yup';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {
@@ -22,6 +21,7 @@ import CustomScrollView from '../../../src/components/uis/CustomScrollView';
 import {uploadFileToSupabase} from '../../../src/supabase';
 import {RectButton} from 'react-native-gesture-handler';
 import useSupabase from '../../../src/hooks/useSupabase';
+import {EditText, Typography, useCPK} from 'cpk-ui';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -44,7 +44,7 @@ type FormData = yup.InferType<typeof schema>;
 export default function PostWrite(): JSX.Element {
   const {supabase} = useSupabase();
   const {back} = useRouter();
-  const {theme, snackbar} = useDooboo();
+  const {theme, snackbar} = useCPK();
   const {authId} = useRecoilValue(authRecoilState);
   const setPosts = useSetRecoilState(postsRecoilState);
   const [assets, setAssets] = useState<ImagePickerAsset[]>([]);

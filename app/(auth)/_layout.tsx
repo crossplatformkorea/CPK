@@ -1,10 +1,10 @@
 import {Stack} from 'expo-router/stack';
-import {useDooboo} from 'dooboo-ui';
 import {Redirect} from 'expo-router';
 import {useAuth} from '@clerk/clerk-expo';
+import {useCPK} from 'cpk-ui';
 
 export default function AuthLayout() {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
   const {isSignedIn} = useAuth();
 
   if (isSignedIn) {

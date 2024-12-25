@@ -1,7 +1,6 @@
 import styled, {css} from '@emotion/native';
 import {Stack, useRouter} from 'expo-router';
 import {yupResolver} from '@hookform/resolvers/yup';
-import {EditText, Icon, Typography, useDooboo} from 'dooboo-ui';
 import * as yup from 'yup';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {
@@ -21,7 +20,6 @@ import {ImageInsertArgs} from '../../../src/types';
 import CustomScrollView from '../../../src/components/uis/CustomScrollView';
 import ProfileImageInput from '../../../src/components/fragments/ProfileImageInput';
 import {delayPressIn} from '../../../src/utils/constants';
-import CustomPressable from 'dooboo-ui/uis/CustomPressable';
 import {
   fetchUpdateProfile,
   fetchUserProfile,
@@ -33,6 +31,7 @@ import {RectButton} from 'react-native-gesture-handler';
 import ErrorBoundary from 'react-native-error-boundary';
 import useSupabase, {SupabaseClient} from '../../../src/hooks/useSupabase';
 import {useAuth} from '@clerk/clerk-expo';
+import {CustomPressable, EditText, Icon, Typography, useCPK} from 'cpk-ui';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -90,7 +89,7 @@ const fetcher = async ({
 };
 
 export default function ProfileUpdate(): JSX.Element {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
   const setAuth = useSetRecoilState(authRecoilState);
   const {userId} = useAuth();
   const [tag, setTag] = useState('');

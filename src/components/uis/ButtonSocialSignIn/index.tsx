@@ -13,8 +13,8 @@ import {
   useSignUp,
   useAuth,
 } from '@clerk/clerk-expo';
-import {Icon} from 'dooboo-ui';
 import {useRouter} from 'expo-router';
+import {Icon} from 'cpk-ui';
 
 type Props = {
   style?: StyleProp<ViewStyle>;

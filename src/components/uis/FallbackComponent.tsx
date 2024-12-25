@@ -1,11 +1,11 @@
 import {DevSettings, Platform} from 'react-native';
 import styled, {css} from '@emotion/native';
-import {Button, Typography, useDooboo} from 'dooboo-ui';
 import * as Updates from 'expo-updates';
 import {Image} from 'expo-image';
 import {IC_ICON} from '../../icons';
 import {goToAppStore} from '../../utils/common';
 import {t} from '../../STRINGS';
+import {Button, Typography, useCPK} from 'cpk-ui';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -18,7 +18,7 @@ const Container = styled.SafeAreaView`
 `;
 
 export default function FallbackComponent(): JSX.Element {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
 
   return (
     <Container>

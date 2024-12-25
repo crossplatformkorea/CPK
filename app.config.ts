@@ -52,10 +52,10 @@ export default ({config}: ConfigContext): ExpoConfig => ({
       'expo-font',
       {
         fonts: [
-          'node_modules/dooboo-ui/uis/Icon/doobooui.ttf',
-          'node_modules/dooboo-ui/uis/Icon/Pretendard-Bold.otf',
-          'node_modules/dooboo-ui/uis/Icon/Pretendard-Regular.otf',
-          'node_modules/dooboo-ui/uis/Icon/Pretendard-Thin.otf',
+          'node_modules/cpk-ui/components/uis/Icon/cpk.ttf',
+          'node_modules/cpk-ui/components/uis/Icon/Pretendard-Bold.otf',
+          'node_modules/cpk-ui/components/uis/Icon/Pretendard-Regular.otf',
+          'node_modules/cpk-ui/components/uis/Icon/Pretendard-Thin.otf',
         ],
       },
     ],
@@ -68,14 +68,17 @@ export default ({config}: ConfigContext): ExpoConfig => ({
       },
     ],
     'expo-localization',
+    [
+      'expo-splash-screen',
+      {
+        image: './assets/icon.png',
+        backgroundColor: '#343434',
+        imageWidth: 200,
+      },
+    ],
   ],
   experiments: {
     typedRoutes: true,
-  },
-  splash: {
-    image: './assets/icon.png',
-    resizeMode: 'cover',
-    backgroundColor: '#343434',
   },
   extra: {
     eas: {projectId: '1a0107b0-1cef-4913-875f-639c38f59101'},

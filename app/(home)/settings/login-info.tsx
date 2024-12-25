@@ -1,8 +1,6 @@
 import {ScrollView, View} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import styled, {css} from '@emotion/native';
-import type {IconName} from 'dooboo-ui';
-import {Button, Icon, Typography, useDooboo} from 'dooboo-ui';
 import {Stack, useRouter} from 'expo-router';
 import {t} from '../../../src/STRINGS';
 import {showConfirm} from '../../../src/utils/alert';
@@ -15,6 +13,7 @@ import {useRecoilState} from 'recoil';
 import {authRecoilState} from '../../../src/recoil/atoms';
 import {fetchDeletePushToken} from '../../../src/apis/pushTokenQueries';
 import useSupabase from '../../../src/hooks/useSupabase';
+import {Button, Icon, IconName, Typography, useCPK} from 'cpk-ui';
 
 const Container = styled.View`
   flex: 1;
@@ -41,7 +40,7 @@ type ProviderType = {
 };
 
 function SocialProvider({provider, email}: ProviderType): JSX.Element {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
 
   const iconName: IconName =
     provider === 'apple'
@@ -94,7 +93,7 @@ function SocialProvider({provider, email}: ProviderType): JSX.Element {
 export default function LoginInfo(): JSX.Element {
   const {supabase} = useSupabase();
   const {replace} = useRouter();
-  const {theme, alertDialog} = useDooboo();
+  const {theme, alertDialog} = useCPK();
   const {bottom} = useSafeAreaInsets();
   const {signOut} = useAuth();
   const {isSignedIn, user} = useUser();

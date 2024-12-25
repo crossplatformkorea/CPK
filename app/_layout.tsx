@@ -9,13 +9,11 @@ import {
   reloadAsync,
   useUpdates,
 } from 'expo-updates';
+import {useCPK} from 'cpk-ui';
 
-import {dark, light} from '@dooboo-ui/theme';
 import {css} from '@emotion/native';
 import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useDooboo} from 'dooboo-ui';
-import StatusBarBrightness from 'dooboo-ui/uis/StatusbarBrightness';
 import {Slot} from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import * as SystemUI from 'expo-system-ui';
@@ -34,6 +32,8 @@ import {fetchBlockUserIds} from '../src/apis/blockQueries';
 import {registerForPushNotificationsAsync} from '../src/utils/notifications';
 import {fetchAddPushToken} from '../src/apis/pushTokenQueries';
 import useSupabase from '../src/hooks/useSupabase';
+import {dark, light} from 'cpk-ui/utils/colors';
+import StatusBarBrightness from 'cpk-ui/components/uis/StatusbarBrightness/StatusBarBrightness';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -47,7 +47,7 @@ Notifications.setNotificationHandler({
 
 function App(): JSX.Element | null {
   const {user} = useUser();
-  const {assetLoaded, snackbar} = useDooboo();
+  const {assetLoaded, snackbar} = useCPK();
   const {signOut} = useAuth();
   const [, setAuth] = useRecoilState(authRecoilState);
   const [checkEasUpdate, setCheckEasUpdate] = useState(false);
@@ -212,7 +212,7 @@ function App(): JSX.Element | null {
 }
 
 function Layout(): JSX.Element | null {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
   const [reportModalState, setReportModalState] = useRecoilState(
     reportModalRecoilState,
   );
