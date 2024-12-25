@@ -4,7 +4,6 @@ import {KeyboardAvoidingView, Platform, View} from 'react-native';
 import {HEADER_HEIGHT} from '../../../../src/utils/constants';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {FlashList} from '@shopify/flash-list';
-import {Typography, useDooboo} from 'dooboo-ui';
 import {t} from '../../../../src/STRINGS';
 import ReplyItem from '../../../../src/components/uis/ReplyItem';
 import ReplyInput from '../../../../src/components/uis/ReplyInput';
@@ -22,6 +21,7 @@ import FallbackComponent from '../../../../src/components/uis/FallbackComponent'
 import {toggleLike} from '../../../../src/apis/likeQueries';
 import ErrorBoundary from 'react-native-error-boundary';
 import useSupabase from '../../../../src/hooks/useSupabase';
+import {Typography, useCPK} from 'cpk-ui';
 
 export default function Replies({
   flashListRef,
@@ -35,7 +35,7 @@ export default function Replies({
 }): JSX.Element {
   const {supabase} = useSupabase();
   const {bottom} = useSafeAreaInsets();
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
   const {authId} = useRecoilValue(authRecoilState);
   const [reply, setReply] = useState('');
   const [assets, setAssets] = useState<ImagePickerAsset[]>([]);

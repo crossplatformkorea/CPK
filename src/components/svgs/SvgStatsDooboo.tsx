@@ -1,4 +1,4 @@
-import { useDooboo } from 'dooboo-ui';
+import {useCPK} from 'cpk-ui';
 import {Svg, G, Path, Defs, ClipPath, Rect} from 'react-native-svg';
 
 type Props = {
@@ -6,7 +6,7 @@ type Props = {
 };
 
 export default function SvgStatsDooboo({color}: Props) {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
   const fill = color || theme.text.basic;
 
   return (

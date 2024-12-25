@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import styled from '@emotion/native';
 import {Stack, useLocalSearchParams} from 'expo-router';
-import {Button, Icon, Typography, useDooboo} from 'dooboo-ui';
 import {css} from '@emotion/native';
 import {Pressable, RefreshControl} from 'react-native';
 import ErrorBoundary from 'react-native-error-boundary';
@@ -22,6 +21,7 @@ import {
 } from '../../../src/apis/followQueries';
 import useSupabase from '../../../src/hooks/useSupabase';
 import {Image} from 'expo-image';
+import {Button, Icon, Typography, useCPK} from 'cpk-ui';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -118,7 +118,7 @@ export default function DisplayName(): JSX.Element {
   }>();
 
   const {supabase} = useSupabase();
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
   const {authId} = useRecoilValue(authRecoilState);
   const [user, setUser] = useState<any>(null);
   const [tags, setTags] = useState<string[]>([]);

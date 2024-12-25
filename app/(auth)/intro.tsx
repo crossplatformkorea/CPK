@@ -1,9 +1,8 @@
-import {ScrollView, View} from 'react-native';
+import {Pressable, ScrollView, View} from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 
 import styled, {css} from '@emotion/native';
 
-import {Typography, useDooboo} from 'dooboo-ui';
 import {Stack, useRouter} from 'expo-router';
 
 import {IMG_CROSSPLATFORMS, IC_ICON} from '../../src/icons';
@@ -12,6 +11,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ButtonSocialSignIn from '../../src/components/uis/ButtonSocialSignIn';
 import {useWarmUpBrowser} from '../../src/hooks/useWarmUpBrowser';
 import {Image} from 'expo-image';
+import {Typography, useCPK} from 'cpk-ui';
 
 WebBrowser.maybeCompleteAuthSession();
 
@@ -45,7 +45,7 @@ WebBrowser.maybeCompleteAuthSession();
 export default function Intro(): JSX.Element {
   useWarmUpBrowser();
 
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
   const {push} = useRouter();
   const {top, bottom, left, right} = useSafeAreaInsets();
 
@@ -129,8 +129,8 @@ export default function Intro(): JSX.Element {
                 i % 2 === 0 ? (
                   str
                 ) : (
-                  <Typography.Body4
-                    key={str}
+                  <Pressable
+                    hitSlop={8}
                     onPress={() => {
                       if (str === t('signIn.privacyPolicy')) {
                         return push('/privacyandpolicy');
@@ -138,14 +138,18 @@ export default function Intro(): JSX.Element {
 
                       push('/termsofservice');
                     }}
-                    style={css`
-                      text-decoration-line: underline;
-                      color: ${theme.text.basic};
-                      text-decoration-line: underline;
-                    `}
                   >
-                    {str}
-                  </Typography.Body4>
+                    <Typography.Body4
+                      key={str}
+                      style={css`
+                        text-decoration-line: underline;
+                        color: ${theme.text.basic};
+                        text-decoration-line: underline;
+                      `}
+                    >
+                      {str}
+                    </Typography.Body4>
+                  </Pressable>
                 ),
               )}
           </Typography.Body4>

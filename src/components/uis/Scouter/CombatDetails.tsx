@@ -1,5 +1,4 @@
 import styled from '@emotion/native';
-import {Typography, useDooboo} from 'dooboo-ui';
 import {type ReactElement} from 'react';
 import {
   Linking,
@@ -28,6 +27,7 @@ import SvgStatsGold from '../../svgs/SvgStatsGold';
 import SvgStatsWater from '../../svgs/SvgStatsWater';
 import SvgStatsPerson from '../../svgs/SvgStatsPerson';
 import {COMPONENT_WIDTH} from '../../../utils/constants';
+import {Typography, useCPK} from 'cpk-ui';
 
 const Container = styled.View`
   width: ${Platform.OS === 'web' ? COMPONENT_WIDTH - 80 + 'px' : undefined};
@@ -66,7 +66,7 @@ const StatIcons = ({
   selectedStats: StatType | null;
   onPressStat: (stat: StatType | null) => void;
 }): ReactElement => {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
 
   const style: ViewStyle = {
     width: 24,
@@ -169,7 +169,7 @@ const ContentDetailDescription = ({
   stats,
   selectedStats,
 }: ContentDetailDescProps): ReactElement | null => {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
 
   if (!stats) {
     return null;

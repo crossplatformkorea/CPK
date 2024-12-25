@@ -1,7 +1,6 @@
 import styled, {css} from '@emotion/native';
 import {Redirect, Stack} from 'expo-router';
 import {yupResolver} from '@hookform/resolvers/yup';
-import {EditText, Icon, Typography, useDooboo} from 'dooboo-ui';
 import * as yup from 'yup';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {
@@ -17,7 +16,6 @@ import useSwr from 'swr';
 import {t} from '../../src/STRINGS';
 import CustomScrollView from '../../src/components/uis/CustomScrollView';
 import ProfileImageInput from '../../src/components/fragments/ProfileImageInput';
-import CustomPressable from 'dooboo-ui/uis/CustomPressable';
 import {delayPressIn} from '../../src/utils/constants';
 import {
   fetchUpdateProfile,
@@ -34,6 +32,7 @@ import ErrorBoundary from 'react-native-error-boundary';
 import useSupabase, {SupabaseClient} from '../../src/hooks/useSupabase';
 import CustomLoadingIndicator from '../../src/components/uis/CustomLoadingIndicator';
 import {useAuth} from '@clerk/clerk-expo';
+import {CustomPressable, EditText, Icon, Typography, useCPK} from 'cpk-ui';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -94,7 +93,7 @@ const fetcher = async (
 };
 
 export default function Onboarding(): JSX.Element {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
   const [displayNameError, setDisplayNameError] = useState<string>();
   const [{user}, setAuth] = useRecoilState(authRecoilState);
   const [tag, setTag] = useState('');

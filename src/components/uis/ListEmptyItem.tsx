@@ -1,14 +1,18 @@
 import type {ViewStyle} from 'react-native';
 import styled, {css} from '@emotion/native';
-import {Icon, useDooboo} from 'dooboo-ui';
+import {Icon, useCPK} from 'cpk-ui';
 
 const Container = styled.View`
   align-items: center;
   justify-content: center;
 `;
 
-export default function ListEmptyItem({style}: {style?: ViewStyle}): JSX.Element {
-  const {theme} = useDooboo();
+export default function ListEmptyItem({
+  style,
+}: {
+  style?: ViewStyle;
+}): JSX.Element {
+  const {theme} = useCPK();
 
   return (
     <Container
@@ -23,4 +27,3 @@ export default function ListEmptyItem({style}: {style?: ViewStyle}): JSX.Element
     </Container>
   );
 }
-

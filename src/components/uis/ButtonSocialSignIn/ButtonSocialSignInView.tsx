@@ -7,8 +7,8 @@ import type {
 } from 'react-native';
 import {TouchableOpacity} from 'react-native';
 import styled from '@emotion/native';
-import {LoadingIndicator, Typography, useDooboo} from 'dooboo-ui';
 import {Image} from 'expo-image';
+import {LoadingIndicator, Typography, useCPK} from 'cpk-ui';
 
 type Props = {
   style?: StyleProp<ViewStyle>;
@@ -42,7 +42,7 @@ export default function SocialSignInButton({
   onPress,
   loading,
 }: Props): JSX.Element {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
 
   return (
     <TouchableOpacity activeOpacity={0.8} onPress={onPress}>

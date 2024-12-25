@@ -2,9 +2,9 @@ import type {ReactNode} from 'react';
 import type {StyleProp, ViewStyle} from 'react-native';
 import {View} from 'react-native';
 import {css} from '@emotion/native';
-import {useDooboo} from 'dooboo-ui';
 
 import LottieView from './LottieView';
+import {useCPK} from 'cpk-ui';
 
 function CustomLoadingIndicator({
   style,
@@ -13,7 +13,7 @@ function CustomLoadingIndicator({
   style?: StyleProp<ViewStyle>;
   children?: ReactNode;
 }): JSX.Element {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
 
   return (
     <View

@@ -1,7 +1,7 @@
-import styled, { css } from '@emotion/native';
+import styled, {css} from '@emotion/native';
 import {Image} from 'expo-image';
-import { User } from '../../types';
-import { Typography, useDooboo } from 'dooboo-ui';
+import {User} from '../../types';
+import {Typography, useCPK} from 'cpk-ui';
 
 const Container = styled.View`
   margin-top: 2px;
@@ -13,7 +13,7 @@ const Container = styled.View`
 `;
 
 export default function UserListItem({user}: {user: User}): JSX.Element {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
 
   return (
     <Container>

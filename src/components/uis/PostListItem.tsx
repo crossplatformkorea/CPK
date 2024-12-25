@@ -1,5 +1,4 @@
 import styled, {css} from '@emotion/native';
-import {Hr, Icon, Typography, useDooboo} from 'dooboo-ui';
 import type {Image, Post, User} from '../../types';
 import {formatDateTime} from '../../utils/date';
 import UserListItem from './UserListItem';
@@ -9,6 +8,7 @@ import {Image as ExpoImage} from 'expo-image';
 import {useRecoilValue} from 'recoil';
 import {authRecoilState} from '../../recoil/atoms';
 import {isYoutubeURL} from '../../utils/urlParser';
+import {Hr, Icon, Typography, useCPK} from 'cpk-ui';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -32,7 +32,7 @@ export default function PostListItem({
   onPress,
   controlItemProps,
 }: Props): JSX.Element | null {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
   const {blockedUserIds} = useRecoilValue(authRecoilState);
 
   if (blockedUserIds.includes(post.user_id)) {

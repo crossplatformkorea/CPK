@@ -62,7 +62,8 @@
     "**/*.test.tsx",
     "**/*.spec.ts",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "expo-env.d.ts",
+    "src/styled.d.ts"
   ],
   "exclude": [
     "node_modules"

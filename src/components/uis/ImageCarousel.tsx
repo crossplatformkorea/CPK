@@ -4,13 +4,13 @@ import {Pressable, View} from 'react-native';
 import Animated, {FadeIn} from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 import {css} from '@emotion/native';
-import {Icon, Typography, useDooboo} from 'dooboo-ui';
 import type {ImageStyle} from 'expo-image';
 import {Image as ExpoImage} from 'expo-image';
 import {useRouter} from 'expo-router';
 import {Image} from '../../types';
 import {generateThumbnailFromVideo} from '../../utils/common';
 import {delayPressIn} from '../../utils/constants';
+import {Icon, Typography, useCPK} from 'cpk-ui';
 
 type Styles = {
   container?: ViewStyle;
@@ -38,7 +38,7 @@ function ImageCarouselItem({
   item: Image;
   borderRadius?: number;
 }): JSX.Element {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
   const {push} = useRouter();
   const [uri, setUri] = useState<string | undefined>();
 
@@ -148,7 +148,6 @@ function ImageCarouselItem({
           } / ${images?.length}`}</Typography.Body4>
         </View>
       ) : null}
-      {/* 비디오면 왼쪽 상단 표시 */}
       {item.type === 'Video' ? (
         <View
           style={css`
@@ -182,7 +181,7 @@ export default function ImageCarousel(
   props: Omit<Props, 'height' | 'width'>,
 ): JSX.Element {
   const {style, styles, images, borderRadius} = props;
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
   const [layoutWidth, setLayoutWidth] = useState(1);
   const height = layoutWidth === 1 ? 330 : layoutWidth;
 

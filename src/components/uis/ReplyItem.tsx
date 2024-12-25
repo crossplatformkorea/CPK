@@ -1,8 +1,6 @@
 import {Pressable, ScrollView, View} from 'react-native';
 import ParsedText from 'react-native-parsed-text';
 import styled, {css} from '@emotion/native';
-import {Icon, Typography, useDooboo} from 'dooboo-ui';
-import CustomPressable from 'dooboo-ui/uis/CustomPressable';
 import {Image as ExpoImage} from 'expo-image';
 import {useRouter} from 'expo-router';
 import {useRecoilValue} from 'recoil';
@@ -12,6 +10,7 @@ import {formatDateTime} from '../../utils/date';
 import {authRecoilState} from '../../recoil/atoms';
 import UserImage from './UserImage';
 import {useAppLogic} from '../../providers/AppLogicProvider';
+import {CustomPressable, Icon, Typography, useCPK} from 'cpk-ui';
 
 const Container = styled.View`
   padding: 14px 24px;
@@ -56,7 +55,7 @@ export default function ReplyItem({
   onPressLike,
 }: Props): JSX.Element {
   const {push, replace} = useRouter();
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
   const userId = item?.user.id;
   const {authId} = useRecoilValue(authRecoilState);
   const {handlePeerContentAction, handleUserContentAction} = useAppLogic();

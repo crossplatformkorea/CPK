@@ -1,11 +1,11 @@
 import {useEffect, useState} from 'react';
 import {css} from '@emotion/native';
-import {Button} from 'dooboo-ui';
 import {usePathname, useRouter} from 'expo-router';
 
 import {t} from '../src/STRINGS';
 import {showAlert} from '../src/utils/alert';
 import CustomLoadingIndicator from '../src/components/uis/CustomLoadingIndicator';
+import {Button} from 'cpk-ui';
 
 /* 
   For android redirect. This looks like expo router bug.
@@ -22,7 +22,7 @@ export default function Unmatched(): JSX.Element {
       if (canGoBack()) {
         back();
       }
-  
+
       replace('/');
     }
 

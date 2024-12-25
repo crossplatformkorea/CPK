@@ -4,7 +4,6 @@ import Animated, {BounceIn} from 'react-native-reanimated';
 
 import {type ReactElement} from 'react';
 import styled, {css} from '@emotion/native';
-import {useDooboo} from 'dooboo-ui';
 import {Platform, TouchableOpacity} from 'react-native';
 import {StatType} from '../../../types/github-stats';
 import SvgStatsPerson from '../../svgs/SvgStatsPerson';
@@ -14,6 +13,7 @@ import SvgStatsEarth from '../../svgs/SvgStatsEarth';
 import SvgStatsGold from '../../svgs/SvgStatsGold';
 import SvgStatsWater from '../../svgs/SvgStatsWater';
 import {Image} from 'expo-image';
+import {useCPK} from 'cpk-ui';
 
 type Axis = {x: number; y: number};
 
@@ -220,7 +220,7 @@ const StatsChart = ({
   centerPosition = {x: width / 2, y: (width * 1.155) / 2},
   onPressStat,
 }: StatsChartType): ReactElement => {
-  const {theme, themeType} = useDooboo();
+  const {theme, themeType} = useCPK();
   const height = width * 1.155;
 
   const posFire = convertPosition(centerPosition, fire, 'fire');

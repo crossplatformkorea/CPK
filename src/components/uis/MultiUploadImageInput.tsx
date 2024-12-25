@@ -2,7 +2,6 @@ import type {TextStyle, ViewStyle} from 'react-native';
 import {Pressable, ScrollView, View} from 'react-native';
 import styled, {css} from '@emotion/native';
 import {useActionSheet} from '@expo/react-native-action-sheet';
-import {Button, Icon, IconButton, Typography, useDooboo} from 'dooboo-ui';
 import type {ImageStyle} from 'expo-image';
 import {Image} from 'expo-image';
 import type {ImagePickerAsset, ImagePickerResult} from 'expo-image-picker';
@@ -18,6 +17,7 @@ import {
   launchMediaLibraryAsync,
 } from '../../utils/imagePicker';
 import {showAlert} from '../../utils/alert';
+import {Button, Icon, IconButton, Typography, useCPK} from 'cpk-ui';
 
 const ImageContainer = styled.View<{uri?: string}>`
   background-color: ${({theme, uri}) => (uri ? 'black' : theme.bg.basic)};
@@ -64,7 +64,7 @@ export default function MultiUploadImageInput({
   onAdd?: (assets: ImagePickerAsset[]) => void;
   onDelete?: (index: number) => void;
 }): JSX.Element {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
   const {showActionSheetWithOptions} = useActionSheet();
   const {push} = useRouter();
 

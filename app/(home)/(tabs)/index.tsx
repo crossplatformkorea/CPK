@@ -1,5 +1,4 @@
 import styled, {css} from '@emotion/native';
-import {Fab, LoadingIndicator} from 'dooboo-ui';
 import {FlashList} from '@shopify/flash-list';
 import {useRouter} from 'expo-router';
 import {PostWithJoins} from '../../../src/types';
@@ -18,6 +17,7 @@ import {
 import ListEmptyItem from '../../../src/components/uis/ListEmptyItem';
 import ErrorBoundary from 'react-native-error-boundary';
 import useSupabase from '../../../src/hooks/useSupabase';
+import {Fab, LoadingIndicator} from 'cpk-ui';
 
 const Container = styled.View`
   flex: 1;

@@ -1,9 +1,9 @@
 import type {ComponentProps, Dispatch, SetStateAction} from 'react';
 import {useEffect, useState} from 'react';
 import styled, {css} from '@emotion/native';
-import {Button, EditText, Typography, useDooboo} from 'dooboo-ui';
 import {t} from '../../../STRINGS';
 import {Modal} from 'react-native';
+import {Button, EditText, Typography, useCPK} from 'cpk-ui';
 
 type AlertModalPropType = {
   visible: boolean;
@@ -51,7 +51,7 @@ export default function InputModal({
   numberOfLines,
   textInputProps,
 }: AlertModalPropType): JSX.Element {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
   const [message, setMessage] = useState('');
 
   /* To set message whenever defaultMessage is changed */

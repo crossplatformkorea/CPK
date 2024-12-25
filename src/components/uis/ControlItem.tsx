@@ -1,6 +1,6 @@
 import {Pressable, View, type ViewStyle} from 'react-native';
 import styled, {css} from '@emotion/native';
-import {Icon, Typography, useDooboo} from 'dooboo-ui';
+import {Icon, Typography, useCPK} from 'cpk-ui';
 
 const Container = styled.View`
   flex-direction: row;
@@ -24,7 +24,7 @@ function ControlItem({
   onPressLike,
   onPressShare,
 }: ControlItemProps): JSX.Element {
-  const {theme} = useDooboo();
+  const {theme} = useCPK();
 
   return (
     <Container

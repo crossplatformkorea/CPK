@@ -1,7 +1,5 @@
 import ErrorBoundary from 'react-native-error-boundary';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
-import type {ThemeType} from 'dooboo-ui';
-import {DoobooProvider} from 'dooboo-ui';
 import {RecoilRoot} from 'recoil';
 
 import {theme} from '../theme';
@@ -9,6 +7,7 @@ import {handleErrorConsole} from '../utils/error';
 import {AppLogicProvider} from './AppLogicProvider';
 import {DarkTheme, DefaultTheme, ThemeProvider} from '@react-navigation/native';
 import FallbackComponent from '../components/uis/FallbackComponent';
+import {CpkProvider, ThemeType} from 'cpk-ui';
 
 interface Props {
   initialThemeType?: ThemeType;
@@ -18,7 +17,7 @@ interface Props {
 function RootProvider({initialThemeType, children}: Props): JSX.Element {
   return (
     <RecoilRoot>
-      <DoobooProvider
+      <CpkProvider
         themeConfig={{
           initialThemeType: initialThemeType ?? undefined,
           customTheme: theme,
@@ -38,7 +37,7 @@ function RootProvider({initialThemeType, children}: Props): JSX.Element {
             </ActionSheetProvider>
           </ErrorBoundary>
         </ThemeProvider>
-      </DoobooProvider>
+      </CpkProvider>
     </RecoilRoot>
   );
 }

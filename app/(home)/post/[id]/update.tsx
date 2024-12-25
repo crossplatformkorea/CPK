@@ -1,7 +1,6 @@
 import styled, {css} from '@emotion/native';
 import {Stack, useLocalSearchParams, useRouter} from 'expo-router';
 import {yupResolver} from '@hookform/resolvers/yup';
-import {EditText, Typography, useDooboo} from 'dooboo-ui';
 import * as yup from 'yup';
 import {Controller, SubmitHandler, useForm} from 'react-hook-form';
 import {
@@ -29,6 +28,7 @@ import {RectButton} from 'react-native-gesture-handler';
 import ErrorBoundary from 'react-native-error-boundary';
 import FallbackComponent from '../../../../src/components/uis/FallbackComponent';
 import useSupabase from '../../../../src/hooks/useSupabase';
+import {EditText, Typography, useCPK} from 'cpk-ui';
 
 const Container = styled.SafeAreaView`
   flex: 1;
@@ -52,7 +52,7 @@ export default function PostUpdate(): JSX.Element {
   const {id} = useLocalSearchParams<{id: string}>();
   const {supabase} = useSupabase();
   const {back} = useRouter();
-  const {theme, snackbar} = useDooboo();
+  const {theme, snackbar} = useCPK();
   const {authId} = useRecoilValue(authRecoilState);
   const setPosts = useSetRecoilState(postsRecoilState);
   const [assets, setAssets] = useState<ImagePickerAsset[]>([]);
