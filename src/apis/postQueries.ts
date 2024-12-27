@@ -2,6 +2,7 @@ import {SupabaseClient} from '../hooks/useSupabase';
 import {ImageInsertArgs, PostInsertArgs, PostWithJoins} from '../types';
 import {PAGE_SIZE} from '../utils/constants';
 import {sendNotificationsToAllUsers} from './notifications';
+import {sendSlackNotification} from './slackQueries';
 
 const filterDeletedImageInPost = (post: PostWithJoins): PostWithJoins => {
   return {
@@ -287,6 +288,11 @@ export const fetchCreatePost = async ({
     ...data,
     images,
   };
+
+  sendSlackNotification({
+    post: post as unknown as PostWithJoins,
+    url: `https://forums.crossplatformkorea.com/post/${data.id}`,
+  });
 
   sendNotificationsToAllUsers({
     title: post.title,
