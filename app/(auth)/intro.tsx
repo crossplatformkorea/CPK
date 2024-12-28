@@ -130,6 +130,7 @@ export default function Intro(): JSX.Element {
                   str
                 ) : (
                   <Pressable
+                    key={str}
                     hitSlop={8}
                     onPress={() => {
                       if (str === t('signIn.privacyPolicy')) {
