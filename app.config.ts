@@ -9,7 +9,7 @@ import {expand} from 'dotenv-expand';
 import path from 'path';
 
 const DEEP_LINK_URL = '[firebaseAppId].web.app';
-const buildNumber = 22;
+const buildNumber = 23;
 
 // https://github.com/expo/expo/issues/23727#issuecomment-1651609858
 if (process.env.STAGE) {
