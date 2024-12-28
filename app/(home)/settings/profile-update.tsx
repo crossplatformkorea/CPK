@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   Text,
   View,
 } from 'react-native';
@@ -563,27 +564,42 @@ export default function ProfileUpdate(): JSX.Element {
       <Stack.Screen
         options={{
           title: t('profileUpdate.title'),
-          headerRight: () => (
-            <RectButton
-              // @ts-ignore
-              onPress={handleSubmit(handleProfileUpdate)}
-              hitSlop={{bottom: 8, left: 8, right: 8, top: 8}}
-              style={css`
-                margin-top: 4px;
-                margin-right: -4px;
-                border-radius: 99px;
+          headerRight: () =>
+            Platform.OS === 'web' ? (
+              <Pressable
+                onPress={handleSubmit(handleProfileUpdate)}
+                style={css`
+                  margin: 0 12px;
+                  border-radius: 48px;
+                `}
+              >
+                {isSubmitting ? (
+                  <ActivityIndicator size="small" color={theme.text.label} />
+                ) : (
+                  <Typography.Body3>{t('common.done')}</Typography.Body3>
+                )}
+              </Pressable>
+            ) : (
+              <RectButton
+                // @ts-ignore
+                onPress={handleSubmit(handleProfileUpdate)}
+                hitSlop={{bottom: 8, left: 8, right: 8, top: 8}}
+                style={css`
+                  margin-top: 4px;
+                  margin-right: -4px;
+                  border-radius: 99px;
 
-                align-items: center;
-                justify-content: center;
-              `}
-            >
-              {isSubmitting ? (
-                <ActivityIndicator size="small" color={theme.text.label} />
-              ) : (
-                <Typography.Body3>{t('common.done')}</Typography.Body3>
-              )}
-            </RectButton>
-          ),
+                  align-items: center;
+                  justify-content: center;
+                `}
+              >
+                {isSubmitting ? (
+                  <ActivityIndicator size="small" color={theme.text.label} />
+                ) : (
+                  <Typography.Body3>{t('common.done')}</Typography.Body3>
+                )}
+              </RectButton>
+            ),
         }}
       />
       {content}

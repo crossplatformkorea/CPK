@@ -8,6 +8,7 @@ import {
   ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
   View,
 } from 'react-native';
 import {useRecoilValue, useSetRecoilState} from 'recoil';
@@ -29,7 +30,6 @@ const Container = styled.SafeAreaView`
 `;
 
 const Content = styled.View`
-  flex: 1;
   gap: 16px;
 `;
 
@@ -121,33 +121,52 @@ export default function PostWrite(): JSX.Element {
       <Stack.Screen
         options={{
           title: t('post.write.write'),
-          headerRight: () => (
-            <RectButton
-              // @ts-ignore
-              onPress={handleSubmit(handleWritePost)}
-              activeOpacity={0}
-              style={css`
-                margin-top: 4px;
-                margin-right: -4px;
-                border-radius: 99px;
+          headerRight: () =>
+            Platform.OS === 'web' ? (
+              <Pressable
+                onPress={handleSubmit(handleWritePost)}
+                style={css`
+                  margin: 0 12px;
+                  border-radius: 48px;
+                `}
+              >
+                {isSubmitting ? (
+                  <ActivityIndicator size="small" color={theme.text.label} />
+                ) : (
+                  <Typography.Body3>
+                    {t('post.write.register')}
+                  </Typography.Body3>
+                )}
+              </Pressable>
+            ) : (
+              <RectButton
+                // @ts-ignore
+                onPress={handleSubmit(handleWritePost)}
+                activeOpacity={0}
+                style={css`
+                  margin-top: 4px;
+                  margin-right: -4px;
+                  border-radius: 99px;
 
-                align-items: center;
-                justify-content: center;
-              `}
-              hitSlop={{
-                bottom: 8,
-                left: 8,
-                right: 8,
-                top: 8,
-              }}
-            >
-              {isSubmitting ? (
-                <ActivityIndicator size="small" color={theme.text.label} />
-              ) : (
-                <Typography.Body3>{t('post.write.register')}</Typography.Body3>
-              )}
-            </RectButton>
-          ),
+                  align-items: center;
+                  justify-content: center;
+                `}
+                hitSlop={{
+                  bottom: 8,
+                  left: 8,
+                  right: 8,
+                  top: 8,
+                }}
+              >
+                {isSubmitting ? (
+                  <ActivityIndicator size="small" color={theme.text.label} />
+                ) : (
+                  <Typography.Body3>
+                    {t('post.write.register')}
+                  </Typography.Body3>
+                )}
+              </RectButton>
+            ),
         }}
       />
       <KeyboardAvoidingView
