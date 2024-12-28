@@ -1,6 +1,6 @@
 import styled, {css} from '@emotion/native';
 import {Stack, useLocalSearchParams, useRouter} from 'expo-router';
-import {ReplyWithJoins} from '../../../../src/types';
+import {PostWithJoins, ReplyWithJoins} from '../../../../src/types';
 import {t} from '../../../../src/STRINGS';
 import NotFound from '../../../../src/components/uis/NotFound';
 import {Platform, Pressable, View} from 'react-native';
@@ -18,6 +18,7 @@ import {authRecoilState, postsRecoilState} from '../../../../src/recoil/atoms';
 import {useAppLogic} from '../../../../src/providers/AppLogicProvider';
 import {
   fetchDeletePost,
+  fetchPostById,
   incrementViewCount,
 } from '../../../../src/apis/postQueries';
 import {toggleLike} from '../../../../src/apis/likeQueries';
@@ -56,8 +57,7 @@ export default function PostDetails(): JSX.Element {
   const {back, push} = useRouter();
   const [postLikes, setPostLikes] = useState<number>(0);
   const [hasLiked, setHasLiked] = useState<boolean>(false);
-
-  const post = posts.find((p) => p.id === id);
+  const [post, setPost] = useState<PostWithJoins | null>(null);
 
   useEffect(() => {
     if (id && supabase) {
@@ -73,6 +73,30 @@ export default function PostDetails(): JSX.Element {
       );
     }
   }, [id, setPosts, supabase]);
+
+  useEffect(() => {
+    const loadPost = async () => {
+      let fetchedPost = posts.find((p) => p.id === id);
+
+      if (!fetchedPost && id && supabase) {
+        fetchedPost = (await fetchPostById({id, supabase})) || undefined;
+
+        if (fetchedPost) {
+          setPosts((prevPosts) => {
+            const uniquePosts = prevPosts.filter(
+              (post) => post.id !== fetchedPost?.id,
+            );
+
+            return [...uniquePosts, fetchedPost] as PostWithJoins[];
+          });
+        }
+      }
+
+      setPost(fetchedPost || null);
+    };
+
+    loadPost();
+  }, [id, posts, supabase, setPosts]);
 
   useEffect(() => {
     if (post) {
