@@ -2,8 +2,6 @@ import {Post} from '../types';
 
 const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL;
 
-console.log('SLACK_WEBHOOK_URL:', SLACK_WEBHOOK_URL);
-
 const truncateText = (text: string, maxLength: number) => {
   if (text.length > maxLength) {
     return text.slice(0, maxLength) + '...';

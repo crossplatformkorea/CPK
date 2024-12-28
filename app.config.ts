@@ -70,10 +70,18 @@ export default ({config}: ConfigContext): ExpoConfig => ({
     'expo-localization',
     [
       'expo-splash-screen',
+      // https://github.com/expo/expo/issues/32515#issuecomment-2533398853
       {
         image: './assets/icon.png',
         backgroundColor: '#333333',
         imageWidth: 200,
+        dark: {backgroundColor: '#1B1B1B'},
+        ios: {
+          resizeMode: 'cover',
+          image: './assets/splash.png',
+        },
+        // iOS only
+        enableFullScreenImage_legacy: true,
       },
     ],
   ],
