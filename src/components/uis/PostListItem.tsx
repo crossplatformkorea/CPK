@@ -66,6 +66,8 @@ export default function PostListItem({
               >
                 <Typography.Body2
                   style={css`
+                    flex: 1;
+                    padding-right: 8px;
                     font-family: Pretendard-Bold;
                   `}
                 >

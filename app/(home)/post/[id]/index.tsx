@@ -33,6 +33,7 @@ import ErrorBoundary from 'react-native-error-boundary';
 import FallbackComponent from '../../../../src/components/uis/FallbackComponent';
 import useSupabase from '../../../../src/hooks/useSupabase';
 import {Hr, Icon, Typography, useCPK} from 'cpk-ui';
+import {TITLE_MAX_LENGTH} from '../../../../src/utils/constants';
 
 const Container = styled.View`
   background-color: ${({theme}) => theme.bg.basic};
@@ -355,7 +356,10 @@ export default function PostDetails(): JSX.Element {
     <ErrorBoundary FallbackComponent={FallbackComponent}>
       <Stack.Screen
         options={{
-          title: (post?.title || t('common.post')).substring(0, 29),
+          title:
+            (post?.title || t('common.post')).length > TITLE_MAX_LENGTH
+              ? `${(post?.title || t('common.post')).substring(0, TITLE_MAX_LENGTH)}...`
+              : post?.title || t('common.post'),
           headerRight: () =>
             authId ? (
               <View

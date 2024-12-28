@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import {DoobooGithubStats, Stats} from '../types/github-stats';
 
 export const LIST_CNT = 10;
@@ -15,6 +16,7 @@ export const HEADER_HEIGHT = 56;
 export const MAX_IMAGES_UPLOAD_LENGTH = 5;
 export const MAX_WIDTH = 1000;
 export const EMAIL_ADDRESS = 'crossplatformkorea@gmail.com';
+export const TITLE_MAX_LENGTH = Platform.OS === 'web' ? 52 : 29;
 
 export const initStats: Stats = {
   name: '',

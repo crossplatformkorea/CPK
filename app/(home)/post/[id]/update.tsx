@@ -22,7 +22,10 @@ import NotFound from '../../../../src/components/uis/NotFound';
 import {useState} from 'react';
 import {ImagePickerAsset} from 'expo-image-picker';
 import MultiUploadImageInput from '../../../../src/components/uis/MultiUploadImageInput';
-import {MAX_IMAGES_UPLOAD_LENGTH} from '../../../../src/utils/constants';
+import {
+  MAX_IMAGES_UPLOAD_LENGTH,
+  TITLE_MAX_LENGTH,
+} from '../../../../src/utils/constants';
 import CustomScrollView from '../../../../src/components/uis/CustomScrollView';
 import {filterUploadableAssets} from '../../../../src/utils/common';
 import {RectButton} from 'react-native-gesture-handler';
@@ -302,7 +305,10 @@ export default function PostUpdate(): JSX.Element {
     <ErrorBoundary FallbackComponent={FallbackComponent}>
       <Stack.Screen
         options={{
-          title: post?.title || t('common.post'),
+          title:
+            (post?.title || t('common.post')).length > TITLE_MAX_LENGTH
+              ? `${(post?.title || t('common.post')).substring(0, TITLE_MAX_LENGTH)}...`
+              : post?.title || t('common.post'),
           headerRight: () =>
             Platform.OS === 'web' ? (
               <Pressable
